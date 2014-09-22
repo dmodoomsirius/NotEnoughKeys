@@ -18,6 +18,7 @@ buildscript {
 apply plugin: 'forge'
 
 ext.buildProps = file "build.properties"
+minecraft { mappings = "snapshot_20140918" }
 
 buildProps.withReader {
     def prop = new Properties()
