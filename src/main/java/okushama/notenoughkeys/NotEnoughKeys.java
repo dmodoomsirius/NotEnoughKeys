@@ -9,7 +9,7 @@ import okushama.notenoughkeys.keys.KeybindTracker;
 import okushama.notenoughkeys.keys.Keybinds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import cpw.mods.fml.client.registry.KeyBindingRegistry;
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -43,7 +43,7 @@ public class NotEnoughKeys {
 	@SideOnly(Side.CLIENT)
 	public static void init(FMLInitializationEvent e) {
 		TickRegistry.registerTickHandler(new Ticker(), Side.CLIENT);
-		KeyBindingRegistry.registerKeyBinding(new Keybinds());
+		ClientRegistry.registerKeyBinding(new Keybinds());
 		Binds.init();
 	}
 
