@@ -6,6 +6,12 @@ eclipse/
 .gradle/
 .project
 .settings/
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+run/
 
 # Ignore OS cache files & directories
 *.DS_Store
