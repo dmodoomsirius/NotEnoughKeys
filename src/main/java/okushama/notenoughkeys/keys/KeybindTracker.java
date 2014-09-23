@@ -27,7 +27,7 @@ public class KeybindTracker {
 	public static int getKeybindIndex(KeyBinding kb) {
 		for (int i = 0; i < Minecraft.getMinecraft().gameSettings.keyBindings.length; i++) {
 			KeyBinding keb = Minecraft.getMinecraft().gameSettings.keyBindings[i];
-			if (keb.keyDescription.equals(kb.keyDescription)) {
+			if (keb.getKeyDescription().equals(kb.getKeyDescription())) {
 				return i;
 			}
 		}
@@ -57,8 +57,8 @@ public class KeybindTracker {
 		}
 		for (KeyBinding bind : allTheBinds) {
 			for (KeyBinding obind : allTheBinds) {
-				if (!obind.keyDescription.equals(bind.keyDescription)) {
-					if (obind.keyCode == bind.keyCode) {
+				if (!obind.getKeyDescription().equals(bind.getKeyDescription())) {
+					if (obind.getKeyCode() == bind.getKeyCode()) {
 						// out.put(getHostCategory(bind)+" and "+getHostCategory(obind), new KeyBinding[]{bind, obind});
 						allTheConflicts.add(bind);
 						allTheConflicts.add(obind);
@@ -111,13 +111,13 @@ public class KeybindTracker {
 			field_.setAccessible(true);
 			return field_;
 		} catch (NoSuchFieldException e) {
-			NotEnoughKeys.logger.log(Level.WARNING, String.format("== Field %s %s not found !\n", classname, fieldname));
+			NotEnoughKeys.logger.warn(String.format("== Field %s %s not found !\n", classname, fieldname));
 			return null;
 		} catch (SecurityException e) {
-			NotEnoughKeys.logger.log(Level.WARNING, String.format("== Field %s %s security exception !\n", classname, fieldname));
+			NotEnoughKeys.logger.warn(String.format("== Field %s %s security exception !\n", classname, fieldname));
 			return null;
 		} catch (ClassNotFoundException e) {
-			NotEnoughKeys.logger.log(Level.WARNING, String.format("== Class %s not found !\n", classname));
+			NotEnoughKeys.logger.warn(String.format("== Class %s not found !\n", classname));
 			return null;
 		}
 	}

@@ -44,7 +44,7 @@ public class NotEnoughKeys {
 	@SideOnly(Side.CLIENT)
 	public static void init(FMLInitializationEvent e) {
         FMLCommonHandler.instance().bus().register(new Ticker());
-		ClientRegistry.registerKeyBinding(new Keybinds());
+		ClientRegistry.registerKeyBinding(Keybinds.openConsole);
 		Binds.init();
 	}
 

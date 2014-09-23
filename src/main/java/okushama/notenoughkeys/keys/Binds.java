@@ -51,7 +51,7 @@ public class Binds {
 	public void saveBinds() {
 		try {
 			File f = new File("binds.json");
-			NotEnoughKeys.logger.log(Level.INFO, f.getAbsolutePath());
+			NotEnoughKeys.logger.info(f.getAbsolutePath());
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			String jsonified = gson.toJson(instance);
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));

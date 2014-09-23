@@ -102,7 +102,7 @@ public class ConsoleTextField extends Gui {
 	 */
 	public void writeText(String par1Str) {
 		String var2 = "";
-		String var3 = ChatAllowedCharacters.filerAllowedCharacters(par1Str);
+		String var3 = ChatAllowedCharacters.filterAllowedCharacters(par1Str);
 		int var4 = cursorPosition < selectionEnd ? cursorPosition : selectionEnd;
 		int var5 = cursorPosition < selectionEnd ? selectionEnd : cursorPosition;
 		int var6 = maxStringLength - text.length() - (var4 - selectionEnd);

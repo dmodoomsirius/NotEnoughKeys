@@ -5,13 +5,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ChatClickData;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
+
 import okushama.notenoughkeys.NotEnoughKeys;
 import okushama.notenoughkeys.keys.Binds;
 
@@ -64,56 +66,56 @@ public class Console extends GuiScreen {
 	public void handleInput(String in) {
 		if (in.toLowerCase().startsWith("bind")) {
 			if (!in.toLowerCase().contains(" ")) {
-				Minecraft.getMinecraft().thePlayer.addChatMessage(EnumChatFormatting.RED + "Usage: bind <key> <command/message>");
+				Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Usage: bind <key> <command/message>"));
 				return;
 			}
 			String[] args = in.toLowerCase().split(" ");
 			if (args.length < 3) {
-				Minecraft.getMinecraft().thePlayer.addChatMessage(EnumChatFormatting.RED + "Usage: bind <key> <command/message>");
+				Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Usage: bind <key> <command/message>"));
 				return;
 			}
 			if (args.length > 2) {
 				String keyToBind = args[1];
 				String command = in.substring(args[0].length() + args[1].length() + 2);
-				NotEnoughKeys.logger.log(Level.INFO, keyToBind + " = " + Keyboard.getKeyIndex(keyToBind.toUpperCase()));
+				NotEnoughKeys.logger.info(keyToBind + " = " + Keyboard.getKeyIndex(keyToBind.toUpperCase()));
 				KeyBinding[] binds = Minecraft.getMinecraft().gameSettings.keyBindings;
 				for (KeyBinding bind : binds) {
-					if (Keyboard.getKeyIndex(keyToBind.toUpperCase()) == bind.keyCode) {
-						String loc = LanguageRegistry.instance().getStringLocalization(bind.keyDescription, "en_US");
+					if (Keyboard.getKeyIndex(keyToBind.toUpperCase()) == bind.getKeyCode()) {
+						String loc = LanguageRegistry.instance().getStringLocalization(bind.getKeyDescription(), "en_US");
 						if (loc.length() == 0)
-							loc = bind.keyDescription;
+							loc = bind.getKeyDescription();
 						if (loc.contains("."))
 							loc = loc.split("\\.")[1];
-						Minecraft.getMinecraft().thePlayer.addChatMessage("Not binding over the " + loc + " key!");
+						Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Not binding over the " + loc + " key!"));
 						return;
 					}
 				}
 				if (Keyboard.getKeyIndex(keyToBind.toUpperCase()) > 0) {
-					NotEnoughKeys.logger.log(Level.INFO, "Binding \"" + command + "\" to " + keyToBind);
+					NotEnoughKeys.logger.info("Binding \"" + command + "\" to " + keyToBind);
 					Binds.addBind(Keyboard.getKeyIndex(keyToBind.toUpperCase()), command);
-					Minecraft.getMinecraft().thePlayer.addChatMessage(EnumChatFormatting.GREEN + "Bound '" + command + "' to '" + keyToBind.toUpperCase() + "'.");
+					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Bound '" + command + "' to '" + keyToBind.toUpperCase() + "'."));
 				}
 			}
 		}
 		if (in.toLowerCase().startsWith("unbind")) {
 			if (!in.toLowerCase().contains(" ")) {
-				Minecraft.getMinecraft().thePlayer.addChatMessage(EnumChatFormatting.RED + "Usage: unbind <key>");
+				Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Usage: unbind <key>"));
 				return;
 			}
 			String[] args = in.toLowerCase().split(" ");
 			if (args.length != 2) {
-				Minecraft.getMinecraft().thePlayer.addChatMessage(EnumChatFormatting.RED + "Usage: unbind <key>");
+				Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Usage: unbind <key>"));
 				return;
 			}
 			if (args.length > 1) {
 				String keyToBind = args[1];
 				if (Keyboard.getKeyIndex(keyToBind.toUpperCase()) > 0) {
 					if (Binds.keyBound(Keyboard.getKeyIndex(keyToBind.toUpperCase()))) {
-						NotEnoughKeys.logger.log(Level.INFO, "Unbinding " + keyToBind);
+						NotEnoughKeys.logger.info("Unbinding " + keyToBind);
 						Binds.removeBind(Keyboard.getKeyIndex(keyToBind.toUpperCase()));
-						Minecraft.getMinecraft().thePlayer.addChatMessage(EnumChatFormatting.GREEN + "Unbound '" + keyToBind.toUpperCase() + "'.");
+						Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Unbound '" + keyToBind.toUpperCase() + "'."));
 					} else {
-						Minecraft.getMinecraft().thePlayer.addChatMessage(EnumChatFormatting.RED + "'" + keyToBind.toUpperCase() + "' is not bound to anything!");
+						Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "'" + keyToBind.toUpperCase() + "' is not bound to anything!"));
 					}
 				}
 			}
@@ -127,7 +129,7 @@ public class Console extends GuiScreen {
 	public void initGui() {
 		Keyboard.enableRepeatEvents(true);
 		sentHistoryCursor = prevMessages.size();
-		inputField = new ConsoleTextField(fontRenderer, 4, height - 12, width - 4, 12);
+		inputField = new ConsoleTextField(fontRendererObj, 4, height - 12, width - 4, 12);
 		inputField.setMaxStringLength(34);
 		inputField.setEnableBackgroundDrawing(false);
 		inputField.setFocused(true);
@@ -222,7 +224,7 @@ public class Console extends GuiScreen {
 	@Override
 	protected void mouseClicked(int par1, int par2, int par3) {
 		if (par3 == 0 && mc.gameSettings.chatLinks) {
-			ChatClickData var4 = mc.ingameGUI.getChatGUI().func_73766_a(Mouse.getX(), Mouse.getY());
+			IChatComponent var4 = mc.ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());
 
 			if (var4 != null) {
 				URI var5 = var4.getURI();
@@ -292,7 +294,7 @@ public class Console extends GuiScreen {
 					var4.append(", ");
 			}
 
-			mc.ingameGUI.getChatGUI().printChatMessageWithOptionalDeletion(var4.toString(), 1);
+			mc.ingameGUI.getChatGUI().printChatMessageWithOptionalDeletion(new ChatComponentText(var4.toString()), 1);
 		}
 
 		inputField.writeText((String) field_73904_o.get(field_73903_n++));
