@@ -1,53 +1,23 @@
 package okushama.notenoughkeys;
 
-import java.util.EnumSet;
-import java.util.logging.Level;
-
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import okushama.notenoughkeys.gui.GuiControlsOverride;
 import okushama.notenoughkeys.gui.GuiKeybindsMenu;
 import okushama.notenoughkeys.keys.Binds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiControls;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
 
-public class Ticker implements ITickHandler {
-	public boolean liteloaderExists = true;
+public class Ticker {
 
-	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData) {
-		if (type.equals(EnumSet.of(TickType.CLIENT))) {
-			Binds.tick();
-			if (liteloaderExists) {
-				try {
-					Class liteloadergui = Class.forName("com.mumfrey.liteloader.gui.GuiControlsPaginated");
-					if (liteloadergui != null) {
-						if (Minecraft.getMinecraft().currentScreen != null && Minecraft.getMinecraft().currentScreen.getClass().equals(liteloadergui)) {
-							Minecraft.getMinecraft().displayGuiScreen(new GuiKeybindsMenu());
-							NotEnoughKeys.logger.log(Level.INFO, "Replaced the instance of LiteLoader's controls gui!");
-						}
-					}
-				} catch (ClassNotFoundException e) {
-					liteloaderExists = false;
-				}
-			}
-			if (Minecraft.getMinecraft().currentScreen != null && Minecraft.getMinecraft().currentScreen instanceof GuiControls && !(Minecraft.getMinecraft().currentScreen instanceof GuiControlsOverride)) {
-				Minecraft.getMinecraft().displayGuiScreen(new GuiKeybindsMenu());
-				NotEnoughKeys.logger.log(Level.INFO, "Replaced the instance of Minecraft controls gui!");
-			}
-		}
-	}
-
-	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData) {}
-
-	@Override
-	public EnumSet<TickType> ticks() {
-		return EnumSet.of(TickType.CLIENT);
-	}
-
-	@Override
-	public String getLabel() {
-		return "Not Enough Ticker";
-	}
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        if(event.phase == TickEvent.Phase.START) {
+            Binds.tick();
+            if (Minecraft.getMinecraft().currentScreen != null && Minecraft.getMinecraft().currentScreen instanceof GuiControls && !(Minecraft.getMinecraft().currentScreen instanceof GuiControlsOverride)) {
+                Minecraft.getMinecraft().displayGuiScreen(new GuiKeybindsMenu());
+                NotEnoughKeys.logger.info("Replaced the instance of Minecraft controls gui!");
+            }
+        }
+    }
 }
