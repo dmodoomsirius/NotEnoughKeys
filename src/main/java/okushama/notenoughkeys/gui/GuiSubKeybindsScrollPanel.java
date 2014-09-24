@@ -40,7 +40,7 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 	}
 
 	@Override
-	protected void elementClicked(int i, boolean flag) {
+	protected void elementClicked(int i, boolean flag, int mouseX, int mouseY) {
 		if (!flag) {
 			if (selected == -1) {
 				selected = i;
@@ -79,8 +79,8 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 	}
 
 	@Override
-	protected void drawSlot(int index, int xPosition, int yPosition, int l, Tessellator tessellator) {
-		String s = I18n.getString(keyBindings[index].keyDescription);
+	protected void drawSlot(int index, int xPosition, int yPosition, int l, Tessellator tessellator, int mouseX, int mouseY) {
+		String s = I18n.format(keyBindings[index].getKeyDescription());
 		int width = 70;
 		int height = 20;
 		xPosition -= 20;
@@ -92,21 +92,21 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 		controls.drawTexturedModalRect(xPosition, yPosition, 0, 46 + k * 20, width / 2, height);
 		controls.drawTexturedModalRect(xPosition + width / 2, yPosition, 200 - width / 2, 46 + k * 20, width / 2, height);
 
-		controls.drawString(mc.fontRenderer, s, xPosition + width + 4, yPosition + 6, 0xFFFFFFFF);
+		controls.drawString(mc.fontRendererObj, s, xPosition + width + 4, yPosition + 6, 0xFFFFFFFF);
 
 		boolean conflict = false;
 		int globIndex = getGlobalKeybindIndex(index);
 		for (int x = 0; x < options.keyBindings.length; x++) {
-			if (x != globIndex && options.keyBindings[x].keyCode == options.keyBindings[globIndex].keyCode) {
+			if (x != globIndex && options.keyBindings[x].getKeyCode() == options.keyBindings[globIndex].getKeyCode()) {
 				conflict = true;
 				break;
 			}
 		}
 		int glob = getGlobalKeybindIndex(selected);
 
-		String str = (conflict ? EnumChatFormatting.RED : "") + GameSettings.getKeyDisplayString(keyBindings[index].keyCode);
+		String str = (conflict ? EnumChatFormatting.RED : "") + GameSettings.getKeyDisplayString(keyBindings[index].getKeyCode());
 		str = (index == selected ? EnumChatFormatting.WHITE + "> " + EnumChatFormatting.YELLOW + "??? " + EnumChatFormatting.WHITE + "<" : str);
-		controls.drawCenteredString(mc.fontRenderer, str, xPosition + (width / 2), yPosition + (height - 8) / 2, 0xFFFFFFFF);
+		controls.drawCenteredString(mc.fontRendererObj, str, xPosition + (width / 2), yPosition + (height - 8) / 2, 0xFFFFFFFF);
 	}
 
 	public int getGlobalKeybindIndex(int localIndex) {

@@ -1,6 +1,7 @@
 package okushama.notenoughkeys.gui;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiSlot;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.settings.KeyBinding;
@@ -31,20 +32,20 @@ public class GuiKeybindsScrollPanel extends GuiSlot {
 	}
 
 	@Override
-	protected void elementClicked(int i, boolean flag) {
+	protected void elementClicked(int i, boolean flag, int mouseX, int mouseZ) {
 		if (!flag) {
 			if (selected == -1)
 				selected = i;
 			String type = buttonNames[selected];
 			if (type.equalsIgnoreCase("all")) {
-				Minecraft.getMinecraft().sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.createPositionedSoundRecord(new ResourceLocation("random.click")));
 				Minecraft.getMinecraft().displayGuiScreen(new GuiControlsOverride(controls, Minecraft.getMinecraft().gameSettings));
 				KeybindTracker.updateConflictCategory();
 				selected = -1;
 				return;
 			}
 
-			Minecraft.getMinecraft().sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.createPositionedSoundRecord(new ResourceLocation("random.click")));
 			Minecraft.getMinecraft().displayGuiScreen(new GuiSubKeybindsMenu(controls, type, KeybindTracker.modKeybinds.get(type).toArray(new KeyBinding[0]), Minecraft.getMinecraft().gameSettings));
 			KeybindTracker.updateConflictCategory();
 			selected = -1;
@@ -68,7 +69,7 @@ public class GuiKeybindsScrollPanel extends GuiSlot {
 	}
 
 	@Override
-	protected void drawSlot(int index, int xPosition, int yPosition, int l, Tessellator tessellator) {
+	protected void drawSlot(int index, int xPosition, int yPosition, int l, Tessellator tessellator, int mouseX, int mouseY) {
 		String s = buttonNames[index];
 		// controls.drawTexturedModalRect(xPosition, yPosition, 0, 46 + 1 * 20, 70, 20);
 		// controls.drawString(mc.fontRenderer, s, xPosition + 70 + 4, yPosition + 6, 0xFFFFFFFF);
@@ -83,9 +84,9 @@ public class GuiKeybindsScrollPanel extends GuiSlot {
 		controls.drawTexturedModalRect(xPosition, yPosition, 0, 46 + k * 20, width / 2, height);
 		controls.drawTexturedModalRect(xPosition + width / 2, yPosition, 200 - width / 2, 46 + k * 20, width / 2, height);
 
-		controls.drawString(Minecraft.getMinecraft().fontRenderer, s, xPosition + width + 4, yPosition + 6, 0xFFFFFFFF);
+		controls.drawString(Minecraft.getMinecraft().fontRendererObj, s, xPosition + width + 4, yPosition + 6, 0xFFFFFFFF);
 
-		controls.drawCenteredString(Minecraft.getMinecraft().fontRenderer, "Configure", xPosition + (width / 2), yPosition + (height - 8) / 2, 0xFFFFFFFF);
+		controls.drawCenteredString(Minecraft.getMinecraft().fontRendererObj, "Configure", xPosition + (width / 2), yPosition + (height - 8) / 2, 0xFFFFFFFF);
 	}
 
 	public boolean keyTyped(char c, int i) {

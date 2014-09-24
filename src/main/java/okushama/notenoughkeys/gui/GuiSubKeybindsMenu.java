@@ -56,9 +56,9 @@ public class GuiSubKeybindsMenu extends GuiScreen {
 	 */
 	public void initGui() {
 		scrollPane = new GuiSubKeybindsScrollPanel(this, options, mc, keyBindings);
-		buttonList.add(new GuiButton(200, width / 2 - 100, height - 28, I18n.getString("gui.done")));
+		buttonList.add(new GuiButton(200, width / 2 - 100, height - 28, I18n.format("gui.done")));
 		scrollPane.registerScrollButtons(7, 8);
-		screenTitle = subModID + " " + I18n.getString("controls.title");
+		screenTitle = subModID + " " + I18n.format("controls.title");
 		KeybindTracker.updateConflictCategory();
 	}
 
@@ -97,7 +97,7 @@ public class GuiSubKeybindsMenu extends GuiScreen {
 	public void drawScreen(int par1, int par2, float par3) {
 		drawBackground(0);
 		scrollPane.drawScreen(par1, par2, par3);
-		drawCenteredString(fontRenderer, screenTitle, width / 2, 4, 0xffffff);
+		drawCenteredString(fontRendererObj, screenTitle, width / 2, 4, 0xffffff);
 		super.drawScreen(par1, par2, par3);
 	}
 }
