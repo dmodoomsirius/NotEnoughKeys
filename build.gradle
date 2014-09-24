@@ -17,6 +17,20 @@ buildscript {
 
 apply plugin: 'forge'
 
+
+if (System.getenv("BUILD_NUMBER") != null) {
+	version = "${System.getenv("BUILD_NUMBER")}"
+}
+ else {
+	version = "NIGHTLY"
+}
+
+buildProps.withReader {
+    def prop = new Properties()
+    prop.load(it)
+    ext.config = new ConfigSlurper().parse prop
+}
+
 ext.buildProps = file "build.properties"
 
 buildProps.withReader {
@@ -25,7 +39,7 @@ buildProps.withReader {
     ext.config = new ConfigSlurper().parse prop
 }
 
-version = "${config.version.minecraft}-${config.version.mod.major}.${config.version.mod.minor}.${config.version.mod.revis}.${System.getenv().BUILD_NUMBER}"
+version = "${config.version.minecraft}-${config.version.mod.major}.${config.version.mod.minor}.${config.version.mod.revis}b${System.getenv().BUILD_NUMBER}"
 group= "notenoughkeys"
 archivesBaseName = "NotEnoughKeys"
 
@@ -49,7 +63,7 @@ processResources {
         include '**/*.info'
         include '**/*.properties'
 
-        expand 'version': "${config.version.mod.major}.${config.version.mod.minor}.${config.version.mod.revis}", 'mcversion': project.minecraft.version
+        
     }
 }
 
