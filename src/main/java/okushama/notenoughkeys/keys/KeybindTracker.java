@@ -1,11 +1,7 @@
 package okushama.notenoughkeys.keys;
 
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.net.URLDecoder;
 import java.util.*;
 
-import okushama.notenoughkeys.NotEnoughKeys;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 
@@ -18,15 +14,14 @@ public class KeybindTracker {
 	public static HashMap<String, ArrayList<KeyBinding>> modKeybinds = new HashMap<String, ArrayList<KeyBinding>>();
 	public static HashMap<String, String> modIds = new HashMap<String, String>();
 
-	public static int getKeybindIndex(KeyBinding kb) {
-		for (int i = 0; i < Minecraft.getMinecraft().gameSettings.keyBindings.length; i++) {
-			KeyBinding keb = Minecraft.getMinecraft().gameSettings.keyBindings[i];
-			if (keb.getKeyDescription().equals(kb.getKeyDescription())) {
-				return i;
-			}
-		}
-		return -1;
-	}
+    public static KeyBinding getKeybind(KeyBinding kb) {
+        for(KeyBinding keb : Minecraft.getMinecraft().gameSettings.keyBindings) {
+            if(keb.equals(kb)) {
+                return keb;
+            }
+        }
+        return null;
+    }
 
 	private static ArrayList<KeyBinding> getConflictingKeybinds() {
 		List<KeyBinding> allTheBinds = Arrays.asList(Minecraft.getMinecraft().gameSettings.keyBindings);

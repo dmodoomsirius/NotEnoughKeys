@@ -45,8 +45,8 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 			if (selected == -1) {
 				selected = i;
 			} else {
-				int glob = getGlobalKeybindIndex(selected);
-				options.setKeyBinding(glob, -100);
+				KeyBinding glob = getGlobalKeybind(selected);
+				options.setOptionKeyBinding(glob, -100);
 				selected = -1;
 				KeyBinding.resetKeyBindingArrayAndHash();
 				KeybindTracker.updateConflictCategory();
@@ -69,8 +69,8 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 
 		if (selected != -1 && !Mouse.isButtonDown(0) && Mouse.getDWheel() == 0) {
 			if (Mouse.next() && Mouse.getEventButtonState()) {
-				int glob = getGlobalKeybindIndex(selected);
-				options.setKeyBinding(glob, -100 + Mouse.getEventButton());
+				KeyBinding glob = getGlobalKeybind(selected);
+				options.setOptionKeyBinding(glob, -100 + Mouse.getEventButton());
 				selected = -1;
 				KeyBinding.resetKeyBindingArrayAndHash();
 			}
@@ -95,30 +95,29 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 		controls.drawString(mc.fontRendererObj, s, xPosition + width + 4, yPosition + 6, 0xFFFFFFFF);
 
 		boolean conflict = false;
-		int globIndex = getGlobalKeybindIndex(index);
-		for (int x = 0; x < options.keyBindings.length; x++) {
-			if (x != globIndex && options.keyBindings[x].getKeyCode() == options.keyBindings[globIndex].getKeyCode()) {
+		KeyBinding globKb = getGlobalKeybind(index);
+		for (KeyBinding x : options.keyBindings) {
+			if (x != globKb && x.getKeyCode() == globKb.getKeyCode()) {
 				conflict = true;
 				break;
 			}
 		}
-		int glob = getGlobalKeybindIndex(selected);
 
 		String str = (conflict ? EnumChatFormatting.RED : "") + GameSettings.getKeyDisplayString(keyBindings[index].getKeyCode());
 		str = (index == selected ? EnumChatFormatting.WHITE + "> " + EnumChatFormatting.YELLOW + "??? " + EnumChatFormatting.WHITE + "<" : str);
 		controls.drawCenteredString(mc.fontRendererObj, str, xPosition + (width / 2), yPosition + (height - 8) / 2, 0xFFFFFFFF);
 	}
 
-	public int getGlobalKeybindIndex(int localIndex) {
-		if (localIndex < 0)
-			return -1;
-		return KeybindTracker.getKeybindIndex(keyBindings[localIndex]);
-	}
+    public KeyBinding getGlobalKeybind(int localIndex) {
+        if(localIndex < 0)
+            return null;
+        return KeybindTracker.getKeybind(keyBindings[localIndex]);
+    }
 
 	public boolean keyTyped(char c, int i) {
 		if (selected != -1) {
-			int glob = getGlobalKeybindIndex(selected);
-			options.setKeyBinding(glob, i);
+			KeyBinding glob = getGlobalKeybind(selected);
+			options.setOptionKeyBinding(glob, i);
 			selected = -1;
 			KeyBinding.resetKeyBindingArrayAndHash();
 			KeybindTracker.updateConflictCategory();

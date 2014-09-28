@@ -7,12 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ChatClickData;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
 
 import okushama.notenoughkeys.NotEnoughKeys;
 import okushama.notenoughkeys.keys.Binds;
@@ -223,14 +221,6 @@ public class Console extends GuiScreen {
 	 */
 	@Override
 	protected void mouseClicked(int par1, int par2, int par3) {
-		if (par3 == 0 && mc.gameSettings.chatLinks) {
-			IChatComponent var4 = mc.ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());
-
-			if (var4 != null) {
-				URI var5 = var4.getURI();
-			}
-		}
-
 		inputField.mouseClicked(par1, par2, par3);
 		super.mouseClicked(par1, par2, par3);
 	}

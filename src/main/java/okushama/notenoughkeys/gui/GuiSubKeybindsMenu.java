@@ -54,6 +54,7 @@ public class GuiSubKeybindsMenu extends GuiScreen {
 	/**
 	 * Adds the buttons (and other controls) to the screen in question.
 	 */
+    @SuppressWarnings("unchecked")
 	public void initGui() {
 		scrollPane = new GuiSubKeybindsScrollPanel(this, options, mc, keyBindings);
 		buttonList.add(new GuiButton(200, width / 2 - 100, height - 28, I18n.format("gui.done")));
