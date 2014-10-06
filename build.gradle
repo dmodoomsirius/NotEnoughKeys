@@ -75,7 +75,7 @@ tasks.build.dependsOn('createChangelog')
 curse {
     apiKey = System.getenv("Dmod_curse")
     projectId = "224614"
-    changelog = new File('output/changelog.txt').text
+    changelog = new File(changelog.txt').text
     releaseType = "beta"
 
     // the default obfuscated jar is uploaded by default
