@@ -18,7 +18,6 @@ buildscript {
 apply plugin: "curseforge"
 apply plugin: 'forge'
 
-
 if (System.getenv("BUILD_NUMBER") != null) {
 	version = "${System.getenv("BUILD_NUMBER")}"
 }
