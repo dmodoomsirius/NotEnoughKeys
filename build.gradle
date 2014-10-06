@@ -46,7 +46,7 @@ minecraft {
 curse {
     apiKey = System.getenv("Dmod_curse")
     projectId = "224614" // my project url is http://minecraft.curseforge.com/mc-mods/59652-seretroomsmod/
-    changelog = new File('changelog.txt').text
+    changelog = "Updated for 1.7.10. Currently, there is a bug where the config options that are usually in the Controls section are hidden. It will take some work to get those back, so for now, just manually edit them in your options.txt file in your mc instance."
     releaseType = "alpha"
 
     // the default obfuscated jar is uploaded by default
