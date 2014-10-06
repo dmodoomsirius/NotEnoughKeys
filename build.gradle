@@ -64,9 +64,9 @@ task createChangelog(type: ChangelogTask) {
         setOutput(new DelayedFile(project, 'build/libs/' + project.archivesBaseName + '-' + project.version + '-changelog.txt'));
     }
 
-    //onlyIf {
-       // return (("${System.getenv().JOB_NAME}" != null) && project.hasProperty("jenkins_server") && //project.hasProperty("jenkins_password"))
-  //  }
+    onlyIf {
+        return (("${System.getenv().JOB_NAME}" != null) && project.hasProperty("jenkins_server") && project.hasProperty("jenkins_password"))
+    }
 }
 
 tasks.build.dependsOn('createChangelog')
