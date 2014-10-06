@@ -74,8 +74,8 @@ tasks.build.dependsOn('createChangelog')
 
 curse {
     apiKey = System.getenv("Dmod_curse")
-    projectId = "224614"
-    changelog = new File(changelog.txt').text
+    projectId = "224614" // my project url is http://minecraft.curseforge.com/mc-mods/59652-seretroomsmod/
+    changelog = new File('changelog.txt').text
     releaseType = "beta"
 
     // the default obfuscated jar is uploaded by default
