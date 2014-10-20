@@ -1,22 +1,13 @@
-package okushama.notenoughkeys.keys;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.util.HashMap;
-import java.util.logging.Level;
-
-import net.minecraft.client.Minecraft;
-import okushama.notenoughkeys.NotEnoughKeys;
-
-import org.lwjgl.input.Keyboard;
+package modwarriors.notenoughkeys.keys;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import modwarriors.notenoughkeys.NotEnoughKeys;
+import net.minecraft.client.Minecraft;
+import org.lwjgl.input.Keyboard;
+
+import java.io.*;
+import java.util.HashMap;
 
 public class Binds {
 	public static Binds instance = null;
@@ -54,7 +45,8 @@ public class Binds {
 			NotEnoughKeys.logger.info(f.getAbsolutePath());
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			String jsonified = gson.toJson(instance);
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
+			BufferedWriter writer = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream(f)));
 			writer.write(jsonified);
 			writer.close();
 		} catch (Exception e) {

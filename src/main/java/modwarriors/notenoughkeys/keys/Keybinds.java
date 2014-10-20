@@ -1,16 +1,16 @@
-package okushama.notenoughkeys.keys;
+package modwarriors.notenoughkeys.keys;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import modwarriors.notenoughkeys.Helper;
+import modwarriors.notenoughkeys.NotEnoughKeys;
+import modwarriors.notenoughkeys.api.Api;
+import modwarriors.notenoughkeys.api.KeyBindingPressedEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
-import okushama.notenoughkeys.Helper;
-import okushama.notenoughkeys.NotEnoughKeys;
-import okushama.notenoughkeys.api.Api;
-import okushama.notenoughkeys.api.KeyBindingPressedEvent;
 import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
@@ -26,29 +26,27 @@ public class Keybinds {
 		}
 
 		// The following stuff is the handling of keybindings.
+		// Iterate through all alternates (the shift ctrl alt)
 		for (KeyBinding keyBinding : KeybindTracker.alternates.keySet()) {
-			if (Helper.isSpecialKeyBindingPressed(
-					keyBinding,
-					KeybindTracker.alternates.get(keyBinding)
-			)
-					) {
+			// Check if the keybinding is pressed WITH valid alternates
+			if (Helper.isSpecialKeyBindingPressed(keyBinding,
+					KeybindTracker.alternates.get(keyBinding))) {
+				// Post the event!
 				MinecraftForge.EVENT_BUS.post(
 						new KeyBindingPressedEvent(
 								keyBinding,
 								KeybindTracker.alternates.get(keyBinding)
 						)
 				);
-				NotEnoughKeys.logger.info("posted");
+				// Only 1 keybinding please!
+				break;
 			}
 		}
 
 	}
 
-	// TODO, event is posting but not recieving
-
 	@SubscribeEvent
 	public void onKeyBindingPressed(KeyBindingPressedEvent event) {
-		NotEnoughKeys.logger.info("recieved");
 		if (!event.keyBinding.getKeyDescription().equals(Keybinds.openConsole.getKeyDescription()))
 			return;
 

@@ -1,12 +1,12 @@
-package okushama.notenoughkeys;
+package modwarriors.notenoughkeys;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import modwarriors.notenoughkeys.gui.GuiControlsOverride;
+import modwarriors.notenoughkeys.gui.GuiKeybindsMenu;
+import modwarriors.notenoughkeys.keys.Binds;
 import net.minecraft.client.gui.GuiControls;
 import net.minecraftforge.client.event.GuiOpenEvent;
-import okushama.notenoughkeys.gui.GuiControlsOverride;
-import okushama.notenoughkeys.gui.GuiKeybindsMenu;
-import okushama.notenoughkeys.keys.Binds;
 
 public class Events {
 

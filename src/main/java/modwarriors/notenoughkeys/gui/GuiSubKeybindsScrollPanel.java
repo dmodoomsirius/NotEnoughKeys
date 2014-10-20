@@ -1,5 +1,8 @@
-package okushama.notenoughkeys.gui;
+package modwarriors.notenoughkeys.gui;
 
+import modwarriors.notenoughkeys.Helper;
+import modwarriors.notenoughkeys.NotEnoughKeys;
+import modwarriors.notenoughkeys.keys.KeybindTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiSlot;
 import net.minecraft.client.renderer.Tessellator;
@@ -8,9 +11,6 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
-import okushama.notenoughkeys.Helper;
-import okushama.notenoughkeys.NotEnoughKeys;
-import okushama.notenoughkeys.keys.KeybindTracker;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -184,12 +184,13 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 		NotEnoughKeys.logger.info("CTRL:  " + Helper.isCtrlKeyDown());
 		NotEnoughKeys.logger.info("ALT:   " + Helper.isAltKeyDown());
 		*/
-
-		KeybindTracker.alternates.put(
-				key, new boolean[] {
-						Helper.isShiftKeyDown(), Helper.isCtrlKeyDown(), Helper.isAltKeyDown()
-				}
-		);
+		if (!this.controls.subModID.equals("Minecraft")) {
+			KeybindTracker.alternates.put(
+					key, new boolean[] {
+							Helper.isShiftKeyDown(), Helper.isCtrlKeyDown(), Helper.isAltKeyDown()
+					}
+			);
+		}
 		selected = -1;
 		KeyBinding.resetKeyBindingArrayAndHash();
 		KeybindTracker.updateConflictCategory();

@@ -1,4 +1,4 @@
-package okushama.notenoughkeys;
+package modwarriors.notenoughkeys;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -12,11 +12,14 @@ import org.lwjgl.input.Keyboard;
 @SideOnly(Side.CLIENT)
 public class Helper {
 
+	/*
+	 * The true ctrl key(29 on mac) on max is used for right clicking
+	 */
+
 	private static final int shift1 = 42;
 	private static final int shift2 = 54;
 	private static final int ctrl1 = Minecraft.isRunningOnMac ? 219 : 29;
 	private static final int ctrl2 = Minecraft.isRunningOnMac ? 220 : 157;
-	private static final int ctrlMac = Minecraft.isRunningOnMac ? 29 : -100;
 	private static final int alt1 = 56;
 	private static final int alt2 = 184;
 
@@ -25,8 +28,7 @@ public class Helper {
 	}
 
 	public static boolean isCtrlKeyDown() {
-		return Keyboard.isKeyDown(Helper.ctrl1) || Keyboard.isKeyDown(Helper.ctrl2) ||
-				Keyboard.isKeyDown(Helper.ctrlMac);
+		return Keyboard.isKeyDown(Helper.ctrl1) || Keyboard.isKeyDown(Helper.ctrl2);
 	}
 
 	public static boolean isAltKeyDown() {
@@ -38,7 +40,7 @@ public class Helper {
 	}
 
 	public static boolean isCtrlKey(int keyCode) {
-		return keyCode == Helper.ctrl1 || keyCode == Helper.ctrl2 || keyCode == Helper.ctrlMac;
+		return keyCode == Helper.ctrl1 || keyCode == Helper.ctrl2;
 	}
 
 	public static boolean isAltKey(int keyCode) {
@@ -50,6 +52,13 @@ public class Helper {
 	}
 
 	public static boolean isSpecialKeyBindingPressed(KeyBinding keyBinding, boolean[] alts) {
+		/*
+		if (keyBinding.getIsKeyPressed()) {
+			NotEnoughKeys.logger.info("Valid Shift: " + (!alts[0] || Helper.isShiftKeyDown()));
+			NotEnoughKeys.logger.info("Valid Ctrl:  " + (!alts[1] || Helper.isCtrlKeyDown()));
+			NotEnoughKeys.logger.info("Valid Alt:   " + (!alts[2] || Helper.isAltKeyDown()));
+		}
+		*/
 		return keyBinding.getIsKeyPressed() &&
 				(!alts[0] || Helper.isShiftKeyDown()) &&
 				(!alts[1] || Helper.isCtrlKeyDown()) &&

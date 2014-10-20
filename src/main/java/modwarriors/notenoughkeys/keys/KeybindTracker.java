@@ -1,4 +1,4 @@
-package okushama.notenoughkeys.keys;
+package modwarriors.notenoughkeys.keys;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;

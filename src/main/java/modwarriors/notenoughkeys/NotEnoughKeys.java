@@ -1,4 +1,4 @@
-package okushama.notenoughkeys;
+package modwarriors.notenoughkeys;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -11,14 +11,14 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import modwarriors.notenoughkeys.console.Console;
+import modwarriors.notenoughkeys.keys.Binds;
+import modwarriors.notenoughkeys.keys.KeybindTracker;
+import modwarriors.notenoughkeys.keys.Keybinds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import okushama.notenoughkeys.console.Console;
-import okushama.notenoughkeys.keys.Binds;
-import okushama.notenoughkeys.keys.KeybindTracker;
-import okushama.notenoughkeys.keys.Keybinds;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
@@ -43,12 +43,18 @@ public class NotEnoughKeys {
 		Collections.addAll(vanillaKeys, Minecraft.getMinecraft().gameSettings.keyBindings);
 		KeybindTracker.modKeybinds.put("Minecraft", vanillaKeys);
 
-		Events events = new Events();
-		FMLCommonHandler.instance().bus().register(events);
-		MinecraftForge.EVENT_BUS.register(events);
+		Object eventhandler;
+
+		eventhandler = new Events();
+		FMLCommonHandler.instance().bus().register(eventhandler);
+		MinecraftForge.EVENT_BUS.register(eventhandler);
+
+		eventhandler = new Keybinds();
+		FMLCommonHandler.instance().bus().register(eventhandler);
+		MinecraftForge.EVENT_BUS.register(eventhandler);
 
 		ClientRegistry.registerKeyBinding(Keybinds.openConsole);
-		FMLCommonHandler.instance().bus().register(new Keybinds());
+
 		Binds.init();
 
 		NotEnoughKeys.configure(e.getModConfigurationDirectory());

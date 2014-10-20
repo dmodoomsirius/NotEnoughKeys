@@ -1,4 +1,4 @@
-package okushama.notenoughkeys.api;
+package modwarriors.notenoughkeys.api;
 
 import cpw.mods.fml.common.eventhandler.Cancelable;
 import cpw.mods.fml.common.eventhandler.Event;
