@@ -102,12 +102,15 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 
 		boolean conflict = false;
 		KeyBinding globKb = getGlobalKeybind(index);
+		conflict = KeybindTracker.conflictingKeys.contains(globKb);
+		/*
 		for (KeyBinding x : options.keyBindings) {
 			if (x != globKb && x.getKeyCode() == globKb.getKeyCode()) {
 				conflict = true;
 				break;
 			}
 		}
+		*/
 
 		String str = (conflict ? EnumChatFormatting.RED : "") + GameSettings.getKeyDisplayString(
 				keyBindings[index].getKeyCode());
@@ -166,7 +169,8 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 	}
 
 	public boolean keyTyped(char c, int keycode) {
-		if (selected != -1 && !Helper.isSpecialKey(keycode)) {
+		if (selected != -1 &&
+				(this.controls.subModID.equals("Minecraft") || !Helper.isSpecialKey(keycode))) {
 			KeyBinding glob = getGlobalKeybind(selected);
 			this.saveKeyBinding(glob, keycode == 1 ? 0 : keycode);
 			return false;

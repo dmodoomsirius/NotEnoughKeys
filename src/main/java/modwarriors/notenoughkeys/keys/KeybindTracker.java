@@ -24,6 +24,8 @@ public class KeybindTracker {
 	 */
 	public static HashMap<KeyBinding, boolean[]> alternates = new HashMap<KeyBinding, boolean[]>();
 
+	public static ArrayList<KeyBinding> conflictingKeys = new ArrayList<KeyBinding>();
+
 	public static KeyBinding getKeybind(KeyBinding kb) {
 		for (KeyBinding keb : Minecraft.getMinecraft().gameSettings.keyBindings) {
 			if (keb.equals(kb)) {
@@ -56,6 +58,8 @@ public class KeybindTracker {
 		hs.addAll(allTheConflicts);
 		allTheConflicts.clear();
 		allTheConflicts.addAll(hs);
+		KeybindTracker.conflictingKeys.clear();
+		KeybindTracker.conflictingKeys.addAll(allTheConflicts);
 		return allTheConflicts;
 	}
 

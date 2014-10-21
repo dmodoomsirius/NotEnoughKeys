@@ -43,13 +43,7 @@ public class NotEnoughKeys {
 		Collections.addAll(vanillaKeys, Minecraft.getMinecraft().gameSettings.keyBindings);
 		KeybindTracker.modKeybinds.put("Minecraft", vanillaKeys);
 
-		Object eventhandler;
-
-		eventhandler = new Events();
-		FMLCommonHandler.instance().bus().register(eventhandler);
-		MinecraftForge.EVENT_BUS.register(eventhandler);
-
-		eventhandler = new Keybinds();
+		Object eventhandler = new Keybinds();
 		FMLCommonHandler.instance().bus().register(eventhandler);
 		MinecraftForge.EVENT_BUS.register(eventhandler);
 

@@ -3,12 +3,12 @@ package modwarriors.notenoughkeys.api;
 import cpw.mods.fml.common.Loader;
 
 /**
- * @author CountryGamer
+ * @author TheTemportalist
  */
 public class Api {
 
 	public static boolean isLoaded() {
-		return Loader.isModLoaded("Not Enough Keys");
+		return Loader.isModLoaded("notenoughkeys");
 	}
 
 }
