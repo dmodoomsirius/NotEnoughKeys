@@ -105,6 +105,7 @@ processResources {
 jar {
     manifest {
         attributes "ModSide": "CLIENT"
+        attributes 'FMLCorePlugin': 'modwarriors.notenoughkeys.asm.NEKCore'
     }
 }
 
