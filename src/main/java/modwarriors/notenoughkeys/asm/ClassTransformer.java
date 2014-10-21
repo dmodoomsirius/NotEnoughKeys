@@ -148,10 +148,10 @@ public class ClassTransformer implements IClassTransformer {
 					method.instructions.remove(instruction.getPrevious());
 					// -> InvokeVirtual
 					instruction.getNext();
-					((FieldInsnNode) instruction).setOpcode(INVOKESTATIC);
-					((FieldInsnNode) instruction).owner = "net/minecraft/client/settings/KeyBinding";
-					((FieldInsnNode) instruction).name = "getKeyBindingsWithKey";
-					((FieldInsnNode) instruction).desc = "(I)[Lnet/minecraft/client/settings/KeyBinding;";
+					((MethodInsnNode) instruction).setOpcode(INVOKESTATIC);
+					((MethodInsnNode) instruction).owner = "net/minecraft/client/settings/KeyBinding";
+					((MethodInsnNode) instruction).name = "getKeyBindingsWithKey";
+					((MethodInsnNode) instruction).desc = "(I)[Lnet/minecraft/client/settings/KeyBinding;";
 					// -> CheckCast
 					instruction.getNext();
 					// -> ASTORE
@@ -203,8 +203,10 @@ public class ClassTransformer implements IClassTransformer {
 					// L8
 					nodesToInject.add(new VarInsnNode(ALOAD, 5));
 					nodesToInject.add(new VarInsnNode(ILOAD, 1));
-					nodesToInject.add(new FieldInsnNode(PUTFIELD,
-							"net/minecraft/client/settings/KeyBinding", "pressed", "Z"));
+					nodesToInject.add(new FieldInsnNode(
+							PUTFIELD, "net/minecraft/client/settings/KeyBinding",
+							"pressed", "Z"
+					));
 					// L7
 					nodesToInject.add(L7);
 					nodesToInject.add(new IincInsnNode(4, 1));
@@ -242,9 +244,9 @@ public class ClassTransformer implements IClassTransformer {
 					// -> InvokeVirtual
 					instruction.getNext();
 					// modify
-					((FieldInsnNode) instruction).owner = "java/util/ArrayList";
-					((FieldInsnNode) instruction).name = "add";
-					((FieldInsnNode) instruction).desc = "(Ljava/lang/Object;)Z";
+					((MethodInsnNode) instruction).owner = "java/util/ArrayList";
+					((MethodInsnNode) instruction).name = "add";
+					((MethodInsnNode) instruction).desc = "(Ljava/lang/Object;)Z";
 					// -> L7
 					instruction.getNext();
 					// Insert pop
@@ -261,47 +263,62 @@ public class ClassTransformer implements IClassTransformer {
 			// L0
 			LabelNode L0 = new LabelNode();
 			method.instructions.add(L0);
-			// todo 'NEW java/util/ArrayList
+			method.instructions.add(new TypeInsnNode(NEW, "java/util/ArrayList"));
 			method.instructions.add(new InsnNode(DUP));
-			method.instructions.add(new FieldInsnNode(
-					INVOKESPECIAL, "java/util/ArrayList", "<init>", "()V"));
+			method.instructions.add(new MethodInsnNode(
+					INVOKESPECIAL, "java/util/ArrayList",
+					"<init>", "()V", false
+			));
 			method.instructions.add(new VarInsnNode(ASTORE, 1));
 			// L1
 			LabelNode L1 = new LabelNode();
 			method.instructions.add(L1);
 			method.instructions.add(new FieldInsnNode(
-					GETSTATIC, "net/minecraft/client/settings/KeyBinding", "hash",
-					"Ljava.util/ArrayList;"));
-			method.instructions.add(new FieldInsnNode(INVOKEVIRTUAL,
-					"java/util/ArrayList", "iterator", "()Ljava/util/Iterator;"));
+					GETSTATIC, "net/minecraft/client/settings/KeyBinding",
+					"hash", "Ljava.util/ArrayList;"
+			));
+			method.instructions.add(new MethodInsnNode(
+					INVOKEVIRTUAL, "java/util/ArrayList",
+					"iterator", "()Ljava/util/Iterator;", false
+			));
 			method.instructions.add(new VarInsnNode(ASTORE, 2));
 			// L2
 			LabelNode L2 = new LabelNode();
 			method.instructions.add(L2);
 			method.instructions.add(new VarInsnNode(ALOAD, 2));
-			method.instructions.add(new FieldInsnNode(INVOKEINTERFACE, "java/util/Iterator",
-					"hasNext", "()Z"));
+			method.instructions.add(new MethodInsnNode(
+					INVOKEINTERFACE, "java/util/Iterator",
+					"hasNext", "()Z", false
+			));
 			LabelNode L3 = new LabelNode();
 			method.instructions.add(new JumpInsnNode(IFEQ, L3));
 			method.instructions.add(new VarInsnNode(ALOAD, 2));
-			method.instructions.add(new FieldInsnNode(INVOKEINTERFACE, "java/util/Iterator",
-					"next", "()Ljava/lang/Object;"));
-			// todo 'CHECKCAST net/minecraft/client/settings/KeyBinding'
+			method.instructions.add(new MethodInsnNode(
+							INVOKEINTERFACE, "java/util/Iterator",
+							"next", "()Ljava/lang/Object;", false)
+			);
+			method.instructions.add(new TypeInsnNode(
+					CHECKCAST, "net/minecraft/client/settings/KeyBinding"
+			));
 			method.instructions.add(new VarInsnNode(ASTORE, 3));
 			// L4
 			LabelNode L4 = new LabelNode();
 			method.instructions.add(L4);
 			method.instructions.add(new VarInsnNode(ALOAD, 3));
-			method.instructions.add(new FieldInsnNode(INVOKEVIRTUAL,
-					"net/minecraft/client/settings/KeyBinding", "getKeyCode", "()I"));
+			method.instructions.add(new MethodInsnNode(
+					INVOKEVIRTUAL, "net/minecraft/client/settings/KeyBinding",
+					"getKeyCode", "()I", false
+			));
 			method.instructions.add(new VarInsnNode(ILOAD, 0));
 			LabelNode L5 = new LabelNode();
 			method.instructions.add(new JumpInsnNode(IF_ICMPNE, L5));
 			// L6
 			method.instructions.add(new VarInsnNode(ALOAD, 1));
 			method.instructions.add(new VarInsnNode(ALOAD, 3));
-			method.instructions.add(new FieldInsnNode(INVOKEVIRTUAL,
-					"java/util/ArrayList", "add", "(Ljava/lang/Object;)Z"));
+			method.instructions.add(new MethodInsnNode(
+					INVOKEVIRTUAL, "java/util/ArrayList",
+					"add", "(Ljava/lang/Object;)Z", false
+			));
 			method.instructions.add(new InsnNode(POP));
 			// L5
 			method.instructions.add(L5);
@@ -310,10 +327,16 @@ public class ClassTransformer implements IClassTransformer {
 			method.instructions.add(L3);
 			method.instructions.add(new VarInsnNode(ALOAD, 1));
 			method.instructions.add(new InsnNode(ICONST_0));
-			// todo ANEWARRAY net/minecraft/client/settings/KeyBinding
-			method.instructions.add(new FieldInsnNode(INVOKEVIRTUAL,
-					"java/util/ArrayList", "toArray", "([Ljava/lang/Object;)[Ljava/lang/Object;"));
-			// todo CHECKCAST [Lnet/minecraft/client/settings/KeyBinding;
+			method.instructions.add(new TypeInsnNode(
+					ANEWARRAY, "net/minecraft/client/settings/KeyBinding"
+			));
+			method.instructions.add(new MethodInsnNode(
+					INVOKEVIRTUAL, "java/util/ArrayList",
+					"toArray", "([Ljava/lang/Object;)[Ljava/lang/Object;", false
+			));
+			method.instructions.add(new TypeInsnNode(
+					CHECKCAST, "[Lnet/minecraft/client/settings/KeyBinding;"
+			));
 			method.instructions.add(new InsnNode(ARETURN));
 			// L7
 			LabelNode L7 = new LabelNode();
