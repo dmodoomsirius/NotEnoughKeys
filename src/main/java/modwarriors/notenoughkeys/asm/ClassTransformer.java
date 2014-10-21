@@ -228,6 +228,41 @@ public class ClassTransformer implements IClassTransformer {
 					method.localVariables.add(new LocalVariableNode("i$", "I", null, L5, L1, 3));
 
 				}
+				else if (method.name.equals("resetKeyBindingArrayAndHash") && method.desc
+						.equals("()V")) {
+					AbstractInsnNode instruction = method.instructions.getFirst();
+					while (instruction.getOpcode() != GETSTATIC) {
+						instruction.getNext();
+					}
+
+					// At GetStatic
+					((FieldInsnNode) instruction).desc = "Ljava/util/ArrayList;";
+					// -> InvokeVirtual
+					instruction.getNext();
+					// At InvokeVirtual
+					((MethodInsnNode) instruction).owner = "java/util/ArrayList";
+					((MethodInsnNode) instruction).name = "clear";
+					// Jump to L5 GetStatic
+					for (int i = 0; i < 15; i++) {
+						instruction.getNext();
+					}
+					// At GetStatic
+					((FieldInsnNode) instruction).desc = "Ljava/util/ArrayList;";
+					// Remove next two
+					method.instructions.remove(instruction.getNext());
+					method.instructions.remove(instruction.getNext());
+					// -> Invoke Virtual
+					instruction.getNext();
+					// At Invoke Virtual
+					((MethodInsnNode) instruction).owner = "java/util/ArrayList";
+					((MethodInsnNode) instruction).name = "add";
+					((MethodInsnNode) instruction).desc = "(Ljava/lang/Object;)Z";
+					// -> L6
+					instruction.getNext();
+					// Insert POP
+					method.instructions.insertBefore(instruction, new InsnNode(POP));
+
+				}
 				else if (method.name.equals("<init>") && method.desc
 						.equals("(Ljava/lang/String;ILjava/lang/String;)V")) {
 					AbstractInsnNode instruction = method.instructions.getFirst();
