@@ -109,6 +109,13 @@ jar {
     }
 }
 
+runClient {
+    jvmArgs '-Dfml.coreMods.load=modwarriors.notenoughkeys.asm.NEKCore'
+}
+runServer {
+    jvmArgs '-Dfml.coreMods.load=modwarriors.notenoughkeys.asm.NEKCore'
+}
+
 task deobfJar(type: Jar) {
     from sourceSets.main.output
     appendix = 'deobf'
