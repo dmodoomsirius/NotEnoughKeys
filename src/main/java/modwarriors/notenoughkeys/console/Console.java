@@ -1,27 +1,24 @@
-package okushama.notenoughkeys.console;
+package modwarriors.notenoughkeys.console;
+
+import cpw.mods.fml.common.registry.LanguageRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import modwarriors.notenoughkeys.NotEnoughKeys;
+import modwarriors.notenoughkeys.keys.Binds;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
-
-import okushama.notenoughkeys.NotEnoughKeys;
-import okushama.notenoughkeys.keys.Binds;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.common.registry.LanguageRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class Console extends GuiScreen {
@@ -36,10 +33,14 @@ public class Console extends GuiScreen {
 	private int field_73903_n = 0;
 	private List field_73904_o = new ArrayList();
 
-	/** used to pass around the URI to various dialogues and to the host os */
+	/**
+	 * used to pass around the URI to various dialogues and to the host os
+	 */
 	private URI clickedURI = null;
 
-	/** Chat entry field */
+	/**
+	 * Chat entry field
+	 */
 	protected ConsoleTextField inputField;
 
 	/**
@@ -64,45 +65,54 @@ public class Console extends GuiScreen {
 	public void handleInput(String in) {
 		if (in.toLowerCase().startsWith("bind")) {
 			if (!in.toLowerCase().contains(" ")) {
-				Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Usage: bind <key> <command/message>"));
+				Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(
+						EnumChatFormatting.RED + "Usage: bind <key> <command/message>"));
 				return;
 			}
 			String[] args = in.toLowerCase().split(" ");
 			if (args.length < 3) {
-				Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Usage: bind <key> <command/message>"));
+				Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(
+						EnumChatFormatting.RED + "Usage: bind <key> <command/message>"));
 				return;
 			}
 			if (args.length > 2) {
 				String keyToBind = args[1];
 				String command = in.substring(args[0].length() + args[1].length() + 2);
-				NotEnoughKeys.logger.info(keyToBind + " = " + Keyboard.getKeyIndex(keyToBind.toUpperCase()));
+				NotEnoughKeys.logger
+						.info(keyToBind + " = " + Keyboard.getKeyIndex(keyToBind.toUpperCase()));
 				KeyBinding[] binds = Minecraft.getMinecraft().gameSettings.keyBindings;
 				for (KeyBinding bind : binds) {
 					if (Keyboard.getKeyIndex(keyToBind.toUpperCase()) == bind.getKeyCode()) {
-						String loc = LanguageRegistry.instance().getStringLocalization(bind.getKeyDescription(), "en_US");
+						String loc = LanguageRegistry.instance()
+								.getStringLocalization(bind.getKeyDescription(), "en_US");
 						if (loc.length() == 0)
 							loc = bind.getKeyDescription();
 						if (loc.contains("."))
 							loc = loc.split("\\.")[1];
-						Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Not binding over the " + loc + " key!"));
+						Minecraft.getMinecraft().thePlayer.addChatMessage(
+								new ChatComponentText("Not binding over the " + loc + " key!"));
 						return;
 					}
 				}
 				if (Keyboard.getKeyIndex(keyToBind.toUpperCase()) > 0) {
 					NotEnoughKeys.logger.info("Binding \"" + command + "\" to " + keyToBind);
 					Binds.addBind(Keyboard.getKeyIndex(keyToBind.toUpperCase()), command);
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Bound '" + command + "' to '" + keyToBind.toUpperCase() + "'."));
+					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(
+							EnumChatFormatting.GREEN + "Bound '" + command + "' to '" + keyToBind
+									.toUpperCase() + "'."));
 				}
 			}
 		}
 		if (in.toLowerCase().startsWith("unbind")) {
 			if (!in.toLowerCase().contains(" ")) {
-				Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Usage: unbind <key>"));
+				Minecraft.getMinecraft().thePlayer.addChatMessage(
+						new ChatComponentText(EnumChatFormatting.RED + "Usage: unbind <key>"));
 				return;
 			}
 			String[] args = in.toLowerCase().split(" ");
 			if (args.length != 2) {
-				Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Usage: unbind <key>"));
+				Minecraft.getMinecraft().thePlayer.addChatMessage(
+						new ChatComponentText(EnumChatFormatting.RED + "Usage: unbind <key>"));
 				return;
 			}
 			if (args.length > 1) {
@@ -111,9 +121,14 @@ public class Console extends GuiScreen {
 					if (Binds.keyBound(Keyboard.getKeyIndex(keyToBind.toUpperCase()))) {
 						NotEnoughKeys.logger.info("Unbinding " + keyToBind);
 						Binds.removeBind(Keyboard.getKeyIndex(keyToBind.toUpperCase()));
-						Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Unbound '" + keyToBind.toUpperCase() + "'."));
-					} else {
-						Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "'" + keyToBind.toUpperCase() + "' is not bound to anything!"));
+						Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(
+								EnumChatFormatting.GREEN + "Unbound '" + keyToBind.toUpperCase()
+										+ "'."));
+					}
+					else {
+						Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(
+								EnumChatFormatting.RED + "'" + keyToBind.toUpperCase()
+										+ "' is not bound to anything!"));
 					}
 				}
 			}
@@ -163,13 +178,15 @@ public class Console extends GuiScreen {
 
 		if (par2 == 15) {
 			completePlayerName();
-		} else {
+		}
+		else {
 			field_73897_d = false;
 		}
 
 		if (par2 == 1) {
 			mc.displayGuiScreen((GuiScreen) null);
-		} else if (par2 == 28) {
+		}
+		else if (par2 == 28) {
 			String var3 = inputField.getText().trim();
 
 			if (var3.length() > 0) {
@@ -178,15 +195,20 @@ public class Console extends GuiScreen {
 			}
 
 			mc.displayGuiScreen((GuiScreen) null);
-		} else if (par2 == 200) {
+		}
+		else if (par2 == 200) {
 			getSentHistory(-1);
-		} else if (par2 == 208) {
+		}
+		else if (par2 == 208) {
 			getSentHistory(1);
-		} else if (par2 == 201) {
+		}
+		else if (par2 == 201) {
 			mc.ingameGUI.getChatGUI().scroll(19);
-		} else if (par2 == 209) {
+		}
+		else if (par2 == 209) {
 			mc.ingameGUI.getChatGUI().scroll(-19);
-		} else {
+		}
+		else {
 			inputField.textboxKeyTyped(par1, par2);
 		}
 	}
@@ -240,8 +262,10 @@ public class Console extends GuiScreen {
 	private void func_73896_a(URI par1URI) {
 		try {
 			Class var2 = Class.forName("java.awt.Desktop");
-			Object var3 = var2.getMethod("getDesktop", new Class[0]).invoke((Object) null, new Object[0]);
-			var2.getMethod("browse", new Class[] { URI.class }).invoke(var3, new Object[] { par1URI });
+			Object var3 = var2.getMethod("getDesktop", new Class[0])
+					.invoke((Object) null, new Object[0]);
+			var2.getMethod("browse", new Class[] { URI.class })
+					.invoke(var3, new Object[] { par1URI });
 		} catch (Throwable var4) {
 			var4.printStackTrace();
 		}
@@ -254,12 +278,15 @@ public class Console extends GuiScreen {
 		String var3;
 
 		if (field_73897_d) {
-			inputField.deleteFromCursor(inputField.func_73798_a(-1, inputField.getCursorPosition(), false) - inputField.getCursorPosition());
+			inputField.deleteFromCursor(
+					inputField.func_73798_a(-1, inputField.getCursorPosition(), false) - inputField
+							.getCursorPosition());
 
 			if (field_73903_n >= field_73904_o.size()) {
 				field_73903_n = 0;
 			}
-		} else {
+		}
+		else {
 			int var1 = inputField.func_73798_a(-1, inputField.getCursorPosition(), false);
 			field_73904_o.clear();
 			field_73903_n = 0;
@@ -284,7 +311,9 @@ public class Console extends GuiScreen {
 					var4.append(", ");
 			}
 
-			mc.ingameGUI.getChatGUI().printChatMessageWithOptionalDeletion(new ChatComponentText(var4.toString()), 1);
+			mc.ingameGUI.getChatGUI()
+					.printChatMessageWithOptionalDeletion(new ChatComponentText(var4.toString()),
+							1);
 		}
 
 		inputField.writeText((String) field_73904_o.get(field_73903_n++));
@@ -320,7 +349,8 @@ public class Console extends GuiScreen {
 			if (var2 == var3) {
 				sentHistoryCursor = var3;
 				inputField.setText(field_73898_b);
-			} else {
+			}
+			else {
 				if (sentHistoryCursor == var3) {
 					field_73898_b = inputField.getText();
 				}

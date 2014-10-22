@@ -1,9 +1,9 @@
-package okushama.notenoughkeys.keys;
-
-import java.util.*;
+package modwarriors.notenoughkeys.keys;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+
+import java.util.*;
 
 /**
  * Some epic code borrowed from ProfMobius' Waila:
@@ -11,29 +11,45 @@ import net.minecraft.client.settings.KeyBinding;
  */
 
 public class KeybindTracker {
-	public static HashMap<String, ArrayList<KeyBinding>> modKeybinds = new HashMap<String, ArrayList<KeyBinding>>();
+	/**
+	 * Holds mods by their jar file name and mod name
+	 */
 	public static HashMap<String, String> modIds = new HashMap<String, String>();
+	/**
+	 * Holds all keybindings per category string
+	 */
+	public static HashMap<String, ArrayList<KeyBinding>> modKeybinds = new HashMap<String, ArrayList<KeyBinding>>();
+	/**
+	 * Holds the alternates (SHIFT, CTRL, ALT) for each keybinding
+	 */
+	public static HashMap<KeyBinding, boolean[]> alternates = new HashMap<KeyBinding, boolean[]>();
 
-    public static KeyBinding getKeybind(KeyBinding kb) {
-        for(KeyBinding keb : Minecraft.getMinecraft().gameSettings.keyBindings) {
-            if(keb.equals(kb)) {
-                return keb;
-            }
-        }
-        return null;
-    }
+	public static ArrayList<KeyBinding> conflictingKeys = new ArrayList<KeyBinding>();
+
+	public static KeyBinding getKeybind(KeyBinding kb) {
+		for (KeyBinding keb : Minecraft.getMinecraft().gameSettings.keyBindings) {
+			if (keb.equals(kb)) {
+				return keb;
+			}
+		}
+		return null;
+	}
 
 	private static ArrayList<KeyBinding> getConflictingKeybinds() {
-		List<KeyBinding> allTheBinds = Arrays.asList(Minecraft.getMinecraft().gameSettings.keyBindings);
+		List<KeyBinding> allTheBinds = Arrays
+				.asList(Minecraft.getMinecraft().gameSettings.keyBindings);
 		ArrayList<KeyBinding> allTheConflicts = new ArrayList<KeyBinding>();
 		for (KeyBinding bind : allTheBinds) {
 			for (KeyBinding obind : allTheBinds) {
 				if (!obind.getKeyDescription().equals(bind.getKeyDescription())) {
 					if (obind.getKeyCode() == bind.getKeyCode()) {
-						// out.put(getHostCategory(bind)+" and "+getHostCategory(obind), new KeyBinding[]{bind, obind});
-						allTheConflicts.add(bind);
-						allTheConflicts.add(obind);
-						// conflict detected here
+						if (Arrays.equals(KeybindTracker.alternates.get(bind),
+								KeybindTracker.alternates.get(obind))) {
+							// out.put(getHostCategory(bind)+" and "+getHostCategory(obind), new KeyBinding[]{bind, obind});
+							allTheConflicts.add(bind);
+							allTheConflicts.add(obind);
+							// conflict detected here
+						}
 					}
 				}
 			}
@@ -42,6 +58,8 @@ public class KeybindTracker {
 		hs.addAll(allTheConflicts);
 		allTheConflicts.clear();
 		allTheConflicts.addAll(hs);
+		KeybindTracker.conflictingKeys.clear();
+		KeybindTracker.conflictingKeys.addAll(allTheConflicts);
 		return allTheConflicts;
 	}
 
@@ -65,19 +83,20 @@ public class KeybindTracker {
 				modKeybinds.put(s, new ArrayList<KeyBinding>());
 			modKeybinds.get(s).add(kb);
 		}*/
-        for(int i = 32; i < keyBinds.length; i++) { //Index 31 is the last vanilla keybinding.
-            if(!modKeybinds.containsKey(keyBinds[i].getKeyCategory())) {
-                modKeybinds.put(keyBinds[i].getKeyCategory(), new ArrayList<KeyBinding>());
-            }
-            modKeybinds.get(keyBinds[i].getKeyCategory()).add(keyBinds[i]);
-        }
+		for (int i = 32; i < keyBinds.length; i++) { //Index 31 is the last vanilla keybinding.
+			if (!modKeybinds.containsKey(keyBinds[i].getKeyCategory())) {
+				modKeybinds.put(keyBinds[i].getKeyCategory(), new ArrayList<KeyBinding>());
+			}
+			modKeybinds.get(keyBinds[i].getKeyCategory()).add(keyBinds[i]);
+		}
 		KeybindTracker.updateConflictCategory();
 	}
 
 	public static void updateConflictCategory() {
 		if (getConflictingKeybinds().size() > 0) {
 			modKeybinds.put("Conflicting", getConflictingKeybinds());
-		} else if (modKeybinds.containsKey("Conflicting"))
+		}
+		else if (modKeybinds.containsKey("Conflicting"))
 			modKeybinds.remove("Conflicting");
 	}
 }

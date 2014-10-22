@@ -1,15 +1,13 @@
-package okushama.notenoughkeys.console;
+package modwarriors.notenoughkeys.console;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ChatAllowedCharacters;
-
 import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ConsoleTextField extends Gui {
@@ -19,10 +17,14 @@ public class ConsoleTextField extends Gui {
 	private final FontRenderer fontRenderer;
 	private final int xPos, yPos;
 
-	/** The width of this text field. */
+	/**
+	 * The width of this text field.
+	 */
 	private final int width, height;
 
-	/** Have the current text beign edited on the textbox. */
+	/**
+	 * Have the current text beign edited on the textbox.
+	 */
 	private String text = "";
 	private int maxStringLength = 32, cursorCounter;
 	private boolean enableBackgroundDrawing = true;
@@ -44,12 +46,16 @@ public class ConsoleTextField extends Gui {
 	private int field_73816_n = 0;
 	private int cursorPosition = 0;
 
-	/** other selection position, maybe the same as the cursor */
+	/**
+	 * other selection position, maybe the same as the cursor
+	 */
 	private int selectionEnd = 0;
 	private int enabledColor = 14737632;
 	private int disabledColor = 7368816;
 
-	/** True if this textbox is visible */
+	/**
+	 * True if this textbox is visible
+	 */
 	private boolean visible = true;
 
 	public ConsoleTextField(FontRenderer par1FontRenderer, int par2, int par3, int par4, int par5) {
@@ -76,7 +82,8 @@ public class ConsoleTextField extends Gui {
 		}
 		if (par1Str.length() > maxStringLength) {
 			text = par1Str.substring(0, maxStringLength);
-		} else {
+		}
+		else {
 			text = par1Str;
 		}
 
@@ -94,7 +101,8 @@ public class ConsoleTextField extends Gui {
 	 * @return returns the text between the cursor and selectionEnd
 	 */
 	public String getSelectedtext() {
-		return text.substring(cursorPosition < selectionEnd ? cursorPosition : selectionEnd, cursorPosition < selectionEnd ? selectionEnd : cursorPosition);
+		return text.substring(cursorPosition < selectionEnd ? cursorPosition : selectionEnd,
+				cursorPosition < selectionEnd ? selectionEnd : cursorPosition);
 	}
 
 	/**
@@ -117,7 +125,8 @@ public class ConsoleTextField extends Gui {
 		if (var6 < var3.length()) {
 			var2 = var2 + var3.substring(0, var6);
 			var8 = var6;
-		} else {
+		}
+		else {
 			var2 = var2 + var3;
 			var8 = var3.length();
 		}
@@ -138,7 +147,8 @@ public class ConsoleTextField extends Gui {
 		if (text.length() != 0) {
 			if (selectionEnd != cursorPosition) {
 				writeText("");
-			} else {
+			}
+			else {
 				deleteFromCursor(getNthWordFromCursor(par1) - cursorPosition);
 			}
 		}
@@ -152,7 +162,8 @@ public class ConsoleTextField extends Gui {
 		if (text.length() != 0) {
 			if (selectionEnd != cursorPosition) {
 				writeText("");
-			} else {
+			}
+			else {
 				boolean var2 = par1 < 0;
 				int var3 = var2 ? cursorPosition + par1 : cursorPosition;
 				int var4 = var2 ? cursorPosition : cursorPosition + par1;
@@ -204,13 +215,15 @@ public class ConsoleTextField extends Gui {
 				while (var4 > 0 && text.charAt(var4 - 1) != 32) {
 					--var4;
 				}
-			} else {
+			}
+			else {
 				int var8 = text.length();
 				var4 = text.indexOf(32, var4);
 
 				if (var4 == -1) {
 					var4 = var8;
-				} else {
+				}
+				else {
 					while (par3 && var4 < var8 && text.charAt(var4) == 32) {
 						++var4;
 					}
@@ -267,92 +280,104 @@ public class ConsoleTextField extends Gui {
 	public boolean textboxKeyTyped(char par1, int par2) {
 		if (isEnabled && isFocused) {
 			switch (par1) {
-			case 1:
-				setCursorPositionEnd();
-				setSelectionPos(0);
-				return true;
-			case 3:
-				GuiScreen.setClipboardString(getSelectedtext());
-				return true;
-			case 22:
-				writeText(GuiScreen.getClipboardString());
-				return true;
-			case 24:
-				GuiScreen.setClipboardString(getSelectedtext());
-				writeText("");
-				return true;
-			default:
-				switch (par2) {
-				case 14:
-					if (GuiScreen.isCtrlKeyDown()) {
-						deleteWords(-1);
-					} else {
-						deleteFromCursor(-1);
-					}
-
+				case 1:
+					setCursorPositionEnd();
+					setSelectionPos(0);
 					return true;
-				case 199:
-					if (GuiScreen.isShiftKeyDown()) {
-						setSelectionPos(0);
-					} else {
-						setCursorPositionZero();
-					}
-
+				case 3:
+					GuiScreen.setClipboardString(getSelectedtext());
 					return true;
-				case 203:
-					if (GuiScreen.isShiftKeyDown()) {
-						if (GuiScreen.isCtrlKeyDown()) {
-							setSelectionPos(getNthWordFromPos(-1, getSelectionEnd()));
-						} else {
-							setSelectionPos(getSelectionEnd() - 1);
-						}
-					} else if (GuiScreen.isCtrlKeyDown()) {
-						setCursorPosition(getNthWordFromCursor(-1));
-					} else {
-						moveCursorBy(-1);
-					}
-
+				case 22:
+					writeText(GuiScreen.getClipboardString());
 					return true;
-				case 205:
-					if (GuiScreen.isShiftKeyDown()) {
-						if (GuiScreen.isCtrlKeyDown()) {
-							setSelectionPos(getNthWordFromPos(1, getSelectionEnd()));
-						} else {
-							setSelectionPos(getSelectionEnd() + 1);
-						}
-					} else if (GuiScreen.isCtrlKeyDown()) {
-						setCursorPosition(getNthWordFromCursor(1));
-					} else {
-						moveCursorBy(1);
-					}
-
-					return true;
-				case 207:
-					if (GuiScreen.isShiftKeyDown()) {
-						setSelectionPos(text.length());
-					} else {
-						setCursorPositionEnd();
-					}
-
-					return true;
-				case 211:
-					if (GuiScreen.isCtrlKeyDown()) {
-						deleteWords(1);
-					} else {
-						deleteFromCursor(1);
-					}
-
+				case 24:
+					GuiScreen.setClipboardString(getSelectedtext());
+					writeText("");
 					return true;
 				default:
-					if (ChatAllowedCharacters.isAllowedCharacter(par1)) {
-						writeText(Character.toString(par1));
-						return true;
-					} else {
-						return false;
+					switch (par2) {
+						case 14:
+							if (GuiScreen.isCtrlKeyDown()) {
+								deleteWords(-1);
+							}
+							else {
+								deleteFromCursor(-1);
+							}
+
+							return true;
+						case 199:
+							if (GuiScreen.isShiftKeyDown()) {
+								setSelectionPos(0);
+							}
+							else {
+								setCursorPositionZero();
+							}
+
+							return true;
+						case 203:
+							if (GuiScreen.isShiftKeyDown()) {
+								if (GuiScreen.isCtrlKeyDown()) {
+									setSelectionPos(getNthWordFromPos(-1, getSelectionEnd()));
+								}
+								else {
+									setSelectionPos(getSelectionEnd() - 1);
+								}
+							}
+							else if (GuiScreen.isCtrlKeyDown()) {
+								setCursorPosition(getNthWordFromCursor(-1));
+							}
+							else {
+								moveCursorBy(-1);
+							}
+
+							return true;
+						case 205:
+							if (GuiScreen.isShiftKeyDown()) {
+								if (GuiScreen.isCtrlKeyDown()) {
+									setSelectionPos(getNthWordFromPos(1, getSelectionEnd()));
+								}
+								else {
+									setSelectionPos(getSelectionEnd() + 1);
+								}
+							}
+							else if (GuiScreen.isCtrlKeyDown()) {
+								setCursorPosition(getNthWordFromCursor(1));
+							}
+							else {
+								moveCursorBy(1);
+							}
+
+							return true;
+						case 207:
+							if (GuiScreen.isShiftKeyDown()) {
+								setSelectionPos(text.length());
+							}
+							else {
+								setCursorPositionEnd();
+							}
+
+							return true;
+						case 211:
+							if (GuiScreen.isCtrlKeyDown()) {
+								deleteWords(1);
+							}
+							else {
+								deleteFromCursor(1);
+							}
+
+							return true;
+						default:
+							if (ChatAllowedCharacters.isAllowedCharacter(par1)) {
+								writeText(Character.toString(par1));
+								return true;
+							}
+							else {
+								return false;
+							}
 					}
-				}
 			}
-		} else {
+		}
+		else {
 			return false;
 		}
 	}
@@ -414,7 +439,8 @@ public class ConsoleTextField extends Gui {
 
 			if (!var5) {
 				var11 = var2 > 0 ? var7 + width : var7;
-			} else if (var13) {
+			}
+			else if (var13) {
 				var11 = var9 - 1;
 				--var9;
 			}
@@ -425,8 +451,10 @@ public class ConsoleTextField extends Gui {
 
 			if (var6) {
 				if (var13) {
-					Gui.drawRect(var11, var8 - 1, var11 + 1, var8 + 1 + fontRenderer.FONT_HEIGHT, 0xFFFFFF);
-				} else {
+					Gui.drawRect(var11, var8 - 1, var11 + 1, var8 + 1 + fontRenderer.FONT_HEIGHT,
+							0xFFFFFF);
+				}
+				else {
 					fontRenderer.drawStringWithShadow("_", var11, var8, 0xFFFFFF);
 				}
 			}
@@ -589,7 +617,8 @@ public class ConsoleTextField extends Gui {
 
 			if (par1 > var5) {
 				field_73816_n += par1 - var5;
-			} else if (par1 <= field_73816_n) {
+			}
+			else if (par1 <= field_73816_n) {
 				field_73816_n -= field_73816_n - par1;
 			}
 

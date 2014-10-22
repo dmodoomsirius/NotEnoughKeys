@@ -19,10 +19,9 @@ apply plugin: "curseforge"
 apply plugin: 'forge'
 
 if (System.getenv("BUILD_NUMBER") != null) {
-	version = "${System.getenv("BUILD_NUMBER")}"
-}
- else {
-	version = "NIGHTLY"
+    version = "${System.getenv("BUILD_NUMBER")}"
+} else {
+    version = "NIGHTLY"
 }
 
 ext.buildProps = file "build.properties"
@@ -33,7 +32,7 @@ buildProps.withReader {
     ext.config = new ConfigSlurper().parse prop
 }
 version = "${config.version.minecraft}-${config.version.mod.major}.${config.version.mod.minor}.${config.version.mod.revis}b${System.getenv().BUILD_NUMBER}"
-group= "notenoughkeys"
+group = "notenoughkeys"
 archivesBaseName = "NotEnoughKeys"
 
 minecraft {
@@ -41,7 +40,6 @@ minecraft {
     runDir = "run"
     mappings = "snapshot_20140918"
 }
-
 
 jenkins {
     job = 'NotEnoughKeys'
@@ -73,7 +71,8 @@ tasks.build.dependsOn('createChangelog')
 
 curse {
     apiKey = System.getenv("Dmod_curse")
-    projectId = "224614" // my project url is http://minecraft.curseforge.com/mc-mods/59652-seretroomsmod/
+    projectId = "224614"
+    // my project url is http://minecraft.curseforge.com/mc-mods/59652-seretroomsmod/
     changelog = new File('changelog.txt').text
     releaseType = "beta"
 
@@ -81,7 +80,7 @@ curse {
     // artifact = project.file("some/jar/to/upload.jar")
 
     // allows you to add extra compatible MC versions. The one specified in the minecraft{} block is used by default.
-     addGameVersion "1.7.10"
+    addGameVersion "1.7.10"
     // addGameversion "1.7.0", "1.7.4"
 
 }
@@ -99,7 +98,14 @@ processResources {
         include '**/*.info'
         include '**/*.properties'
 
-        
+
+    }
+}
+
+jar {
+    manifest {
+        attributes "ModSide": "CLIENT"
+        attributes 'FMLCorePlugin': 'modwarriors.notenoughkeys.asm.NEKCore'
     }
 }
 

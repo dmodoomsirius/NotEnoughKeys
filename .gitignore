@@ -11,6 +11,7 @@ eclipse/
 *.ipr
 *.iws
 out/
+test/
 run/
 
 # Ignore OS cache files & directories

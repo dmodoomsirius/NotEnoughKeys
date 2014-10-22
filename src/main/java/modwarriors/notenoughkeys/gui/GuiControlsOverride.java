@@ -1,4 +1,4 @@
-package okushama.notenoughkeys.gui;
+package modwarriors.notenoughkeys.gui;
 
 import net.minecraft.client.gui.GuiControls;
 import net.minecraft.client.gui.GuiScreen;
