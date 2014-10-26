@@ -137,7 +137,7 @@ public class KeyBinding2 implements Comparable {
 				validKeys.add(keyBinding);
 			}
 		}
-		return validKeys.toArray(new KeyBinding2[0]);
+		return validKeys.toArray(new KeyBinding2[validKeys.size()]);
 	}
 
 }

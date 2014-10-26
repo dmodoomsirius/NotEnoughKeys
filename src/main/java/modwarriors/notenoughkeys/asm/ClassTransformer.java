@@ -1,16 +1,22 @@
 package modwarriors.notenoughkeys.asm;
 
-import net.minecraft.launchwrapper.IClassTransformer;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
+import static modwarriors.notenoughkeys.asm.NEKCore.logger;
+import static org.objectweb.asm.Opcodes.*;
+
 import org.objectweb.asm.tree.*;
 
-import static org.objectweb.asm.Opcodes.*;
+import net.minecraft.launchwrapper.IClassTransformer;
+
+import modwarriors.notenoughkeys.asm.helper.ASMHelper;
+import modwarriors.notenoughkeys.asm.helper.RemappingHelper;
 
 /**
  * @author TheTemportalist
  */
 public class ClassTransformer implements IClassTransformer {
+
+	private static final String KEYBINDING_INTERNAL_NAME = RemappingHelper.getInternalClassName("net.minecraft.client.settings.KeyBinding");
+	private static final String KEYBINDING_DESCRIPTOR = "L" + KEYBINDING_INTERNAL_NAME + ";";
 
 	/**
 	 * @param name            The full path name of the original class (can be obfuscated)
@@ -21,54 +27,55 @@ public class ClassTransformer implements IClassTransformer {
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] basicClass) {
 		if (transformedName.equals("net.minecraft.client.settings.KeyBinding")) {
+			logger.info("Found KeyBinding class");
 			// check for obf
 			boolean isObfedEnvironment = !name.equals(transformedName);
 			// Move to manipulable object
-			ClassNode classNode = new ClassNode();
-			ClassReader classReader = new ClassReader(basicClass);
-			classReader.accept(classNode, 0);
+			ClassNode classNode = ASMHelper.readClassFromBytes(basicClass);
 
 			for (FieldNode field : classNode.fields) {
-				if (field.name.equals("hash") && field.desc
-						.equals("Lnet/minecraft/util/IntHashMap;")) {
+				if (field.name.equals("hash") && field.desc.equals(RemappingHelper.getDescriptor("net.minecraft.util.IntHashMap"))) {
+					logger.info("Found hash field");
 					field.desc = "Ljava/util/List;";
 					field.name = "hash";
+					logger.info("Field \"hash\" type changed successfully!");
 				}
 			}
 			InsnList nodesToInject = new InsnList();
 			for (MethodNode method : classNode.methods) {
 				if (method.name.equals("onTick") && method.desc.equals("(I)V")) {
-					AbstractInsnNode instruction = method.instructions.getFirst();
-					while (instruction.getOpcode() != GETSTATIC) {
-						instruction.getNext();
-					}
+					logger.info("Found onTick method");
+
+					AbstractInsnNode instruction = ASMHelper.getOrFindInstructionOfType(method.instructions.getFirst(), GETSTATIC, 1, false);
 
 					// -> ILOAD
-					instruction.getNext();
+					instruction = instruction.getNext();
 					// Remove GETSTATIC
 					method.instructions.remove(instruction.getPrevious());
 					// -> INVOKEVIRTUAL
-					instruction.getNext();
+					instruction = instruction.getNext();
 					// Change INVOKEVIRTUAL
 					((MethodInsnNode) instruction).setOpcode(INVOKESTATIC);
-					((MethodInsnNode) instruction).owner = "net/minecraft/client/settings/KeyBinding";
+					((MethodInsnNode) instruction).owner = KEYBINDING_INTERNAL_NAME;
 					((MethodInsnNode) instruction).name = "getKeyBindingsWithKey";
-					((MethodInsnNode) instruction).desc = "(I)[Lnet/minecraft/client/settings/KeyBinding;";
+					((MethodInsnNode) instruction).desc = "(I)[" + KEYBINDING_DESCRIPTOR;
 					// -> CHECKCAST
-					instruction.getNext();
+					instruction = instruction.getNext();
 					// -> ASTORE
-					instruction.getNext();
+					instruction = instruction.getNext();
 					// Remove CHECKCAST
 					method.instructions.remove(instruction.getPrevious());
 					// -> L3
-					instruction.getNext();
+					instruction = instruction.getNext();
 					LabelNode L3 = (LabelNode) instruction;
+					// -> LINENUMBER (We acknowledge their existence. That's all we do with these)
+					instruction = instruction.getNext();
 					// -> ALOAD
-					instruction.getNext();
+					instruction = instruction.getNext();
 					// -> IFNULL
-					instruction.getNext();
+					instruction = instruction.getNext();
 					// -> L4
-					instruction.getNext();
+					instruction = instruction.getNext();
 					LabelNode L4 = (LabelNode) instruction;
 					// Remove IFNULL
 					method.instructions.remove(instruction.getPrevious());
@@ -79,12 +86,12 @@ public class ClassTransformer implements IClassTransformer {
 					nodesToInject.add(new VarInsnNode(ISTORE, 2));
 					method.instructions.insertBefore(instruction, nodesToInject);
 					nodesToInject.clear();
-					// Remove next 7
-					for (int i = 0; i < 6; i++) {
+					// Remove next 8
+					for (int i = 0; i < 7; i++) {
 						method.instructions.remove(instruction.getNext());
 					}
 					// -> L1
-					instruction.getNext();
+					instruction = instruction.getNext();
 					LabelNode L1 = (LabelNode) instruction;
 					// Inject many things
 					nodesToInject.add(new InsnNode(ICONST_0));
@@ -106,13 +113,13 @@ public class ClassTransformer implements IClassTransformer {
 					nodesToInject.add(new VarInsnNode(ALOAD, 4));
 					nodesToInject.add(new InsnNode(DUP));
 					nodesToInject.add(new FieldInsnNode(
-							GETFIELD, "net/minecraft/client/settings/KeyBinding",
+							GETFIELD, KEYBINDING_INTERNAL_NAME,
 							"pressTime", "I"
 					));
 					nodesToInject.add(new InsnNode(ICONST_1));
 					nodesToInject.add(new InsnNode(IADD));
 					nodesToInject.add(new FieldInsnNode(
-							PUTFIELD, "net/minecraft/client/settings/KeyBinding", "pressTime", "I"
+							PUTFIELD, KEYBINDING_INTERNAL_NAME, "pressTime", "I"
 					));
 					nodesToInject.add(L7);
 					nodesToInject.add(new IincInsnNode(3, 1));
@@ -122,51 +129,52 @@ public class ClassTransformer implements IClassTransformer {
 					nodesToInject.clear();
 					// We are @ L1
 					// -> L5
-					instruction.getNext();
+					instruction = instruction.getNext();
 
 					LocalVariableNode localVar = method.localVariables.get(0);
 					localVar.start = L6;
 					localVar.end = L7;
 					localVar.index = 4;
 					method.localVariables.add(new LocalVariableNode("arr$",
-							"[Lnet/minecraft/client/settings/KeyBinding;", null, L3, L1, 1));
+							"[" + KEYBINDING_DESCRIPTOR, null, L3, L1, 1));
 					method.localVariables.add(new LocalVariableNode("len$", "I", null, L4, L1, 2));
 					method.localVariables.add(new LocalVariableNode("i$", "I", null, L5, L1, 3));
 
 					// DONE w/ func
+					logger.info("onTick method patched!");
 				}
 				else if (method.name.equals("setKeyBindState") && method.desc.equals("(IZ)V")) {
-					AbstractInsnNode instruction = method.instructions.getFirst();
-					while (instruction.getOpcode() != GETSTATIC) {
-						instruction.getNext();
-					}
+					logger.info("Found setKeyBindState method");
+					AbstractInsnNode instruction = ASMHelper.getOrFindInstructionOfType(method.instructions.getFirst(), GETSTATIC, 1, false);
 
 					// L2
 					// -> ILOAD
-					instruction.getNext();
+					instruction = instruction.getNext();
 					// -> Remove GETSTATIC
 					method.instructions.remove(instruction.getPrevious());
 					// -> InvokeVirtual
-					instruction.getNext();
+					instruction = instruction.getNext();
 					((MethodInsnNode) instruction).setOpcode(INVOKESTATIC);
-					((MethodInsnNode) instruction).owner = "net/minecraft/client/settings/KeyBinding";
+					((MethodInsnNode) instruction).owner = KEYBINDING_INTERNAL_NAME;
 					((MethodInsnNode) instruction).name = "getKeyBindingsWithKey";
-					((MethodInsnNode) instruction).desc = "(I)[Lnet/minecraft/client/settings/KeyBinding;";
+					((MethodInsnNode) instruction).desc = "(I)[" + KEYBINDING_DESCRIPTOR;
 					// -> CheckCast
-					instruction.getNext();
+					instruction = instruction.getNext();
 					// -> ASTORE
-					instruction.getNext();
+					instruction = instruction.getNext();
 					// Remove CheckCast
 					method.instructions.remove(instruction.getPrevious());
 					// -> L3
-					instruction.getNext();
+					instruction = instruction.getNext();
 					LabelNode L3 = (LabelNode) instruction;
+					// -> LINENUMBER
+					instruction = instruction.getNext();
 					// -> ALoad
-					instruction.getNext();
+					instruction = instruction.getNext();
 					// -> IFNULL
-					instruction.getNext();
+					instruction = instruction.getNext();
 					// -> L4
-					instruction.getNext();
+					instruction = instruction.getNext();
 					LabelNode L4 = (LabelNode) instruction;
 					// Remove IFNULL
 					method.instructions.remove(instruction.getPrevious());
@@ -175,11 +183,11 @@ public class ClassTransformer implements IClassTransformer {
 					nodesToInject.add(new VarInsnNode(ISTORE, 3));
 					method.instructions.insertBefore(instruction, nodesToInject);
 					nodesToInject.clear();
-					for (int i = 0; i < 3; i++) {
+					for (int i = 0; i < 4; i++) {
 						method.instructions.remove(instruction.getNext());
 					}
 					// -> L1
-					instruction.getNext();
+					instruction = instruction.getNext();
 					LabelNode L1 = (LabelNode) instruction;
 					// Add Some Nodes
 					nodesToInject.add(new InsnNode(ICONST_0));
@@ -204,7 +212,7 @@ public class ClassTransformer implements IClassTransformer {
 					nodesToInject.add(new VarInsnNode(ALOAD, 5));
 					nodesToInject.add(new VarInsnNode(ILOAD, 1));
 					nodesToInject.add(new FieldInsnNode(
-							PUTFIELD, "net/minecraft/client/settings/KeyBinding",
+							PUTFIELD, KEYBINDING_INTERNAL_NAME,
 							"pressed", "Z"
 					));
 					// L7
@@ -214,87 +222,86 @@ public class ClassTransformer implements IClassTransformer {
 					method.instructions.insertBefore(instruction, nodesToInject);
 					nodesToInject.clear();
 					// -> Return
-					instruction.getNext();
+					instruction = instruction.getNext();
 					// -> L5 (local vars)
-					instruction.getNext();
+					instruction = instruction.getNext();
 
 					LocalVariableNode localVar = method.localVariables.get(0);
 					localVar.start = L6;
 					localVar.end = L7;
 					localVar.index = 5;
 					method.localVariables.add(new LocalVariableNode("arr$",
-							"[Lnet/minecraft/client/settings/KeyBinding;", null, L3, L1, 2));
+							"[" + KEYBINDING_DESCRIPTOR, null, L3, L1, 2));
 					method.localVariables.add(new LocalVariableNode("len$", "I", null, L4, L1, 3));
 					method.localVariables.add(new LocalVariableNode("i$", "I", null, L5, L1, 3));
 
+					logger.info("setKeyBindState method patched!");
+
 				}
-				else if (method.name.equals("resetKeyBindingArrayAndHash") && method.desc
-						.equals("()V")) {
-					AbstractInsnNode instruction = method.instructions.getFirst();
-					while (instruction.getOpcode() != GETSTATIC) {
-						instruction.getNext();
-					}
+				else if (method.name.equals("resetKeyBindingArrayAndHash") && method.desc.equals("()V")) {
+					logger.info("Found resetKeyBindingArrayAndHash method");
+					AbstractInsnNode instruction = ASMHelper.getOrFindInstructionOfType(method.instructions.getFirst(), GETSTATIC, 1, false);
 
 					// At GetStatic
 					((FieldInsnNode) instruction).desc = "Ljava/util/ArrayList;";
 					// -> InvokeVirtual
-					instruction.getNext();
+					instruction = instruction.getNext();
 					// At InvokeVirtual
 					((MethodInsnNode) instruction).owner = "java/util/ArrayList";
 					((MethodInsnNode) instruction).name = "clear";
 					// Jump to L5 GetStatic
-					for (int i = 0; i < 15; i++) {
-						instruction.getNext();
-					}
+					instruction = ASMHelper.getOrFindInstructionOfType(instruction, GETSTATIC, 2, false);
 					// At GetStatic
 					((FieldInsnNode) instruction).desc = "Ljava/util/ArrayList;";
 					// Remove next two
-					method.instructions.remove(instruction.getNext());
-					method.instructions.remove(instruction.getNext());
+					instruction = instruction.getNext().getNext().getNext();
+					method.instructions.remove(instruction.getPrevious().getPrevious());
+					method.instructions.remove(instruction.getPrevious());
 					// -> Invoke Virtual
-					instruction.getNext();
+					instruction = instruction.getNext();
 					// At Invoke Virtual
 					((MethodInsnNode) instruction).owner = "java/util/ArrayList";
 					((MethodInsnNode) instruction).name = "add";
 					((MethodInsnNode) instruction).desc = "(Ljava/lang/Object;)Z";
 					// -> L6
-					instruction.getNext();
+					instruction = instruction.getNext();
 					// Insert POP
 					method.instructions.insertBefore(instruction, new InsnNode(POP));
 
+					logger.info("resetKeyBindingArrayAndHash method patched!");
 				}
-				else if (method.name.equals("<init>") && method.desc
-						.equals("(Ljava/lang/String;ILjava/lang/String;)V")) {
-					AbstractInsnNode instruction = method.instructions.getFirst();
+				else if (method.name.equals("<init>") && method.desc.equals("(Ljava/lang/String;ILjava/lang/String;)V")) {
+					logger.info("Found KeyBinding constructor");
 					// -> L6 GetStatic
-					for (int i = 0; i < 26; i++) {
-						instruction.getNext();
-					}
-					((FieldInsnNode) instruction).owner = "net/minecraft/client/settings/KeyBinding";
+					AbstractInsnNode instruction = ASMHelper.getOrFindInstructionOfType(method.instructions.getFirst(), GETSTATIC, 2, false);
+
+					((FieldInsnNode) instruction).owner = KEYBINDING_INTERNAL_NAME;
 					((FieldInsnNode) instruction).desc = "Ljava/util/ArrayList;";
-					// Remove ILoad 2
-					method.instructions.remove(instruction.getNext());
 					// -> ALoad 0
-					instruction.getNext();
+					instruction = instruction.getNext().getNext();
+					// Remove ILoad 2
+					method.instructions.remove(instruction.getPrevious());
 					// -> InvokeVirtual
-					instruction.getNext();
+					instruction = instruction.getNext();
 					// modify
 					((MethodInsnNode) instruction).owner = "java/util/ArrayList";
 					((MethodInsnNode) instruction).name = "add";
 					((MethodInsnNode) instruction).desc = "(Ljava/lang/Object;)Z";
 					// -> L7
-					instruction.getNext();
+					instruction = instruction.getNext();
 					// Insert pop
 					method.instructions.insertBefore(instruction, new InsnNode(POP));
 
+					logger.info("Constructor patched!");
 				}
 
 			}
 
 			// getKeyBindingsWithKey method
 			MethodNode method = new MethodNode(ACC_PRIVATE | ACC_STATIC,
-					"getKeyBindingsWithKey", "(I)[Lmodwarriors/notenoughkeys/KeyBinding2;", null,
-					new String[0]);
+					"getKeyBindingsWithKey", "(I)[" + KEYBINDING_DESCRIPTOR, null,
+					null);
+			logger.info("Creating new method getKeyBindingsWithKey");
 			// L0
 			LabelNode L0 = new LabelNode();
 			method.instructions.add(L0);
@@ -309,7 +316,7 @@ public class ClassTransformer implements IClassTransformer {
 			LabelNode L1 = new LabelNode();
 			method.instructions.add(L1);
 			method.instructions.add(new FieldInsnNode(
-					GETSTATIC, "net/minecraft/client/settings/KeyBinding",
+					GETSTATIC, KEYBINDING_INTERNAL_NAME,
 					"hash", "Ljava.util/ArrayList;"
 			));
 			method.instructions.add(new MethodInsnNode(
@@ -323,17 +330,17 @@ public class ClassTransformer implements IClassTransformer {
 			method.instructions.add(new VarInsnNode(ALOAD, 2));
 			method.instructions.add(new MethodInsnNode(
 					INVOKEINTERFACE, "java/util/Iterator",
-					"hasNext", "()Z", false
+					"hasNext", "()Z", true
 			));
 			LabelNode L3 = new LabelNode();
 			method.instructions.add(new JumpInsnNode(IFEQ, L3));
 			method.instructions.add(new VarInsnNode(ALOAD, 2));
 			method.instructions.add(new MethodInsnNode(
 							INVOKEINTERFACE, "java/util/Iterator",
-							"next", "()Ljava/lang/Object;", false)
+							"next", "()Ljava/lang/Object;", true)
 			);
 			method.instructions.add(new TypeInsnNode(
-					CHECKCAST, "net/minecraft/client/settings/KeyBinding"
+					CHECKCAST, KEYBINDING_INTERNAL_NAME
 			));
 			method.instructions.add(new VarInsnNode(ASTORE, 3));
 			// L4
@@ -341,7 +348,7 @@ public class ClassTransformer implements IClassTransformer {
 			method.instructions.add(L4);
 			method.instructions.add(new VarInsnNode(ALOAD, 3));
 			method.instructions.add(new MethodInsnNode(
-					INVOKEVIRTUAL, "net/minecraft/client/settings/KeyBinding",
+					INVOKEVIRTUAL, KEYBINDING_INTERNAL_NAME,
 					"getKeyCode", "()I", false
 			));
 			method.instructions.add(new VarInsnNode(ILOAD, 0));
@@ -363,14 +370,14 @@ public class ClassTransformer implements IClassTransformer {
 			method.instructions.add(new VarInsnNode(ALOAD, 1));
 			method.instructions.add(new InsnNode(ICONST_0));
 			method.instructions.add(new TypeInsnNode(
-					ANEWARRAY, "net/minecraft/client/settings/KeyBinding"
+					ANEWARRAY, KEYBINDING_INTERNAL_NAME
 			));
 			method.instructions.add(new MethodInsnNode(
 					INVOKEVIRTUAL, "java/util/ArrayList",
 					"toArray", "([Ljava/lang/Object;)[Ljava/lang/Object;", false
 			));
 			method.instructions.add(new TypeInsnNode(
-					CHECKCAST, "[Lnet/minecraft/client/settings/KeyBinding;"
+					CHECKCAST, "[" + KEYBINDING_DESCRIPTOR
 			));
 			method.instructions.add(new InsnNode(ARETURN));
 			// L7
@@ -387,21 +394,20 @@ public class ClassTransformer implements IClassTransformer {
 			MAXLOCALS = 4
 			 */
 			method.localVariables.add(new LocalVariableNode("keyBinding",
-					"Lnet/minecraft/client/settings/KeyBinding;", null, L4, L5, 3));
+					KEYBINDING_DESCRIPTOR, null, L4, L5, 3));
 			method.localVariables.add(new LocalVariableNode("i$",
 					"Ljava/util/Iterator;", null, L2, L3, 2));
 			method.localVariables.add(new LocalVariableNode("keyCode",
 					"I", null, L0, L7, 0));
 			method.localVariables.add(new LocalVariableNode("validKeys",
-					"Ljava/util/ArrayList;", null, L1, L7, 1));
+					"Ljava/util/ArrayList;", "Ljava/util/ArrayList<" + KEYBINDING_DESCRIPTOR + ">;", L1, L7, 1));
 
 			// end method
 			classNode.methods.add(method);
 
-			ClassWriter classWriter = new ClassWriter(
-					ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-			classNode.accept(classWriter);
-			return classWriter.toByteArray();
+			logger.info("New method getKeyBindingsWithKey created!");
+			logger.info("KeyBinding class transformed!");
+			return ASMHelper.writeClassToBytes(classNode);
 		}
 		return basicClass;
 	}

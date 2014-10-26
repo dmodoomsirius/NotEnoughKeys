@@ -5,6 +5,8 @@ import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.LoadController;
 import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+import modwarriors.notenoughkeys.asm.helper.RemappingHelper;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,10 +31,10 @@ public class NEKCore extends DummyModContainer implements IFMLLoadingPlugin {
 		md.modId = NEKCore.modId;
 		md.name = NEKCore.modName;
 		md.version = "@MOD_VERSION@";
-		md.authorList = Arrays.asList("TheTemportalist, Parker8283, Dmod");
+		md.authorList = Arrays.asList("TheTemportalist", "Parker8283", "Dmod");
 		md.credits = "Written by Mod-Warriors, code stolen from various others.";
 		md.description = "Sometimes you need a little black magic to make all the things works.";
-
+		logger.info("Initialized");
 	}
 
 	@Override
@@ -57,7 +59,7 @@ public class NEKCore extends DummyModContainer implements IFMLLoadingPlugin {
 
 	@Override
 	public void injectData(Map<String, Object> stringObjectMap) {
-
+		RemappingHelper.obfuscated = (Boolean)stringObjectMap.get("runtimeDeobfuscationEnabled");
 	}
 
 	@Override
