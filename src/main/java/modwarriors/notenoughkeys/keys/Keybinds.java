@@ -17,6 +17,9 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+
+import java.lang.reflect.Field;
 
 @SideOnly(Side.CLIENT)
 public class Keybinds {
@@ -48,7 +51,26 @@ public class Keybinds {
 		// Iterate through all alternates (the shift ctrl alt)
 		for (KeyBinding keyBinding : KeybindTracker.alternates.keySet()) {
 
-			// TODO You see that KeyBinding.setKeyBindState(int, boolean) ln 45 looks up a binding according to !KEY CODE! ACK!
+			boolean isPressed = false;
+			if (
+					keyBinding.getKeyCode() < 0
+							?
+							Mouse.isButtonDown(keyBinding.getKeyCode() + 100)
+							:
+							Keyboard.isKeyDown(keyBinding.getKeyCode())
+					) {
+				isPressed = true;
+			}
+			if (keyBinding.getIsKeyPressed() != isPressed) {
+				try {
+					Field pressed = KeyBinding.class.getDeclaredField("pressed");
+					pressed.setAccessible(true);
+					pressed.setBoolean(keyBinding, isPressed);
+					//NotEnoughKeys.logger.info("Set field 'pressed' for keybinding '" + keyBinding.getKeyDescription() + "' to true.");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 
 			// Check if the keybinding is pressed WITH valid alternates
 			if (Helper.isSpecialKeyBindingPressed(keyBinding,
