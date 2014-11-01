@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 /**
  * @author TheTemportalist
@@ -51,6 +52,16 @@ public class Helper {
 		return Helper.isShiftKey(keyCode) || Helper.isCtrlKey(keyCode) || Helper.isAltKey(keyCode);
 	}
 
+	public static boolean isKeyPressed_KeyBoard(KeyBinding keyBinding) {
+		return
+				keyBinding.getKeyCode() >= 0
+						?
+						Keyboard.isKeyDown(keyBinding.getKeyCode())
+						:
+						Mouse.isButtonDown(keyBinding.getKeyCode() + 100)
+				;
+	}
+
 	public static boolean isSpecialKeyBindingPressed(KeyBinding keyBinding, boolean[] alts) {
 		/*
 		if (keyBinding.getIsKeyPressed()) {
@@ -59,10 +70,15 @@ public class Helper {
 			NotEnoughKeys.logger.info("Valid Alt:   " + (!alts[2] || Helper.isAltKeyDown()));
 		}
 		*/
-		return keyBinding.getIsKeyPressed() &&
-				(!alts[0] || Helper.isShiftKeyDown()) &&
-				(!alts[1] || Helper.isCtrlKeyDown()) &&
-				(!alts[2] || Helper.isAltKeyDown());
+		/*
+		NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + " should sht: " + alts[0]);
+		NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + " should ctl: " + alts[1]);
+		NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + " should alt: " + alts[2]);
+		*/
+		return Helper.isKeyPressed_KeyBoard(keyBinding) &&
+				(alts[0] ? Helper.isShiftKeyDown() : !Helper.isShiftKeyDown()) &&
+				(alts[1] ? Helper.isCtrlKeyDown() : !Helper.isCtrlKeyDown()) &&
+				(alts[2] ? Helper.isAltKeyDown() : !Helper.isAltKeyDown());
 	}
 
 }
