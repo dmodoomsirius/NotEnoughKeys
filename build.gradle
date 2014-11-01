@@ -102,19 +102,19 @@ processResources {
     }
 }
 
-jar {
-    manifest {
-        attributes "ModSide": "CLIENT"
-        attributes 'FMLCorePlugin': 'modwarriors.notenoughkeys.asm.NEKCore'
-    }
-}
+//jar {
+ //   manifest {
+   //     attributes "ModSide": "CLIENT"
+     //   attributes 'FMLCorePlugin': 'modwarriors.notenoughkeys.asm.NEKCore'
+    //}
+//}
 
-runClient {
-    jvmArgs '-Dfml.coreMods.load=modwarriors.notenoughkeys.asm.NEKCore'
-}
-runServer {
-    jvmArgs '-Dfml.coreMods.load=modwarriors.notenoughkeys.asm.NEKCore'
-}
+//runClient {
+  //  jvmArgs '-Dfml.coreMods.load=modwarriors.notenoughkeys.asm.NEKCore'
+//}
+//runServer {
+  //  jvmArgs '-Dfml.coreMods.load=modwarriors.notenoughkeys.asm.NEKCore'
+//}
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
