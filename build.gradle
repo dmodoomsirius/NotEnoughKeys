@@ -67,7 +67,6 @@ task createChangelog(type: ChangelogTask) {
     }
 }
 
-tasks.build.dependsOn('createChangelog')
 
 curse {
     apiKey = System.getenv("Dmod_curse")
