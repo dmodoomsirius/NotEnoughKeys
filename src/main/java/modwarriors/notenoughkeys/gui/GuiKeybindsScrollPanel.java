@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiSlot;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -77,7 +78,7 @@ public class GuiKeybindsScrollPanel extends GuiSlot {
 	@Override
 	protected void drawSlot(int index, int xPosition, int yPosition, int l, Tessellator tessellator,
 			int mouseX, int mouseY) {
-		String s = buttonNames[index];
+		String s = I18n.format(buttonNames[index]);
 		// controls.drawTexturedModalRect(xPosition, yPosition, 0, 46 + 1 * 20, 70, 20);
 		// controls.drawString(mc.fontRenderer, s, xPosition + 70 + 4, yPosition + 6, 0xFFFFFFFF);
 		int width = 70, height = 20;
