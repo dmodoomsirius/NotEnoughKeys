@@ -1,13 +1,13 @@
-package okushama.notenoughkeys.gui;
+package modwarriors.notenoughkeys.gui;
 
-import okushama.notenoughkeys.keys.KeybindTracker;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import modwarriors.notenoughkeys.keys.KeybindTracker;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiSubKeybindsMenu extends GuiScreen {
@@ -17,27 +17,34 @@ public class GuiSubKeybindsMenu extends GuiScreen {
 	 */
 	private GuiScreen parentScreen;
 
-	/** The title string that is displayed in the top-center of the screen. */
+	/**
+	 * The title string that is displayed in the top-center of the screen.
+	 */
 	protected String screenTitle = "Controls";
 
-	/** Reference to the GameSettings object. */
+	/**
+	 * Reference to the GameSettings object.
+	 */
 	private GameSettings options;
 
-	/** The ID of the button that has been pressed. */
+	/**
+	 * The ID of the button that has been pressed.
+	 */
 	private int buttonId = -1;
 
 	private GuiSubKeybindsScrollPanel scrollPane;
 
 	public String subModID = "Misc";
 
-	public KeyBinding[] keyBindings = {};
+	public KeyBinding[] keyBindings = { };
 
 	public GuiSubKeybindsMenu(GuiScreen par1GuiScreen, GameSettings par2GameSettings) {
 		parentScreen = par1GuiScreen;
 		options = par2GameSettings;
 	}
 
-	public GuiSubKeybindsMenu(GuiScreen parent, String id, KeyBinding[] kbs, GameSettings gameSettings) {
+	public GuiSubKeybindsMenu(GuiScreen parent, String id, KeyBinding[] kbs,
+			GameSettings gameSettings) {
 		this(parent, gameSettings);
 		subModID = id;
 		keyBindings = kbs;
@@ -54,7 +61,7 @@ public class GuiSubKeybindsMenu extends GuiScreen {
 	/**
 	 * Adds the buttons (and other controls) to the screen in question.
 	 */
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public void initGui() {
 		scrollPane = new GuiSubKeybindsScrollPanel(this, options, mc, keyBindings);
 		buttonList.add(new GuiButton(200, width / 2 - 100, height - 28, I18n.format("gui.done")));

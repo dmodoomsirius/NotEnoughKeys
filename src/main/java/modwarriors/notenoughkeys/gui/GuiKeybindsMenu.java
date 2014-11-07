@@ -1,13 +1,13 @@
-package okushama.notenoughkeys.gui;
+package modwarriors.notenoughkeys.gui;
 
-import java.util.ArrayList;
-
-import okushama.notenoughkeys.keys.KeybindTracker;
+import modwarriors.notenoughkeys.keys.KeybindTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
+
+import java.util.ArrayList;
 
 public class GuiKeybindsMenu extends GuiScreen {
 	public GuiKeybindsScrollPanel scroll;
@@ -36,7 +36,8 @@ public class GuiKeybindsMenu extends GuiScreen {
 	protected void actionPerformed(GuiButton par1GuiButton) {
 		super.actionPerformed(par1GuiButton);
 		if (par1GuiButton.id == 1337) {
-			Minecraft.getMinecraft().displayGuiScreen(new GuiOptions(null, Minecraft.getMinecraft().gameSettings));
+			Minecraft.getMinecraft()
+					.displayGuiScreen(new GuiOptions(null, Minecraft.getMinecraft().gameSettings));
 			KeybindTracker.updateConflictCategory();
 			return;
 		}
