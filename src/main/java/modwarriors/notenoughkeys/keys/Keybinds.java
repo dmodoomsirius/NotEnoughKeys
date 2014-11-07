@@ -1,5 +1,6 @@
 package modwarriors.notenoughkeys.keys;
 
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -17,8 +18,6 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
-
-import java.lang.reflect.Field;
 
 @SideOnly(Side.CLIENT)
 public class Keybinds {
@@ -109,9 +108,9 @@ public class Keybinds {
 
 	private void setKeyPressed(KeyBinding keyBinding, boolean isPressed) {
 		try {
-			Field pressed = KeyBinding.class.getDeclaredField("pressed");
-			pressed.setAccessible(true);
-			pressed.setBoolean(keyBinding, isPressed);
+			ObfuscationReflectionHelper.setPrivateValue(
+					KeyBinding.class, keyBinding, isPressed, "pressed", "field_74513_e"
+			);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
