@@ -35,7 +35,8 @@ public class Keybinds {
 
 	@SubscribeEvent
 	public void onGuiOpen(GuiOpenEvent event) {
-		if (event.gui instanceof GuiControls && !(event.gui instanceof GuiControlsOverride)) {
+		if (event.gui.getClass().equals(GuiControls.class)
+				&& !(event.gui instanceof GuiControlsOverride)) {
 			event.gui = new GuiKeybindsMenu();
 		}
 	}
