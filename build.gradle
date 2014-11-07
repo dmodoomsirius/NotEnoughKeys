@@ -67,6 +67,7 @@ task createChangelog(type: ChangelogTask) {
     }
 }
 
+
 curse {
     apiKey = System.getenv("Dmod_curse")
     projectId = "224614"
@@ -99,6 +100,20 @@ processResources {
 
     }
 }
+
+//jar {
+ //   manifest {
+   //     attributes "ModSide": "CLIENT"
+     //   attributes 'FMLCorePlugin': 'modwarriors.notenoughkeys.asm.NEKCore'
+    //}
+//}
+
+//runClient {
+  //  jvmArgs '-Dfml.coreMods.load=modwarriors.notenoughkeys.asm.NEKCore'
+//}
+//runServer {
+  //  jvmArgs '-Dfml.coreMods.load=modwarriors.notenoughkeys.asm.NEKCore'
+//}
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
