@@ -47,42 +47,34 @@ public class Keybinds {
 		}
 
 		// The following stuff is the handling of keybindings.
-		KeyBinding keyBinding = null;
-		for (String modid : KeybindTracker.compatibleMods.keySet()) {
-			for (String keyDesc : KeybindTracker.compatibleMods.get(modid)) {
-				keyBinding = KeybindTracker.keybindings.get(keyDesc);
-
-				boolean isInternal = keyBinding.getIsKeyPressed();
-				//boolean isKeyboard = Helper.isKeyPressed_KeyBoard(keyBinding);
-				boolean isSpecial = Helper.isSpecialKeyBindingPressed(
-						keyBinding, KeybindTracker.alternates.get(keyBinding)
+		boolean isInternal, isKeyboard, isSpecial;
+		for (KeyBinding keyBinding : Minecraft.getMinecraft().gameSettings.keyBindings) {
+			isInternal = keyBinding.getIsKeyPressed();
+			isKeyboard = Helper.isKeyPressed_KeyBoard(keyBinding);
+			if (!KeybindTracker.alternates.containsKey(keyBinding.getKeyDescription())) {
+				if (isInternal != isKeyboard) {
+					this.setKeyPressed(keyBinding, isKeyboard);
+				}
+			}
+			else {
+				isSpecial = Helper.isSpecialKeyBindingPressed(
+						keyBinding, KeybindTracker.alternates.get(keyBinding.getKeyDescription())
 				);
-
-				if (isInternal) {
-					if (!isSpecial) {
-						this.setKeyPressed(keyBinding, false);
-					}
-				}
-				if (!isInternal) {
-					if (isSpecial) {
-						this.setKeyPressed(keyBinding, true);
-					}
+				if (isInternal != isSpecial) {
+					this.setKeyPressed(keyBinding, isSpecial);
 				}
 
-				// Check if the keybinding is pressed WITH valid alternates
 				if (Minecraft.getMinecraft().currentScreen == null && isSpecial) {
 					// Post the event!
 					MinecraftForge.EVENT_BUS.post(
 							new KeyBindingPressedEvent(
 									keyBinding,
-									KeybindTracker.alternates.get(keyBinding)
+									KeybindTracker.alternates.get(keyBinding.getKeyDescription())
 							)
 					);
 				}
-
 			}
 		}
-
 	}
 
 	private void setKeyPressed(KeyBinding keyBinding, boolean isPressed) {
