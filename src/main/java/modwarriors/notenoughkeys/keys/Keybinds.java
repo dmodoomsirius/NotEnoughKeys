@@ -46,64 +46,35 @@ public class Keybinds {
 			// do your stuff here, on normal basis. If mod IS loaded, use the KeyBindingPressedEvent (as shown below)
 		}
 
-		//NotEnoughKeys.logger.info("---------Start------------");
-		//NotEnoughKeys.logger.info("press");
-
 		// The following stuff is the handling of keybindings.
-		for (String modid : KeybindTracker.modKeybinds.keySet()) {
-			for (KeyBinding keyBinding : KeybindTracker.modKeybinds.get(modid)) {
-				boolean isInternal = keyBinding.getIsKeyPressed();
-				boolean isKeyboard = Helper.isKeyPressed_KeyBoard(keyBinding);
-				boolean isSpecial = Helper.isSpecialKeyBindingPressed(
-						keyBinding, KeybindTracker.alternates.get(keyBinding)
-				);
-
-				/*
-				if (keyBinding.getKeyCode() == Keyboard.KEY_W) {
-					NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + "  " + isInternal);
-					NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + "  " + isKeyboard);
-					NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + "  " + isSpecial);
+		boolean isInternal, isKeyboard, isSpecial;
+		for (KeyBinding keyBinding : Minecraft.getMinecraft().gameSettings.keyBindings) {
+			isInternal = keyBinding.getIsKeyPressed();
+			isKeyboard = Helper.isKeyPressed_KeyBoard(keyBinding);
+			if (!KeybindTracker.alternates.containsKey(keyBinding.getKeyDescription())) {
+				if (isInternal != isKeyboard) {
+					this.setKeyPressed(keyBinding, isKeyboard);
 				}
-				*/
-
-				if (isInternal) {
-					if (!isSpecial) {
-						//NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + " setting pressed false");
-						this.setKeyPressed(keyBinding, false);
-					}
-				}
-				if (!isInternal) {
-					if (isSpecial) {
-						//NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + " setting pressed true");
-						this.setKeyPressed(keyBinding, true);
-					}
-				}
-
 			}
-		}
+			else {
+				isSpecial = Helper.isSpecialKeyBindingPressed(
+						keyBinding, KeybindTracker.alternates.get(keyBinding.getKeyDescription())
+				);
+				if (isInternal != isSpecial) {
+					this.setKeyPressed(keyBinding, isSpecial);
+				}
 
-		if (Minecraft.getMinecraft().currentScreen == null) {
-			// Iterate through all alternates (the shift ctrl alt)
-			for (KeyBinding keyBinding : KeybindTracker.alternates.keySet()) {
-				// Check if the keybinding is pressed WITH valid alternates
-				if (Helper.isSpecialKeyBindingPressed(keyBinding,
-						KeybindTracker.alternates.get(keyBinding))) {
-					//NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + " is posted");
+				if (Minecraft.getMinecraft().currentScreen == null && isSpecial) {
 					// Post the event!
 					MinecraftForge.EVENT_BUS.post(
 							new KeyBindingPressedEvent(
 									keyBinding,
-									KeybindTracker.alternates.get(keyBinding)
+									KeybindTracker.alternates.get(keyBinding.getKeyDescription())
 							)
 					);
-					// Only 1 keybinding please!
-					//break;
 				}
 			}
 		}
-
-		//NotEnoughKeys.logger.info("----------End-------------");
-
 	}
 
 	private void setKeyPressed(KeyBinding keyBinding, boolean isPressed) {
@@ -123,7 +94,6 @@ public class Keybinds {
 
 		if (openConsole.isPressed() && mc.currentScreen == null) {
 			Minecraft.getMinecraft().displayGuiScreen(NotEnoughKeys.console);
-			//NotEnoughKeys.logger.info("open gui");
 		}
 	}
 

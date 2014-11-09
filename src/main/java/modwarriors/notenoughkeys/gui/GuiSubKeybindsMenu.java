@@ -43,11 +43,13 @@ public class GuiSubKeybindsMenu extends GuiScreen {
 		options = par2GameSettings;
 	}
 
-	public GuiSubKeybindsMenu(GuiScreen parent, String id, KeyBinding[] kbs,
+	public GuiSubKeybindsMenu(GuiScreen parent, String id, String[] kbs,
 			GameSettings gameSettings) {
 		this(parent, gameSettings);
 		subModID = id;
-		keyBindings = kbs;
+		keyBindings = new KeyBinding[kbs.length];
+		for (int i = 0; i < kbs.length; i++)
+			keyBindings[i] = KeybindTracker.keybindings.get(kbs[i]);
 	}
 
 	/**

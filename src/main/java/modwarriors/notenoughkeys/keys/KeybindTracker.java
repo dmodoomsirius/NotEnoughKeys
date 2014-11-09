@@ -11,20 +11,31 @@ import java.util.*;
  */
 
 public class KeybindTracker {
+
 	/**
-	 * Holds mods by their jar file name and mod name
+	 * Holds a list of compatible mod names and their corresponding keybinding descriptions
 	 */
-	public static HashMap<String, String> modIds = new HashMap<String, String>();
+	public static HashMap<String, String[]> compatibleMods = new HashMap<String, String[]>();
+	/**
+	 * Holds keybindings by their description (not the same as holding by category)
+	 */
+	public static HashMap<String, KeyBinding> keybindings = new HashMap<String, KeyBinding>();
+
+	/**
+	 * Holds all active modids
+	 */
+	//public static ArrayList<String> modids = new ArrayList<String>();
 	/**
 	 * Holds all keybindings per category string
 	 */
-	public static HashMap<String, ArrayList<KeyBinding>> modKeybinds = new HashMap<String, ArrayList<KeyBinding>>();
-	/**
-	 * Holds the alternates (SHIFT, CTRL, ALT) for each keybinding
-	 */
-	public static HashMap<KeyBinding, boolean[]> alternates = new HashMap<KeyBinding, boolean[]>();
+	//public static HashMap<String, ArrayList<KeyBinding>> categoryKeybinds = new HashMap<String, ArrayList<KeyBinding>>();
 
-	public static ArrayList<KeyBinding> conflictingKeys = new ArrayList<KeyBinding>();
+	/**
+	 * Holds the alternates (SHIFT, CTRL, ALT) for each keybinding description
+	 */
+	public static HashMap<String, boolean[]> alternates = new HashMap<String, boolean[]>();
+
+	public static ArrayList<String> conflictingKeys = new ArrayList<String>();
 
 	public static KeyBinding getKeybind(KeyBinding kb) {
 		for (KeyBinding keb : Minecraft.getMinecraft().gameSettings.keyBindings) {
@@ -35,31 +46,36 @@ public class KeybindTracker {
 		return null;
 	}
 
-	private static ArrayList<KeyBinding> getConflictingKeybinds() {
-		List<KeyBinding> allTheBinds = Arrays
-				.asList(Minecraft.getMinecraft().gameSettings.keyBindings);
-		ArrayList<KeyBinding> allTheConflicts = new ArrayList<KeyBinding>();
-		for (KeyBinding bind : allTheBinds) {
-			for (KeyBinding obind : allTheBinds) {
-				if (!obind.getKeyDescription().equals(bind.getKeyDescription())) {
-					if (obind.getKeyCode() == bind.getKeyCode()) {
-						if (Arrays.equals(KeybindTracker.alternates.get(bind),
-								KeybindTracker.alternates.get(obind))) {
-							// out.put(getHostCategory(bind)+" and "+getHostCategory(obind), new KeyBinding[]{bind, obind});
-							allTheConflicts.add(bind);
-							allTheConflicts.add(obind);
-							// conflict detected here
+	private static ArrayList<String> getConflictingKeybinds() {
+		List<KeyBinding> allTheBinds = Arrays.asList(
+				Minecraft.getMinecraft().gameSettings.keyBindings);
+		ArrayList<String> allTheConflicts = new ArrayList<String>();
+
+		boolean[] bind1Alts = null, bind2Alts = null;
+		// todo find better way to sort than looping twice!
+		for (KeyBinding bind1 : allTheBinds) {
+			for (KeyBinding bind2 : allTheBinds) {
+				// not same key
+				if (!bind1.getKeyDescription().equals(bind2.getKeyDescription())) {
+					// same key code
+					if (bind1.getKeyCode() == bind2.getKeyCode()) {
+
+						bind1Alts = KeybindTracker.alternates.get(bind1.getKeyDescription());
+						if (bind1Alts == null) bind1Alts = new boolean[]{false, false, false};
+
+						bind2Alts = KeybindTracker.alternates.get(bind2.getKeyDescription());
+						if (bind2Alts == null) bind2Alts = new boolean[]{false, false, false};
+
+						if (Arrays.equals(bind1Alts, bind2Alts)) {
+							if (!allTheConflicts.contains(bind1.getKeyDescription()))
+								allTheConflicts.add(bind1.getKeyDescription());
+							if (!allTheConflicts.contains(bind2.getKeyDescription()))
+								allTheConflicts.add(bind2.getKeyDescription());
 						}
 					}
 				}
 			}
 		}
-		HashSet<KeyBinding> hs = new HashSet<KeyBinding>();
-		hs.addAll(allTheConflicts);
-		allTheConflicts.clear();
-		allTheConflicts.addAll(hs);
-		KeybindTracker.conflictingKeys.clear();
-		KeybindTracker.conflictingKeys.addAll(allTheConflicts);
 		return allTheConflicts;
 	}
 
@@ -83,20 +99,29 @@ public class KeybindTracker {
 				modKeybinds.put(s, new ArrayList<KeyBinding>());
 			modKeybinds.get(s).add(kb);
 		}*/
+		/*
 		for (int i = 32; i < keyBinds.length; i++) { //Index 31 is the last vanilla keybinding.
-			if (!modKeybinds.containsKey(keyBinds[i].getKeyCategory())) {
-				modKeybinds.put(keyBinds[i].getKeyCategory(), new ArrayList<KeyBinding>());
+			if (!categoryKeybinds.containsKey(keyBinds[i].getKeyCategory())) {
+				categoryKeybinds.put(keyBinds[i].getKeyCategory(), new ArrayList<KeyBinding>());
 			}
-			modKeybinds.get(keyBinds[i].getKeyCategory()).add(keyBinds[i]);
+			categoryKeybinds.get(keyBinds[i].getKeyCategory()).add(keyBinds[i]);
+		}
+		*/
+		for (KeyBinding keyBinding : keyBinds) {
+			if (!KeybindTracker.keybindings.containsKey(keyBinding.getKeyDescription())) {
+				KeybindTracker.keybindings.put(keyBinding.getKeyDescription(), keyBinding);
+			}
 		}
 		KeybindTracker.updateConflictCategory();
 	}
 
 	public static void updateConflictCategory() {
-		if (getConflictingKeybinds().size() > 0) {
-			modKeybinds.put("Conflicting", getConflictingKeybinds());
-		}
-		else if (modKeybinds.containsKey("Conflicting"))
-			modKeybinds.remove("Conflicting");
+		KeybindTracker.conflictingKeys.clear();
+		KeybindTracker.conflictingKeys.addAll(KeybindTracker.getConflictingKeybinds());
 	}
+
+	public static void registerMod(String modname, String[] keyDecriptions) {
+		KeybindTracker.compatibleMods.put(modname, keyDecriptions);
+	}
+
 }

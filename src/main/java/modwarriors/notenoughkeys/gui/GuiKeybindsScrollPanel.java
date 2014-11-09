@@ -6,7 +6,6 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiSlot;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -39,21 +38,15 @@ public class GuiKeybindsScrollPanel extends GuiSlot {
 			if (selected == -1)
 				selected = i;
 			String type = buttonNames[selected];
-			if (type.equalsIgnoreCase("all")) {
-				Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord
-						.createPositionedSoundRecord(new ResourceLocation("random.click")));
-				Minecraft.getMinecraft().displayGuiScreen(
-						new GuiControlsOverride(controls, Minecraft.getMinecraft().gameSettings));
-				KeybindTracker.updateConflictCategory();
-				selected = -1;
-				return;
-			}
-
 			Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord
-					.createPositionedSoundRecord(new ResourceLocation("random.click")));
-			Minecraft.getMinecraft().displayGuiScreen(new GuiSubKeybindsMenu(controls, type,
-					KeybindTracker.modKeybinds.get(type).toArray(new KeyBinding[0]),
-					Minecraft.getMinecraft().gameSettings));
+					.createPositionedSoundRecord(new ResourceLocation("gui.button.press"), 1.0F));
+			Minecraft.getMinecraft().displayGuiScreen(
+					new GuiSubKeybindsMenu(
+							controls, type,
+							KeybindTracker.compatibleMods.get(type),
+							Minecraft.getMinecraft().gameSettings
+					)
+			);
 			KeybindTracker.updateConflictCategory();
 			selected = -1;
 		}
@@ -79,10 +72,8 @@ public class GuiKeybindsScrollPanel extends GuiSlot {
 	protected void drawSlot(int index, int xPosition, int yPosition, int l, Tessellator tessellator,
 			int mouseX, int mouseY) {
 		String s = I18n.format(buttonNames[index]);
-		// controls.drawTexturedModalRect(xPosition, yPosition, 0, 46 + 1 * 20, 70, 20);
-		// controls.drawString(mc.fontRenderer, s, xPosition + 70 + 4, yPosition + 6, 0xFFFFFFFF);
 		int width = 70, height = 20;
-		xPosition -= 20;
+		xPosition += 10;
 		boolean flag = _mouseX >= xPosition && _mouseY >= yPosition && _mouseX < xPosition + width
 				&& _mouseY < yPosition + height;
 		int k = (flag ? 2 : 1);

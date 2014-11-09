@@ -15,13 +15,18 @@ public class GuiKeybindsMenu extends GuiScreen {
 	@Override
 	public void initGui() {
 		ArrayList<String> types = new ArrayList<String>();
-		for (String modtype : KeybindTracker.modKeybinds.keySet())
+		for (String modtype : KeybindTracker.compatibleMods.keySet())
 			types.add(modtype);
 		scroll = new GuiKeybindsScrollPanel(this, types.toArray(new String[0]));
 		scroll.registerScrollButtons(7, 8);
 		buttonList.add(new GuiButton(1337, width / 2 - 100, height - 28, I18n.format("gui.done")));
 		KeybindTracker.updateConflictCategory();
 		super.initGui();
+
+		buttonList.add(new GuiButton(0, 0, height / 10 * 1, 75, 20, "All"));
+		buttonList.add(new GuiButton(1, 0, height / 10 * 2, 75, 20, "Conflicting"));
+		buttonList.add(new GuiButton(2, 0, height / 10 * 3, 75, 20, "Dump"));
+
 	}
 
 	@Override
@@ -35,12 +40,33 @@ public class GuiKeybindsMenu extends GuiScreen {
 	@Override
 	protected void actionPerformed(GuiButton par1GuiButton) {
 		super.actionPerformed(par1GuiButton);
-		if (par1GuiButton.id == 1337) {
-			Minecraft.getMinecraft()
-					.displayGuiScreen(new GuiOptions(null, Minecraft.getMinecraft().gameSettings));
-			KeybindTracker.updateConflictCategory();
-			return;
+		switch (par1GuiButton.id) {
+			case 1337:
+				Minecraft.getMinecraft().displayGuiScreen(
+						new GuiOptions(null, Minecraft.getMinecraft().gameSettings)
+				);
+				break;
+			case 0:
+				Minecraft.getMinecraft().displayGuiScreen(
+						new GuiControlsOverride(this, Minecraft.getMinecraft().gameSettings)
+				);
+				break;
+			case 1:
+				Minecraft.getMinecraft().displayGuiScreen(
+						new GuiSubKeybindsMenu(
+								this, "Conflicting",
+								KeybindTracker.conflictingKeys.toArray(new String[0]),
+								Minecraft.getMinecraft().gameSettings
+						)
+				);
+				break;
+			case 2:
+				// todo, dump all keydesc's, keycodes, key modifiers to file
+				break;
+			default:
+				break;
 		}
+		KeybindTracker.updateConflictCategory();
 	}
 
 	@Override
