@@ -46,49 +46,31 @@ public class Keybinds {
 			// do your stuff here, on normal basis. If mod IS loaded, use the KeyBindingPressedEvent (as shown below)
 		}
 
-		//NotEnoughKeys.logger.info("---------Start------------");
-		//NotEnoughKeys.logger.info("press");
-
 		// The following stuff is the handling of keybindings.
-		for (String modid : KeybindTracker.modKeybinds.keySet()) {
-			for (KeyBinding keyBinding : KeybindTracker.modKeybinds.get(modid)) {
+		KeyBinding keyBinding = null;
+		for (String modid : KeybindTracker.compatibleMods.keySet()) {
+			for (String keyDesc : KeybindTracker.compatibleMods.get(modid)) {
+				keyBinding = KeybindTracker.keybindings.get(keyDesc);
+
 				boolean isInternal = keyBinding.getIsKeyPressed();
-				boolean isKeyboard = Helper.isKeyPressed_KeyBoard(keyBinding);
+				//boolean isKeyboard = Helper.isKeyPressed_KeyBoard(keyBinding);
 				boolean isSpecial = Helper.isSpecialKeyBindingPressed(
 						keyBinding, KeybindTracker.alternates.get(keyBinding)
 				);
 
-				/*
-				if (keyBinding.getKeyCode() == Keyboard.KEY_W) {
-					NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + "  " + isInternal);
-					NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + "  " + isKeyboard);
-					NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + "  " + isSpecial);
-				}
-				*/
-
 				if (isInternal) {
 					if (!isSpecial) {
-						//NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + " setting pressed false");
 						this.setKeyPressed(keyBinding, false);
 					}
 				}
 				if (!isInternal) {
 					if (isSpecial) {
-						//NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + " setting pressed true");
 						this.setKeyPressed(keyBinding, true);
 					}
 				}
 
-			}
-		}
-
-		if (Minecraft.getMinecraft().currentScreen == null) {
-			// Iterate through all alternates (the shift ctrl alt)
-			for (KeyBinding keyBinding : KeybindTracker.alternates.keySet()) {
 				// Check if the keybinding is pressed WITH valid alternates
-				if (Helper.isSpecialKeyBindingPressed(keyBinding,
-						KeybindTracker.alternates.get(keyBinding))) {
-					//NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + " is posted");
+				if (Minecraft.getMinecraft().currentScreen == null && isSpecial) {
 					// Post the event!
 					MinecraftForge.EVENT_BUS.post(
 							new KeyBindingPressedEvent(
@@ -96,13 +78,10 @@ public class Keybinds {
 									KeybindTracker.alternates.get(keyBinding)
 							)
 					);
-					// Only 1 keybinding please!
-					//break;
 				}
+
 			}
 		}
-
-		//NotEnoughKeys.logger.info("----------End-------------");
 
 	}
 
@@ -123,7 +102,6 @@ public class Keybinds {
 
 		if (openConsole.isPressed() && mc.currentScreen == null) {
 			Minecraft.getMinecraft().displayGuiScreen(NotEnoughKeys.console);
-			//NotEnoughKeys.logger.info("open gui");
 		}
 	}
 

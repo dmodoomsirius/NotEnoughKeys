@@ -11,4 +11,14 @@ public class Api {
 		return Loader.isModLoaded("notenoughkeys");
 	}
 
+	public static void registerMod(String modname, String[] keyDecriptions) {
+		try {
+			Class.forName("modwarriors.notenoughkeys.keys.KeyBindTracker").getMethod(
+					"registerMod", String.class, String[].class
+			).invoke(null, modname, keyDecriptions);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }

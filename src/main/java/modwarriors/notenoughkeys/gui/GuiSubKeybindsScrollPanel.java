@@ -11,6 +11,7 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -127,29 +128,29 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 		GL11.glPushMatrix();
 		GL11.glScalef(scale, scale, 1.0F);
 
-		if (KeybindTracker.alternates.containsKey(keyBinding) &&
-				KeybindTracker.alternates.get(keyBinding)[0]) {
-			this.drawAltString(
-					"SHIFT",
-					(int) ((1 / scale) * (slotX - 4)),
-					(int) ((1 / scale) * (slotY + 2)) + 3
-			);
-		}
-		if (KeybindTracker.alternates.containsKey(keyBinding) &&
-				KeybindTracker.alternates.get(keyBinding)[1]) {
-			this.drawAltString(
-					"CTRL",
-					(int) ((1 / scale) * (slotX - 4)),
-					(int) ((1 / scale) * (slotY + 2)) + 13
-			);
-		}
-		if (KeybindTracker.alternates.containsKey(keyBinding) &&
-				KeybindTracker.alternates.get(keyBinding)[2]) {
-			this.drawAltString(
-					"ALT",
-					(int) ((1 / scale) * (slotX - 4)),
-					(int) ((1 / scale) * (slotY + 2)) + 23
-			);
+		boolean[] modifiers = KeybindTracker.alternates.get(keyBinding.getKeyDescription());
+		if (modifiers != null) {
+			if (modifiers[0]) {
+				this.drawAltString(
+						"SHIFT",
+						(int) ((1 / scale) * (slotX - 4)),
+						(int) ((1 / scale) * (slotY + 2)) + 3
+				);
+			}
+			if (modifiers[1]) {
+				this.drawAltString(
+						"CTRL",
+						(int) ((1 / scale) * (slotX - 4)),
+						(int) ((1 / scale) * (slotY + 2)) + 13
+				);
+			}
+			if (modifiers[2]) {
+				this.drawAltString(
+						"ALT",
+						(int) ((1 / scale) * (slotX - 4)),
+						(int) ((1 / scale) * (slotY + 2)) + 23
+				);
+			}
 		}
 
 		GL11.glPopMatrix();
@@ -169,11 +170,18 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 	}
 
 	public boolean keyTyped(char c, int keycode) {
-		if (selected != -1 &&
-				(this.controls.subModID.equals("Minecraft") || !Helper.isSpecialKey(keycode))) {
-			KeyBinding glob = getGlobalKeybind(selected);
-			this.saveKeyBinding(glob, keycode == 1 ? 0 : keycode);
-			return false;
+		if (selected != -1) {
+			KeyBinding keyBinding = getGlobalKeybind(selected);
+			boolean isCompatible = KeybindTracker.alternates.containsKey(
+					keyBinding.getKeyDescription()
+			);
+			boolean isSpecialKey = Helper.isSpecialKey(keycode);
+			if (!isCompatible || !isSpecialKey) {
+				this.saveKeyBinding(
+						keyBinding, keycode == Keyboard.KEY_ESCAPE ? Keyboard.KEY_NONE : keycode
+				);
+				return false;
+			}
 		}
 		return true;
 	}
@@ -188,9 +196,9 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 		NotEnoughKeys.logger.info("CTRL:  " + Helper.isCtrlKeyDown());
 		NotEnoughKeys.logger.info("ALT:   " + Helper.isAltKeyDown());
 		*/
-		if (!this.controls.subModID.equals("Minecraft")) {
+		if (KeybindTracker.alternates.containsKey(key.getKeyDescription())) {
 			KeybindTracker.alternates.put(
-					key, new boolean[] {
+					key.getKeyDescription(), new boolean[] {
 							Helper.isShiftKeyDown(), Helper.isCtrlKeyDown(), Helper.isAltKeyDown()
 					}
 			);
