@@ -1,7 +1,6 @@
 package modwarriors.notenoughkeys.gui;
 
 import modwarriors.notenoughkeys.Helper;
-import modwarriors.notenoughkeys.NotEnoughKeys;
 import modwarriors.notenoughkeys.keys.KeybindTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiSlot;
@@ -187,26 +186,10 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 	}
 
 	private void saveKeyBinding(KeyBinding key, int keycode) {
-		options.setOptionKeyBinding(key, keycode);
-
-		/*
-		NotEnoughKeys.logger.info("On Mac: " + Minecraft.isRunningOnMac);
-		NotEnoughKeys.logger.info("KEY:   " + keycode);
-		NotEnoughKeys.logger.info("SHIFT: " + Helper.isShiftKeyDown());
-		NotEnoughKeys.logger.info("CTRL:  " + Helper.isCtrlKeyDown());
-		NotEnoughKeys.logger.info("ALT:   " + Helper.isAltKeyDown());
-		*/
-		if (KeybindTracker.alternates.containsKey(key.getKeyDescription())) {
-			KeybindTracker.alternates.put(
-					key.getKeyDescription(), new boolean[] {
-							Helper.isShiftKeyDown(), Helper.isCtrlKeyDown(), Helper.isAltKeyDown()
-					}
-			);
-		}
+		KeybindTracker.saveKeyBinding(key, keycode, new boolean[] {
+				Helper.isShiftKeyDown(), Helper.isCtrlKeyDown(), Helper.isAltKeyDown()
+		});
 		selected = -1;
-		KeyBinding.resetKeyBindingArrayAndHash();
-		KeybindTracker.updateConflictCategory();
-		NotEnoughKeys.saveConfig();
 	}
 
 }
