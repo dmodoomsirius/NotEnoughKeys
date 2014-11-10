@@ -18,12 +18,10 @@ buildscript {
 apply plugin: "curseforge"
 apply plugin: 'forge'
 
-
 if (System.getenv("BUILD_NUMBER") != null) {
-	version = "${System.getenv("BUILD_NUMBER")}"
-}
- else {
-	version = "NIGHTLY"
+    version = "${System.getenv("BUILD_NUMBER")}"
+} else {
+    version = "NIGHTLY"
 }
 
 ext.buildProps = file "build.properties"
@@ -34,29 +32,61 @@ buildProps.withReader {
     ext.config = new ConfigSlurper().parse prop
 }
 version = "${config.version.minecraft}-${config.version.mod.major}.${config.version.mod.minor}.${config.version.mod.revis}b${System.getenv().BUILD_NUMBER}"
-group= "notenoughkeys"
+group = "notenoughkeys"
 archivesBaseName = "NotEnoughKeys"
 
 minecraft {
     version = "${config.version.minecraft}-${config.version.forge}"
     runDir = "run"
-    mappings = "snapshot_20140918"
+    mappings = "snapshot_20140925"
+}
+
+jenkins {
+    job = 'NotEnoughKeys'
+}
+
+import net.minecraftforge.gradle.delayed.*
+import net.minecraftforge.gradle.tasks.dev.ChangelogTask
+
+task createChangelog(type: ChangelogTask) {
+
+    if (("${System.getenv().JOB_NAME}" != null) && project.hasProperty("jenkins_server") && project.hasProperty("jenkins_password")) {
+        def jobName = "${System.getenv().JOB_NAME}"
+        def buildNumber = "${System.getenv().BUILD_NUMBER}"
+
+        setServerRoot(new DelayedString(project, project.jenkins_server))
+        setJobName(new DelayedString(project, jobName.toString()))
+        setAuthName(new DelayedString(project, project.jenkins_user))
+        setAuthPassword(new DelayedString(project, project.jenkins_password))
+        setTargetBuild({ buildNumber.toString() });
+        setOutput(new DelayedFile(project, 'build/libs/' + project.archivesBaseName + '-' + project.version + '-changelog.txt'));
+    }
+
+    onlyIf {
+        return (("${System.getenv().JOB_NAME}" != null) && project.hasProperty("jenkins_server") && project.hasProperty("jenkins_password"))
+    }
+}
+
+task javadocJar(type: Jar, dependsOn: 'javadoc') {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
 }
 
 curse {
     apiKey = System.getenv("Dmod_curse")
-    projectId = "224614" // my project url is http://minecraft.curseforge.com/mc-mods/59652-seretroomsmod/
-    changelog = "Updated for 1.7.10. Currently, there is a bug where the config options that are usually in the Controls section are hidden. It will take some work to get those back, so for now, just manually edit them in your options.txt file in your mc instance."
+    projectId = "224614"
+    // my project url is http://minecraft.curseforge.com/mc-mods/59652-seretroomsmod/
+    changelog = "check out https://github.com/mod-warriors/NotEnoughKeys/commits/master"
     releaseType = "beta"
 
     // the default obfuscated jar is uploaded by default
     // artifact = project.file("some/jar/to/upload.jar")
 
     // allows you to add extra compatible MC versions. The one specified in the minecraft{} block is used by default.
-     addGameVersion "1.7.10"
+    addGameVersion "1.7.10"
     // addGameversion "1.7.0", "1.7.4"
-}
 
+}
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         include '**/*.lang'
@@ -71,9 +101,13 @@ processResources {
         include '**/*.info'
         include '**/*.properties'
 
-        
+
     }
 }
+
+jar {
+    dependsOn javadocJar
+    }
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
