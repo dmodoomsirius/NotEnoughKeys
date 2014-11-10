@@ -38,7 +38,7 @@ public class NotEnoughKeys {
 		Object eventhandler = new KeyEvents();
 		FMLCommonHandler.instance().bus().register(eventhandler);
 		MinecraftForge.EVENT_BUS.register(eventhandler);
-		KeyHelper.registerMod(NotEnoughKeys.name, new String[] { "Show Binds Console" });
+		//KeyHelper.registerMod(NotEnoughKeys.name, new String[] {});
 
 		NotEnoughKeys.configure(e.getModConfigurationDirectory());
 
