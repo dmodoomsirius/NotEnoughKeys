@@ -67,6 +67,10 @@ task createChangelog(type: ChangelogTask) {
     }
 }
 
+task javadocJar(type: Jar, dependsOn: 'javadoc') {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
+}
 
 curse {
     apiKey = System.getenv("Dmod_curse")
@@ -100,6 +104,10 @@ processResources {
 
     }
 }
+
+jar {
+    dependsOn javadocJar
+    }
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
