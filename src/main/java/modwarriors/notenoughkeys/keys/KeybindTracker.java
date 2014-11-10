@@ -1,8 +1,13 @@
 package modwarriors.notenoughkeys.keys;
 
+import com.google.gson.*;
+import modwarriors.notenoughkeys.NotEnoughKeys;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -61,10 +66,12 @@ public class KeybindTracker {
 					if (bind1.getKeyCode() == bind2.getKeyCode()) {
 
 						bind1Alts = KeybindTracker.alternates.get(bind1.getKeyDescription());
-						if (bind1Alts == null) bind1Alts = new boolean[]{false, false, false};
+						if (bind1Alts == null)
+							bind1Alts = new boolean[] { false, false, false };
 
 						bind2Alts = KeybindTracker.alternates.get(bind2.getKeyDescription());
-						if (bind2Alts == null) bind2Alts = new boolean[]{false, false, false};
+						if (bind2Alts == null)
+							bind2Alts = new boolean[] { false, false, false };
 
 						if (Arrays.equals(bind1Alts, bind2Alts)) {
 							if (!allTheConflicts.contains(bind1.getKeyDescription()))
@@ -122,6 +129,104 @@ public class KeybindTracker {
 
 	public static void registerMod(String modname, String[] keyDecriptions) {
 		KeybindTracker.compatibleMods.put(modname, keyDecriptions);
+	}
+
+	public static String getExportFile() {
+		JsonObject jsonObject = new JsonObject();
+		JsonObject keyBindingObj;
+		boolean[] modifiers;
+		for (KeyBinding keyBinding : Minecraft.getMinecraft().gameSettings.keyBindings) {
+			keyBindingObj = new JsonObject();
+			keyBindingObj.add("keyCode", new JsonPrimitive(keyBinding.getKeyCode()));
+			modifiers = KeybindTracker.alternates.get(keyBinding.getKeyDescription());
+			if (modifiers != null) {
+				keyBindingObj.add("shift", new JsonPrimitive(modifiers[0]));
+				keyBindingObj.add("control", new JsonPrimitive(modifiers[1]));
+				keyBindingObj.add("alt", new JsonPrimitive(modifiers[2]));
+			}
+			jsonObject.add(keyBinding.getKeyDescription(), keyBindingObj);
+		}
+		return KeybindTracker.toReadableString(new Gson().toJson(jsonObject));
+	}
+
+	public static void importFile(File file) {
+		try {
+			JsonObject jsonObject = (new JsonParser()).parse(
+					new FileReader(file)
+			).getAsJsonObject();
+			KeyBinding key;
+			int keyCode;
+			boolean shift = false, control = false, alt = false;
+			for (Map.Entry<String, JsonElement> ent : jsonObject.entrySet()) {
+				if (KeybindTracker.keybindings.containsKey(ent.getKey())) {
+					key = KeybindTracker.keybindings.get(ent.getKey());
+					JsonObject keyBindingObj = ent.getValue().getAsJsonObject();
+					keyCode = keyBindingObj.get("keyCode").getAsInt();
+					if (keyBindingObj.has("shift")) {
+						shift = keyBindingObj.get("shift").getAsBoolean();
+						control = keyBindingObj.get("control").getAsBoolean();
+						alt = keyBindingObj.get("alt").getAsBoolean();
+					}
+					if (KeybindTracker.alternates.containsKey(ent.getKey())) {
+						KeybindTracker.saveKeyBinding(
+								key, keyCode, new boolean[] { shift, control, alt }
+						);
+					}
+					else {
+						KeybindTracker.saveKeyBinding(key, keyCode, null);
+					}
+				}
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static String toReadableString(String json) {
+		String readable = "";
+		char[] chars = json.toCharArray();
+		boolean isIteratingInString = false;
+		int tabs = 0;
+		for (char c : chars) {
+			if (c == '}' || c == ']') {
+				tabs -= 1;
+				readable = KeybindTracker.addLineAndTabs(readable, tabs);
+			}
+			readable += c;
+			if (c == '{' || c == '[') {
+				tabs += 1;
+				readable = KeybindTracker.addLineAndTabs(readable, tabs);
+			}
+			if (c == ':' && !isIteratingInString) {
+				readable += " ";
+			}
+			if (c == '"') {
+				isIteratingInString = !isIteratingInString;
+			}
+			if (c == ',' && !isIteratingInString) {
+				readable = KeybindTracker.addLineAndTabs(readable, tabs);
+			}
+		}
+		return readable;
+	}
+
+	private static String addLineAndTabs(String current, int tabs) {
+		current += '\n';
+		for (int i = 0; i < tabs; i++) {
+			current += "   ";
+		}
+		return current;
+	}
+
+	public static void saveKeyBinding(KeyBinding key, int keycode, boolean[] modifiers) {
+		Minecraft.getMinecraft().gameSettings.setOptionKeyBinding(key, keycode);
+		if (modifiers != null && KeybindTracker.alternates.containsKey(key.getKeyDescription())) {
+			KeybindTracker.alternates.put(key.getKeyDescription(), modifiers);
+		}
+		KeyBinding.resetKeyBindingArrayAndHash();
+		KeybindTracker.updateConflictCategory();
+		NotEnoughKeys.saveConfig();
 	}
 
 }
