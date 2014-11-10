@@ -76,7 +76,7 @@ curse {
     apiKey = System.getenv("Dmod_curse")
     projectId = "224614"
     // my project url is http://minecraft.curseforge.com/mc-mods/59652-seretroomsmod/
-    changelog = new File('changelog.txt').text
+    changelog = "check out https://github.com/mod-warriors/NotEnoughKeys/commits/master"
     releaseType = "beta"
 
     // the default obfuscated jar is uploaded by default
@@ -106,7 +106,7 @@ processResources {
 }
 
 jar {
-    dependsOn javadocJar
+    dependsOn javadocJar, createChangelog
     }
 
 task deobfJar(type: Jar) {
