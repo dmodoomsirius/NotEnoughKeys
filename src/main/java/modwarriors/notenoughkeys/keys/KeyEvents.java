@@ -40,6 +40,15 @@ public class KeyEvents {
 		}
 
 		// The following stuff is the handling of keybindings.
+		this.refreshBindings();
+	}
+
+	@SubscribeEvent
+	public void onMouseEvent(InputEvent.MouseInputEvent event) {
+		this.refreshBindings();
+	}
+
+	private void refreshBindings() {
 		boolean isInternal, isKeyboard, isSpecial;
 		for (KeyBinding keyBinding : Minecraft.getMinecraft().gameSettings.keyBindings) {
 			isInternal = keyBinding.getIsKeyPressed();
