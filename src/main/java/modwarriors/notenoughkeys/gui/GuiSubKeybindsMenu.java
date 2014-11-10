@@ -2,7 +2,7 @@ package modwarriors.notenoughkeys.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import modwarriors.notenoughkeys.keys.KeybindTracker;
+import modwarriors.notenoughkeys.keys.KeyHelper;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -49,7 +49,7 @@ public class GuiSubKeybindsMenu extends GuiScreen {
 		subModID = id;
 		keyBindings = new KeyBinding[kbs.length];
 		for (int i = 0; i < kbs.length; i++)
-			keyBindings[i] = KeybindTracker.keybindings.get(kbs[i]);
+			keyBindings[i] = KeyHelper.keybindings.get(kbs[i]);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class GuiSubKeybindsMenu extends GuiScreen {
 		buttonList.add(new GuiButton(200, width / 2 - 100, height - 28, I18n.format("gui.done")));
 		scrollPane.registerScrollButtons(7, 8);
 		screenTitle = subModID + " " + I18n.format("controls.title");
-		KeybindTracker.updateConflictCategory();
+		KeyHelper.updateConflictCategory();
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class GuiSubKeybindsMenu extends GuiScreen {
 	 * Called when the mouse is clicked.
 	 */
 	protected void mouseClicked(int par1, int par2, int par3) {
-		KeybindTracker.updateConflictCategory();
+		KeyHelper.updateConflictCategory();
 		super.mouseClicked(par1, par2, par3);
 	}
 
@@ -95,7 +95,7 @@ public class GuiSubKeybindsMenu extends GuiScreen {
 	 * KeyListener.keyTyped(KeyEvent e).
 	 */
 	protected void keyTyped(char par1, int par2) {
-		KeybindTracker.updateConflictCategory();
+		KeyHelper.updateConflictCategory();
 		if (scrollPane.keyTyped(par1, par2)) {
 			super.keyTyped(par1, par2);
 		}

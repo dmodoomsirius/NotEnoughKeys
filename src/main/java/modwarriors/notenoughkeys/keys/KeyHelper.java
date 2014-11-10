@@ -15,33 +15,26 @@ import java.util.*;
  * http://profmobius.blogspot.fr/
  */
 
-public class KeybindTracker {
+public class KeyHelper {
+
+	// GENERICS
 
 	/**
-	 * Holds a list of compatible mod names and their corresponding keybinding descriptions
+	 * Registers a mod's keys with NEK
+	 *
+	 * @param modname        The NAME of the mod registering the key
+	 * @param keyDecriptions A String[] (Array[String]) of the key descriptions. i.e. new String[]{"key.hotbar1"}
 	 */
-	public static HashMap<String, String[]> compatibleMods = new HashMap<String, String[]>();
-	/**
-	 * Holds keybindings by their description (not the same as holding by category)
-	 */
-	public static HashMap<String, KeyBinding> keybindings = new HashMap<String, KeyBinding>();
+	public static void registerMod(String modname, String[] keyDecriptions) {
+		KeyHelper.compatibleMods.put(modname, keyDecriptions);
+	}
 
 	/**
-	 * Holds all active modids
+	 * Gets a keybinding. What the heck is this for?!?! todo
+	 *
+	 * @param kb
+	 * @return
 	 */
-	//public static ArrayList<String> modids = new ArrayList<String>();
-	/**
-	 * Holds all keybindings per category string
-	 */
-	//public static HashMap<String, ArrayList<KeyBinding>> categoryKeybinds = new HashMap<String, ArrayList<KeyBinding>>();
-
-	/**
-	 * Holds the alternates (SHIFT, CTRL, ALT) for each keybinding description
-	 */
-	public static HashMap<String, boolean[]> alternates = new HashMap<String, boolean[]>();
-
-	public static ArrayList<String> conflictingKeys = new ArrayList<String>();
-
 	public static KeyBinding getKeybind(KeyBinding kb) {
 		for (KeyBinding keb : Minecraft.getMinecraft().gameSettings.keyBindings) {
 			if (keb.equals(kb)) {
@@ -51,6 +44,53 @@ public class KeybindTracker {
 		return null;
 	}
 
+	/**
+	 * Pull all the current keybindings that are currently registered
+	 */
+	public static void pullKeyBindings() {
+		for (KeyBinding keyBinding : Minecraft.getMinecraft().gameSettings.keyBindings) {
+			if (!KeyHelper.keybindings.containsKey(keyBinding.getKeyDescription())) {
+				KeyHelper.keybindings.put(keyBinding.getKeyDescription(), keyBinding);
+			}
+		}
+		KeyHelper.updateConflictCategory();
+	}
+
+	// KEY TRACKING
+
+	/**
+	 * Holds a list of compatible mod names and their corresponding keybinding descriptions
+	 */
+	public static HashMap<String, String[]> compatibleMods = new HashMap<String, String[]>();
+	/**
+	 * Holds keybindings by their description (not the same as holding by category)
+	 */
+	public static HashMap<String, KeyBinding> keybindings = new HashMap<String, KeyBinding>();
+	/**
+	 * Holds the alternates (SHIFT, CTRL, ALT) for each keybinding description
+	 */
+	public static HashMap<String, boolean[]> alternates = new HashMap<String, boolean[]>();
+
+	// ~~~ Conflicting
+
+	/**
+	 * Temporary list of conflicting keys by their descriptions
+	 */
+	public static ArrayList<String> conflictingKeys = new ArrayList<String>();
+
+	/**
+	 * Updates the conflictingKeys list
+	 */
+	public static void updateConflictCategory() {
+		KeyHelper.conflictingKeys.clear();
+		KeyHelper.conflictingKeys.addAll(KeyHelper.getConflictingKeybinds());
+	}
+
+	/**
+	 * Compares ALL keybindings currently registered and checks if they are conflicting
+	 *
+	 * @return A list of conflicting keys by their descriptions
+	 */
 	private static ArrayList<String> getConflictingKeybinds() {
 		List<KeyBinding> allTheBinds = Arrays.asList(
 				Minecraft.getMinecraft().gameSettings.keyBindings);
@@ -65,11 +105,11 @@ public class KeybindTracker {
 					// same key code
 					if (bind1.getKeyCode() == bind2.getKeyCode()) {
 
-						bind1Alts = KeybindTracker.alternates.get(bind1.getKeyDescription());
+						bind1Alts = KeyHelper.alternates.get(bind1.getKeyDescription());
 						if (bind1Alts == null)
 							bind1Alts = new boolean[] { false, false, false };
 
-						bind2Alts = KeybindTracker.alternates.get(bind2.getKeyDescription());
+						bind2Alts = KeyHelper.alternates.get(bind2.getKeyDescription());
 						if (bind2Alts == null)
 							bind2Alts = new boolean[] { false, false, false };
 
@@ -86,50 +126,7 @@ public class KeybindTracker {
 		return allTheConflicts;
 	}
 
-	public static void populate() {
-		KeyBinding[] keyBinds = Minecraft.getMinecraft().gameSettings.keyBindings;
-		/*Field keyHandlers_Field = getDeclaredField(KeyBindingRegistry.class.getName(), "keyHandlers"); //Commented out until I'm sure that we don't need this anymore
-		HashMap<KeyBinding, String> tempKeys = new HashMap<KeyBinding, String>();
-		try {
-			Set<KeyHandler> keyHandlers = (Set<KeyHandler>) keyHandlers_Field.get(KeyBindingRegistry.instance());
-			for (KeyHandler keyhandler : keyHandlers)
-				for (int i = 0; i < keyhandler.getKeyBindings().length; i++)
-					tempKeys.put(keyhandler.getKeyBindings()[i], idFromObject(keyhandler));
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		for (KeyBinding kb : tempKeys.keySet()) {
-			String s = tempKeys.get(kb);
-			if (!modKeybinds.containsKey(s))
-				modKeybinds.put(s, new ArrayList<KeyBinding>());
-			modKeybinds.get(s).add(kb);
-		}*/
-		/*
-		for (int i = 32; i < keyBinds.length; i++) { //Index 31 is the last vanilla keybinding.
-			if (!categoryKeybinds.containsKey(keyBinds[i].getKeyCategory())) {
-				categoryKeybinds.put(keyBinds[i].getKeyCategory(), new ArrayList<KeyBinding>());
-			}
-			categoryKeybinds.get(keyBinds[i].getKeyCategory()).add(keyBinds[i]);
-		}
-		*/
-		for (KeyBinding keyBinding : keyBinds) {
-			if (!KeybindTracker.keybindings.containsKey(keyBinding.getKeyDescription())) {
-				KeybindTracker.keybindings.put(keyBinding.getKeyDescription(), keyBinding);
-			}
-		}
-		KeybindTracker.updateConflictCategory();
-	}
-
-	public static void updateConflictCategory() {
-		KeybindTracker.conflictingKeys.clear();
-		KeybindTracker.conflictingKeys.addAll(KeybindTracker.getConflictingKeybinds());
-	}
-
-	public static void registerMod(String modname, String[] keyDecriptions) {
-		KeybindTracker.compatibleMods.put(modname, keyDecriptions);
-	}
+	// ~~~ Updating from ExportingImporting files
 
 	public static String getExportFile() {
 		JsonObject jsonObject = new JsonObject();
@@ -138,7 +135,7 @@ public class KeybindTracker {
 		for (KeyBinding keyBinding : Minecraft.getMinecraft().gameSettings.keyBindings) {
 			keyBindingObj = new JsonObject();
 			keyBindingObj.add("keyCode", new JsonPrimitive(keyBinding.getKeyCode()));
-			modifiers = KeybindTracker.alternates.get(keyBinding.getKeyDescription());
+			modifiers = KeyHelper.alternates.get(keyBinding.getKeyDescription());
 			if (modifiers != null) {
 				keyBindingObj.add("shift", new JsonPrimitive(modifiers[0]));
 				keyBindingObj.add("control", new JsonPrimitive(modifiers[1]));
@@ -146,7 +143,7 @@ public class KeybindTracker {
 			}
 			jsonObject.add(keyBinding.getKeyDescription(), keyBindingObj);
 		}
-		return KeybindTracker.toReadableString(new Gson().toJson(jsonObject));
+		return KeyHelper.toReadableString(new Gson().toJson(jsonObject));
 	}
 
 	public static void importFile(File file) {
@@ -158,8 +155,8 @@ public class KeybindTracker {
 			int keyCode;
 			boolean shift = false, control = false, alt = false;
 			for (Map.Entry<String, JsonElement> ent : jsonObject.entrySet()) {
-				if (KeybindTracker.keybindings.containsKey(ent.getKey())) {
-					key = KeybindTracker.keybindings.get(ent.getKey());
+				if (KeyHelper.keybindings.containsKey(ent.getKey())) {
+					key = KeyHelper.keybindings.get(ent.getKey());
 					JsonObject keyBindingObj = ent.getValue().getAsJsonObject();
 					keyCode = keyBindingObj.get("keyCode").getAsInt();
 					if (keyBindingObj.has("shift")) {
@@ -167,13 +164,13 @@ public class KeybindTracker {
 						control = keyBindingObj.get("control").getAsBoolean();
 						alt = keyBindingObj.get("alt").getAsBoolean();
 					}
-					if (KeybindTracker.alternates.containsKey(ent.getKey())) {
-						KeybindTracker.saveKeyBinding(
+					if (KeyHelper.alternates.containsKey(ent.getKey())) {
+						KeyHelper.saveKeyBinding(
 								key, keyCode, new boolean[] { shift, control, alt }
 						);
 					}
 					else {
-						KeybindTracker.saveKeyBinding(key, keyCode, null);
+						KeyHelper.saveKeyBinding(key, keyCode, null);
 					}
 				}
 			}
@@ -183,6 +180,8 @@ public class KeybindTracker {
 		}
 	}
 
+	// ~~~ Little silly lib thingys
+
 	private static String toReadableString(String json) {
 		String readable = "";
 		char[] chars = json.toCharArray();
@@ -191,12 +190,12 @@ public class KeybindTracker {
 		for (char c : chars) {
 			if (c == '}' || c == ']') {
 				tabs -= 1;
-				readable = KeybindTracker.addLineAndTabs(readable, tabs);
+				readable = KeyHelper.addLineAndTabs(readable, tabs);
 			}
 			readable += c;
 			if (c == '{' || c == '[') {
 				tabs += 1;
-				readable = KeybindTracker.addLineAndTabs(readable, tabs);
+				readable = KeyHelper.addLineAndTabs(readable, tabs);
 			}
 			if (c == ':' && !isIteratingInString) {
 				readable += " ";
@@ -205,7 +204,7 @@ public class KeybindTracker {
 				isIteratingInString = !isIteratingInString;
 			}
 			if (c == ',' && !isIteratingInString) {
-				readable = KeybindTracker.addLineAndTabs(readable, tabs);
+				readable = KeyHelper.addLineAndTabs(readable, tabs);
 			}
 		}
 		return readable;
@@ -221,11 +220,11 @@ public class KeybindTracker {
 
 	public static void saveKeyBinding(KeyBinding key, int keycode, boolean[] modifiers) {
 		Minecraft.getMinecraft().gameSettings.setOptionKeyBinding(key, keycode);
-		if (modifiers != null && KeybindTracker.alternates.containsKey(key.getKeyDescription())) {
-			KeybindTracker.alternates.put(key.getKeyDescription(), modifiers);
+		if (modifiers != null && KeyHelper.alternates.containsKey(key.getKeyDescription())) {
+			KeyHelper.alternates.put(key.getKeyDescription(), modifiers);
 		}
 		KeyBinding.resetKeyBindingArrayAndHash();
-		KeybindTracker.updateConflictCategory();
+		KeyHelper.updateConflictCategory();
 		NotEnoughKeys.saveConfig();
 	}
 

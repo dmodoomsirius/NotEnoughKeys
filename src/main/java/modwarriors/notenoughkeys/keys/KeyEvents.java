@@ -3,11 +3,9 @@ package modwarriors.notenoughkeys.keys;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import modwarriors.notenoughkeys.Helper;
-import modwarriors.notenoughkeys.NotEnoughKeys;
 import modwarriors.notenoughkeys.api.Api;
 import modwarriors.notenoughkeys.api.KeyBindingPressedEvent;
 import modwarriors.notenoughkeys.gui.GuiControlsOverride;
@@ -17,21 +15,16 @@ import net.minecraft.client.gui.GuiControls;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
-import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
-public class Keybinds {
+public class KeyEvents {
 	private Minecraft mc = Minecraft.getMinecraft();
-	public static KeyBinding openConsole = new KeyBinding("Show Binds Console", Keyboard.KEY_C,
-			"NotEnoughKeys");
 
-	@SubscribeEvent
-	public void onClientTick(TickEvent.ClientTickEvent event) {
-		if (event.phase == TickEvent.Phase.START) {
-			Binds.tick();
-		}
-	}
-
+	/**
+	 * Takes care of overriding the controls screen
+	 *
+	 * @param event
+	 */
 	@SubscribeEvent
 	public void onGuiOpen(GuiOpenEvent event) {
 		if (event.gui != null && event.gui.getClass().equals(GuiControls.class)
@@ -51,14 +44,14 @@ public class Keybinds {
 		for (KeyBinding keyBinding : Minecraft.getMinecraft().gameSettings.keyBindings) {
 			isInternal = keyBinding.getIsKeyPressed();
 			isKeyboard = Helper.isKeyPressed_KeyBoard(keyBinding);
-			if (!KeybindTracker.alternates.containsKey(keyBinding.getKeyDescription())) {
+			if (!KeyHelper.alternates.containsKey(keyBinding.getKeyDescription())) {
 				if (isInternal != isKeyboard) {
 					this.setKeyPressed(keyBinding, isKeyboard);
 				}
 			}
 			else {
 				isSpecial = Helper.isSpecialKeyBindingPressed(
-						keyBinding, KeybindTracker.alternates.get(keyBinding.getKeyDescription())
+						keyBinding, KeyHelper.alternates.get(keyBinding.getKeyDescription())
 				);
 				if (isInternal != isSpecial) {
 					this.setKeyPressed(keyBinding, isSpecial);
@@ -69,7 +62,7 @@ public class Keybinds {
 					MinecraftForge.EVENT_BUS.post(
 							new KeyBindingPressedEvent(
 									keyBinding,
-									KeybindTracker.alternates.get(keyBinding.getKeyDescription())
+									KeyHelper.alternates.get(keyBinding.getKeyDescription())
 							)
 					);
 				}
@@ -89,12 +82,14 @@ public class Keybinds {
 
 	@SubscribeEvent
 	public void onKeyBindingPressed(KeyBindingPressedEvent event) {
-		if (!event.keyBinding.getKeyDescription().equals(Keybinds.openConsole.getKeyDescription()))
+		/*
+		if (!event.keyBinding.getKeyDescription().equals("keyBinding.getKeyDescription()"))
 			return;
 
-		if (openConsole.isPressed() && mc.currentScreen == null) {
-			Minecraft.getMinecraft().displayGuiScreen(NotEnoughKeys.console);
+		if (keyBinding.getIsKeyPressed()) {
+			// Do action
 		}
+		*/
 	}
 
 }
