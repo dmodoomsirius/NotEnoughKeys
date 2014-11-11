@@ -76,7 +76,7 @@ public class GuiKeybindsMenu extends GuiScreen {
 				try {
 					Files.write(
 							new File(
-									Minecraft.getMinecraft().mcDataDir.getParentFile(),
+									Minecraft.getMinecraft().mcDataDir,
 									"NotEnoughKeys" + new SimpleDateFormat(
 											"_MM-dd-yyyy_HH:mm:ss"
 									).format(new Date()) + ".json"
