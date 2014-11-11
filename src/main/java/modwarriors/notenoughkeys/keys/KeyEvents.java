@@ -6,7 +6,6 @@ import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import modwarriors.notenoughkeys.Helper;
-import modwarriors.notenoughkeys.NotEnoughKeys;
 import modwarriors.notenoughkeys.api.Api;
 import modwarriors.notenoughkeys.api.KeyBindingPressedEvent;
 import modwarriors.notenoughkeys.gui.GuiControlsOverride;
@@ -69,8 +68,6 @@ public class KeyEvents {
 
 				if (Minecraft.getMinecraft().currentScreen == null && isSpecial) {
 					// Post the event!
-					NotEnoughKeys.logger
-							.info("Posting event for " + keyBinding.getKeyDescription());
 					MinecraftForge.EVENT_BUS.post(
 							new KeyBindingPressedEvent(
 									keyBinding,
