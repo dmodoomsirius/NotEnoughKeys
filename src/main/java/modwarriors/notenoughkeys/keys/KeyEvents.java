@@ -6,6 +6,7 @@ import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import modwarriors.notenoughkeys.Helper;
+import modwarriors.notenoughkeys.NotEnoughKeys;
 import modwarriors.notenoughkeys.api.Api;
 import modwarriors.notenoughkeys.api.KeyBindingPressedEvent;
 import modwarriors.notenoughkeys.gui.GuiControlsOverride;
@@ -59,15 +60,19 @@ public class KeyEvents {
 				}
 			}
 			else {
+				NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + " is registered");
 				isSpecial = Helper.isSpecialKeyBindingPressed(
 						keyBinding, KeyHelper.alternates.get(keyBinding.getKeyDescription())
 				);
+				NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + " spush: " + isSpecial);
 				if (isInternal != isSpecial) {
 					this.setKeyPressed(keyBinding, isSpecial);
 				}
 
 				if (Minecraft.getMinecraft().currentScreen == null && isSpecial) {
 					// Post the event!
+					NotEnoughKeys.logger
+							.info("Posting event for " + keyBinding.getKeyDescription());
 					MinecraftForge.EVENT_BUS.post(
 							new KeyBindingPressedEvent(
 									keyBinding,
