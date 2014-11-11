@@ -27,6 +27,13 @@ public class KeyHelper {
 	 */
 	public static void registerMod(String modname, String[] keyDecriptions) {
 		KeyHelper.compatibleMods.put(modname, keyDecriptions);
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < keyDecriptions.length; i++) {
+			sb.append(keyDecriptions[i]);
+			if (i < keyDecriptions.length - 1)
+				sb.append(", ");
+		}
+		NotEnoughKeys.logger.info(modname + " has be registered with keys " + sb.toString());
 	}
 
 	/**
