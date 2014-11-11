@@ -1,6 +1,6 @@
 package modwarriors.notenoughkeys.gui;
 
-import modwarriors.notenoughkeys.keys.KeybindTracker;
+import modwarriors.notenoughkeys.keys.KeyHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiOptions;
@@ -25,12 +25,12 @@ public class GuiKeybindsMenu extends GuiScreen {
 	@Override
 	public void initGui() {
 		ArrayList<String> types = new ArrayList<String>();
-		for (String modtype : KeybindTracker.compatibleMods.keySet())
+		for (String modtype : KeyHelper.compatibleMods.keySet())
 			types.add(modtype);
 		scroll = new GuiKeybindsScrollPanel(this, types.toArray(new String[0]));
 		scroll.registerScrollButtons(7, 8);
 		buttonList.add(new GuiButton(1337, width / 2 - 100, height - 28, I18n.format("gui.done")));
-		KeybindTracker.updateConflictCategory();
+		KeyHelper.updateConflictCategory();
 		super.initGui();
 
 		int yVar = height / 10;
@@ -67,7 +67,7 @@ public class GuiKeybindsMenu extends GuiScreen {
 				Minecraft.getMinecraft().displayGuiScreen(
 						new GuiSubKeybindsMenu(
 								this, "Conflicting",
-								KeybindTracker.conflictingKeys.toArray(new String[0]),
+								KeyHelper.conflictingKeys.toArray(new String[0]),
 								Minecraft.getMinecraft().gameSettings
 						)
 				);
@@ -81,7 +81,7 @@ public class GuiKeybindsMenu extends GuiScreen {
 											"_MM-dd-yyyy_HH:mm:ss"
 									).format(new Date()) + ".json"
 							).toPath(),
-							KeybindTracker.getExportFile().getBytes(StandardCharsets.UTF_8),
+							KeyHelper.getExportFile().getBytes(StandardCharsets.UTF_8),
 							StandardOpenOption.CREATE
 					);
 				} catch (IOException e) {
@@ -103,7 +103,7 @@ public class GuiKeybindsMenu extends GuiScreen {
 						// todo maybe somehow get the current jframe or jpanel?
 						// looks like org.lwjgl.opengl.Display.parent Canvas thingy
 						if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-							KeybindTracker.importFile(chooser.getSelectedFile());
+							KeyHelper.importFile(chooser.getSelectedFile());
 						}
 					}
 				});
@@ -111,7 +111,7 @@ public class GuiKeybindsMenu extends GuiScreen {
 			default:
 				break;
 		}
-		KeybindTracker.updateConflictCategory();
+		KeyHelper.updateConflictCategory();
 	}
 
 	@Override

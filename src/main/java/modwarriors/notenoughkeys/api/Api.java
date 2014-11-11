@@ -5,11 +5,18 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
+ * Center of the API. Main api methods can be found in this class.
+ *
  * @author TheTemportalist
  */
 @SideOnly(Side.CLIENT)
 public class Api {
 
+	/**
+	 * Checks if NotEnoughKeys is loaded in the current environment
+	 *
+	 * @return 'true' if loaded
+	 */
 	public static boolean isLoaded() {
 		return Loader.isModLoaded("notenoughkeys");
 	}
