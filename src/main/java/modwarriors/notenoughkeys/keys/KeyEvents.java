@@ -60,11 +60,9 @@ public class KeyEvents {
 				}
 			}
 			else {
-				NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + " is registered");
 				isSpecial = Helper.isSpecialKeyBindingPressed(
 						keyBinding, KeyHelper.alternates.get(keyBinding.getKeyDescription())
 				);
-				NotEnoughKeys.logger.info(keyBinding.getKeyDescription() + " spush: " + isSpecial);
 				if (isInternal != isSpecial) {
 					this.setKeyPressed(keyBinding, isSpecial);
 				}
