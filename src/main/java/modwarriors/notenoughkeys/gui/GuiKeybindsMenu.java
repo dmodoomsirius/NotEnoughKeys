@@ -64,6 +64,7 @@ public class GuiKeybindsMenu extends GuiScreen {
 				);
 				break;
 			case 1: // conflicting
+				KeyHelper.updateConflictCategory();
 				Minecraft.getMinecraft().displayGuiScreen(
 						new GuiSubKeybindsMenu(
 								this, "Conflicting",
