@@ -81,6 +81,9 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 	@Override
 	protected void drawSlot(int index, int xPosition, int yPosition, int l, Tessellator tessellator,
 			int mouseX, int mouseY) {
+		if (keyBindings[index] == null)
+			return;
+
 		String s = I18n.format(keyBindings[index].getKeyDescription());
 		int width = 70;
 		int height = 20;
