@@ -79,7 +79,7 @@ public class GuiKeybindsMenu extends GuiScreen {
 							new File(
 									Minecraft.getMinecraft().mcDataDir,
 									"NotEnoughKeys" + new SimpleDateFormat(
-											"_MM-dd-yyyy_HH:mm:ss"
+											"_MM-dd-yyyy_HH-mm-ss"
 									).format(new Date()) + ".json"
 							).toPath(),
 							KeyHelper.getExportFile().getBytes(StandardCharsets.UTF_8),
