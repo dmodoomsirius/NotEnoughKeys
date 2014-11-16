@@ -5,11 +5,18 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
+ * Center of the API. Main api methods can be found in this class.
+ *
  * @author TheTemportalist
  */
 @SideOnly(Side.CLIENT)
 public class Api {
 
+	/**
+	 * Checks if NotEnoughKeys is loaded in the current environment
+	 *
+	 * @return 'true' if loaded
+	 */
 	public static boolean isLoaded() {
 		return Loader.isModLoaded("notenoughkeys");
 	}
@@ -22,7 +29,7 @@ public class Api {
 	 */
 	public static void registerMod(String modname, String[] keyDecriptions) {
 		try {
-			Class.forName("modwarriors.notenoughkeys.keys.KeyBindTracker").getMethod(
+			Class.forName("modwarriors.notenoughkeys.keys.KeyHelper").getMethod(
 					"registerMod", String.class, String[].class
 			).invoke(null, modname, keyDecriptions);
 		} catch (Exception e) {

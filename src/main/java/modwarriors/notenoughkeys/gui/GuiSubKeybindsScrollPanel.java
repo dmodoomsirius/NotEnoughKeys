@@ -1,7 +1,7 @@
 package modwarriors.notenoughkeys.gui;
 
 import modwarriors.notenoughkeys.Helper;
-import modwarriors.notenoughkeys.keys.KeybindTracker;
+import modwarriors.notenoughkeys.keys.KeyHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiSlot;
 import net.minecraft.client.renderer.Tessellator;
@@ -81,6 +81,9 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 	@Override
 	protected void drawSlot(int index, int xPosition, int yPosition, int l, Tessellator tessellator,
 			int mouseX, int mouseY) {
+		if (keyBindings[index] == null)
+			return;
+
 		String s = I18n.format(keyBindings[index].getKeyDescription());
 		int width = 70;
 		int height = 20;
@@ -102,7 +105,7 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 
 		boolean conflict = false;
 		KeyBinding globKb = getGlobalKeybind(index);
-		conflict = KeybindTracker.conflictingKeys.contains(globKb);
+		conflict = KeyHelper.conflictingKeys.contains(globKb);
 		/*
 		for (KeyBinding x : options.keyBindings) {
 			if (x != globKb && x.getKeyCode() == globKb.getKeyCode()) {
@@ -127,7 +130,7 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 		GL11.glPushMatrix();
 		GL11.glScalef(scale, scale, 1.0F);
 
-		boolean[] modifiers = KeybindTracker.alternates.get(keyBinding.getKeyDescription());
+		boolean[] modifiers = KeyHelper.alternates.get(keyBinding.getKeyDescription());
 		if (modifiers != null) {
 			if (modifiers[0]) {
 				this.drawAltString(
@@ -165,13 +168,13 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 	public KeyBinding getGlobalKeybind(int localIndex) {
 		if (localIndex < 0)
 			return null;
-		return KeybindTracker.getKeybind(keyBindings[localIndex]);
+		return KeyHelper.getKeybind(keyBindings[localIndex]);
 	}
 
 	public boolean keyTyped(char c, int keycode) {
 		if (selected != -1) {
 			KeyBinding keyBinding = getGlobalKeybind(selected);
-			boolean isCompatible = KeybindTracker.alternates.containsKey(
+			boolean isCompatible = KeyHelper.alternates.containsKey(
 					keyBinding.getKeyDescription()
 			);
 			boolean isSpecialKey = Helper.isSpecialKey(keycode);
@@ -186,7 +189,7 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 	}
 
 	private void saveKeyBinding(KeyBinding key, int keycode) {
-		KeybindTracker.saveKeyBinding(key, keycode, new boolean[] {
+		KeyHelper.saveKeyBinding(key, keycode, new boolean[] {
 				Helper.isShiftKeyDown(), Helper.isCtrlKeyDown(), Helper.isAltKeyDown()
 		});
 		selected = -1;

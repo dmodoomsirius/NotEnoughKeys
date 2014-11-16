@@ -106,7 +106,7 @@ processResources {
 }
 
 jar {
-    dependsOn javadocJar
+    dependsOn javadocJar, createChangelog
     }
 
 task deobfJar(type: Jar) {

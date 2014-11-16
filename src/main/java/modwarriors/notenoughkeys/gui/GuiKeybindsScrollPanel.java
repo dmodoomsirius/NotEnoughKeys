@@ -1,6 +1,6 @@
 package modwarriors.notenoughkeys.gui;
 
-import modwarriors.notenoughkeys.keys.KeybindTracker;
+import modwarriors.notenoughkeys.keys.KeyHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiSlot;
@@ -43,11 +43,11 @@ public class GuiKeybindsScrollPanel extends GuiSlot {
 			Minecraft.getMinecraft().displayGuiScreen(
 					new GuiSubKeybindsMenu(
 							controls, type,
-							KeybindTracker.compatibleMods.get(type),
+							KeyHelper.compatibleMods.get(type),
 							Minecraft.getMinecraft().gameSettings
 					)
 			);
-			KeybindTracker.updateConflictCategory();
+			KeyHelper.updateConflictCategory();
 			selected = -1;
 		}
 	}
@@ -94,7 +94,7 @@ public class GuiKeybindsScrollPanel extends GuiSlot {
 
 	public boolean keyTyped(char c, int i) {
 		if (selected != -1) {
-			KeybindTracker.updateConflictCategory();
+			KeyHelper.updateConflictCategory();
 			selected = -1;
 			return false;
 		}
