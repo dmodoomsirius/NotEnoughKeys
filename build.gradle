@@ -146,7 +146,6 @@ publishing {
             artifact("build/libs/build.properties") {
                 classifier "build"
                 extension "properties"
-                classifier "dev"
             }
         }
     }
@@ -163,7 +162,8 @@ task javadocJar(type: Jar, dependsOn: 'javadoc') {
     classifier = 'javadoc'
 }
 
-jar {
+jar { if (project.getProperty("BambooshortPlanName") == "NEK-Dev") classifier = "dev"
+    
     dependsOn copyBuildXml, createChangelog
     }
 
