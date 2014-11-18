@@ -163,7 +163,7 @@ task javadocJar(type: Jar, dependsOn: 'javadoc') {
 }
 
 jar {
-    dependsOn copyBuildXml
+    dependsOn copyBuildXml, createChangelog
     }
 
 task deobfJar(type: Jar) {
