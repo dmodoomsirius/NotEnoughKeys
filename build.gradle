@@ -42,7 +42,7 @@ if (project.hasProperty("bambooBuildNumber"))
 else
     version += "NIGHTLY"
     
-if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "dev"
+if (project.getProperty("bambooshortPlanName") == "NEK-Dev")
     version += dev   
 
 println "version = "+ version
