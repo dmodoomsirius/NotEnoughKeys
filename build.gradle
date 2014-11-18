@@ -42,9 +42,12 @@ if (project.hasProperty("bambooBuildNumber"))
 else
     version += "NIGHTLY"
     
+if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "dev"
+    version += dev   
+
 println "version = "+ version
 
-
+println "shortPlanName =" project.bambooshortPlanName
 
 minecraft {
     version = "${config.version.minecraft}-${config.version.forge}"
@@ -172,7 +175,7 @@ jar {
 task deobfJar(type: Jar) {
      if (project.getProperty("BambooshortPlanName") == "NEK-Dev") classifier = "dev"
     from sourceSets.main.output
-    classifier = 'deobf'
+    if (project.getProperty("BambooshortPlanName") == "NEK-Dev") classifier = "deobf-dev"
 }
 
 artifacts {
