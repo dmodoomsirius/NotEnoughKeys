@@ -158,8 +158,9 @@ publishing {
 }
 
 task javadocJar(type: Jar, dependsOn: 'javadoc') {
+   
     from javadoc.destinationDir
-    classifier = 'javadoc'
+    if (project.getProperty("BambooshortPlanName") == "NEK-Dev") classifier = "javadoc-dev"
 }
 
 jar { 
@@ -169,6 +170,7 @@ jar {
     }
 
 task deobfJar(type: Jar) {
+     if (project.getProperty("BambooshortPlanName") == "NEK-Dev") classifier = "dev"
     from sourceSets.main.output
     classifier = 'deobf'
 }
