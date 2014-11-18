@@ -146,6 +146,7 @@ publishing {
             artifact("build/libs/build.properties") {
                 classifier "build"
                 extension "properties"
+                classifier "dev"
             }
         }
     }
