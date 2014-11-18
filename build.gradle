@@ -47,8 +47,6 @@ if (project.getProperty("bambooshortPlanName") == "NEK-Dev")
 
 println "version = "+ version
 
-println "shortPlanName =" project.bambooshortPlanName
-
 minecraft {
     version = "${config.version.minecraft}-${config.version.forge}"
     runDir = "run"
