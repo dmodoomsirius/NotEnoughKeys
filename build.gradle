@@ -162,7 +162,8 @@ task javadocJar(type: Jar, dependsOn: 'javadoc') {
     classifier = 'javadoc'
 }
 
-jar { if (project.getProperty("BambooshortPlanName") == "NEK-Dev") classifier = "dev"
+jar { 
+    if (project.getProperty("BambooshortPlanName") == "NEK-Dev") classifier = "dev"
     
     dependsOn copyBuildXml, createChangelog
     }
