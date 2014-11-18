@@ -43,7 +43,7 @@ else
     version += "NIGHTLY"
     
 if (project.getProperty("bambooshortPlanName") == "NEK-Dev")
-    version += dev   
+    version += "dev"
 
 println "version = "+ version
 
@@ -163,19 +163,18 @@ publishing {
 task javadocJar(type: Jar, dependsOn: 'javadoc') {
    
     from javadoc.destinationDir
-    if (project.getProperty("BambooshortPlanName") == "NEK-Dev") classifier = "javadoc-dev"
+    if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "javadoc-dev"
 }
 
 jar { 
-    if (project.getProperty("BambooshortPlanName") == "NEK-Dev") classifier = "dev"
+    if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "dev"
     
     dependsOn copyBuildXml, createChangelog
     }
 
 task deobfJar(type: Jar) {
-     if (project.getProperty("BambooshortPlanName") == "NEK-Dev") classifier = "dev"
     from sourceSets.main.output
-    if (project.getProperty("BambooshortPlanName") == "NEK-Dev") classifier = "deobf-dev"
+    if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "deobf-dev"
 }
 
 artifacts {
