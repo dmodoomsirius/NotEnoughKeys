@@ -64,16 +64,16 @@ public class KeyEvents {
 				);
 				if (isInternal != isSpecial) {
 					this.setKeyPressed(keyBinding, isSpecial);
-				}
 
-				if (Minecraft.getMinecraft().currentScreen == null && isSpecial) {
-					// Post the event!
-					MinecraftForge.EVENT_BUS.post(
-							new KeyBindingPressedEvent(
-									keyBinding,
-									KeyHelper.alternates.get(keyBinding.getKeyDescription())
-							)
-					);
+					if (Minecraft.getMinecraft().currentScreen == null) {
+						// Post the event!
+						MinecraftForge.EVENT_BUS.post(
+								new KeyBindingPressedEvent(
+										keyBinding,
+										KeyHelper.alternates.get(keyBinding.getKeyDescription())
+								)
+						);
+					}
 				}
 			}
 		}
