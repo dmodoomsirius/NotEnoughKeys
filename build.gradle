@@ -42,9 +42,10 @@ if (project.hasProperty("bambooBuildNumber"))
 else
     version += "NIGHTLY"
     
+if (project.getProperty("bambooshortPlanName") == "NEK-Dev")
+    version += "dev"
+
 println "version = "+ version
-
-
 
 minecraft {
     version = "${config.version.minecraft}-${config.version.forge}"
@@ -113,6 +114,24 @@ task copyBuildXml(type: Copy) {
     into 'build/libs'
 }
 
+processResources {
+	from(sourceSets.main.resources.srcDirs) {
+		include '**/*.lang'
+		include '**/*.info'
+		include '**/*.properties'
+
+		expand 'version': project.version, 'mcversion': config.version.minecraft
+		// replace version and MCVersion
+	}
+
+	// copy everything else, thats not text
+	from(sourceSets.main.resources.srcDirs) {
+		exclude '**/*.lang'
+		exclude '**/*.info'
+		exclude '**/*.properties'
+	}
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication)
@@ -120,7 +139,7 @@ publishing {
             artifact jar
             artifact deobfJar
             artifact javadocJar
-            artifactId 'NeK-dev'
+            artifactId 'NeK'
             artifact("build/libs/changelog.xml") {
                 classifier "changelog"
                 extension "xml"
@@ -139,36 +158,21 @@ publishing {
     }
 }
 
-processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        include '**/*.lang'
-        include '**/*.info'
-        include '**/*.properties'
-
-        expand 'version': project.version, 'mcversion': project.minecraft.version
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        include '**/*.lang'
-        include '**/*.info'
-        include '**/*.properties'
-
-
-    }
-}
-
 task javadocJar(type: Jar, dependsOn: 'javadoc') {
+   
     from javadoc.destinationDir
-    classifier = 'javadoc'
+    if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "javadoc-dev"
 }
 
-jar {
+jar { 
+    if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "dev"
+    
     dependsOn copyBuildXml, createChangelog
     }
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
-    classifier = 'deobf'
+    if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "deobf-dev"
 }
 
 artifacts {
