@@ -1,10 +1,10 @@
 package modwarriors.notenoughkeys.keys;
 
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import modwarriors.notenoughkeys.Helper;
 import modwarriors.notenoughkeys.api.Api;
 import modwarriors.notenoughkeys.api.KeyBindingPressedEvent;

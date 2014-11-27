@@ -44,13 +44,15 @@ else
     
 if (project.getProperty("bambooshortPlanName") == "NEK-Dev")
     version += "dev"
+    
+
 
 println "version = "+ version
 
 minecraft {
     version = "${config.version.minecraft}-${config.version.forge}"
     runDir = "run"
-    mappings = "snapshot_20140925"
+    mappings = "snapshot_20141126"
 }
 
 curse {
@@ -159,6 +161,7 @@ publishing {
 }
 
 task javadocJar(type: Jar, dependsOn: 'javadoc') {
+     
    
     from javadoc.destinationDir
     if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "javadoc-dev"
@@ -167,12 +170,12 @@ task javadocJar(type: Jar, dependsOn: 'javadoc') {
 jar { 
     if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "dev"
     
-    dependsOn copyBuildXml, createChangelog
+    dependsOn copyBuildXml, createChangelog    
     }
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
-    if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "deobf-dev"
+    if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "deobf-dev"   
 }
 
 artifacts {
