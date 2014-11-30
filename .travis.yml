@@ -7,7 +7,7 @@ notifications:
    - "%{build_number} (%{branch} - %{commit}: %{commit_message} : %{author}): %{message} (%{build_url})"
 install: true
 script:
-  - gradle build -PbambooshortPlanName=Nek
+  - gradle build -PbambooshortPlanName=Nek -pdmodcurse=61545
 jdk:
   - oraclejdk8
   - oraclejdk7
