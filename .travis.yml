@@ -1,9 +1,13 @@
 language: java
 notifications:
-  email: false
+ irc:
+  channels:
+   - "irc.esper.net#mod-warriors "
+  template:
+   - "%{build_number} (%{branch} - %{commit}: %{commit_message} : %{author}): %{message} (%{build_url})"
 install: true
 script:
-  - gradle build
+  - gradle build -PbambooshortPlanName=Nek -Pdmodcurse=61545
 jdk:
   - oraclejdk8
   - oraclejdk7
