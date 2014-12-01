@@ -140,10 +140,7 @@ publishing {
             artifact deobfJar
             artifact javadocJar
             artifactId 'NeK'
-            artifact("build/libs/changelog.xml") {
-                classifier "changelog"
-                extension "xml"
-            }
+
             artifact("build/libs/build.properties") {
                 classifier "build"
                 extension "properties"
@@ -167,7 +164,7 @@ task javadocJar(type: Jar, dependsOn: 'javadoc') {
 jar { 
     if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "dev"
     
-    dependsOn copyBuildXml, createChangelog
+    dependsOn copyBuildXml
     }
 
 task deobfJar(type: Jar) {
