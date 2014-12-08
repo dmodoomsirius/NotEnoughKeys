@@ -83,7 +83,7 @@ task("createChangelog").doLast {
     /**
      * Grab the build first, parse the XML to find the changelog XML URL
      */
-    def changesXML = new XmlSlurper().parse(bambooURL + "rest/api/latest/result/NEKM-NEKM/" + project.bambooBuildNumber + "?expand=changes.change.files")
+    def changesXML = new XmlSlurper().parse(bambooURL + "rest/api/latest/result/NEK-NEK/" + project.bambooBuildNumber + "?expand=changes.change.files")
     def changes = changesXML.result.changes
 
     /**
@@ -98,7 +98,7 @@ task("createChangelog").doLast {
         /**
          * Write each changelog XML into the URL
          */
-        def changelogURL = bambooURL + "rest/api/latest/result/NEKM-NEKM/" + project.bambooBuildNumber + "?expand=changes.change.files" + changes[i].@id.text()
+        def changelogURL = bambooURL + "rest/api/latest/result/NEK-NEK/" + project.bambooBuildNumber + "?expand=changes.change.files" + changes[i].@id.text()
         out << new URL(changelogURL).getText().replaceAll("<\\?xml version=\"1\\.0\" encoding=\"UTF-8\" standalone=\"yes\"\\?>", "")
     }
     println("Looking in " + changesXML + "found" + changes.size() )
