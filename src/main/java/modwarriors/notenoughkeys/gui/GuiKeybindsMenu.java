@@ -1,5 +1,6 @@
 package modwarriors.notenoughkeys.gui;
 
+import com.google.common.io.Files;
 import modwarriors.notenoughkeys.keys.KeyHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -12,9 +13,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,6 +73,7 @@ public class GuiKeybindsMenu extends GuiScreen {
 				break;
 			case 2: // export
 				try {
+					/*
 					Files.write(
 							new File(
 									Minecraft.getMinecraft().mcDataDir,
@@ -84,6 +83,16 @@ public class GuiKeybindsMenu extends GuiScreen {
 							).toPath(),
 							KeyHelper.getExportFile().getBytes(StandardCharsets.UTF_8),
 							StandardOpenOption.CREATE
+					);
+					*/
+					Files.write(
+							KeyHelper.getExportFile().getBytes(),
+							new File(
+									Minecraft.getMinecraft().mcDataDir,
+									"NotEnoughKeys_" + new SimpleDateFormat(
+											"MM-dd-yyyy_HH-mm-ss"
+									).format(new Date()) + ".json"
+							)
 					);
 				} catch (IOException e) {
 					e.printStackTrace();
