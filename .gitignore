@@ -21,3 +21,5 @@ gradlew.bat
 *.DS_Store
 _MACOSX
 Thumbs.db
+gradle.properties
+output/

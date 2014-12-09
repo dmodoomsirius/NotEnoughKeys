@@ -17,23 +17,44 @@ buildscript {
 
 apply plugin: "curseforge"
 apply plugin: 'forge'
+apply plugin: 'maven-publish'
 
-if (System.getenv("BUILD_NUMBER") != null) {
-    version = "${System.getenv("BUILD_NUMBER")}"
-} else {
-    version = "NIGHTLY"
+task makePretty(type: Delete) {
+  delete 'output'
 }
 
+clean{
+   dependsOn makePretty
+}
+
+
 ext.buildProps = file "build.properties"
+
+//if (${System.getenv()bamboo.buildNumber}) != null) {
+//   version = "${System.getenv()bamboo.buildNumber}}"
+//} else {
+//    version = "NIGHTLY"
+//}
 
 buildProps.withReader {
     def prop = new Properties()
     prop.load(it)
     ext.config = new ConfigSlurper().parse prop
 }
-version = "${config.version.minecraft}-${config.version.mod.major}.${config.version.mod.minor}.${config.version.mod.revis}b${System.getenv().BUILD_NUMBER}"
+
+version = "${config.version.minecraft}-${config.version.mod.major}.${config.version.mod.minor}.${config.version.mod.revis}b"
 group = "notenoughkeys"
 archivesBaseName = "NotEnoughKeys"
+
+if (project.hasProperty("bambooBuildNumber"))
+    version += project.bambooBuildNumber
+else
+    version += "NIGHTLY"
+    
+if (project.getProperty("bambooshortPlanName") == "NEK-Dev")
+    version += "dev"
+
+println "version = "+ version
 
 minecraft {
     version = "${config.version.minecraft}-${config.version.forge}"
@@ -41,39 +62,8 @@ minecraft {
     mappings = "snapshot_20140925"
 }
 
-jenkins {
-    job = 'NotEnoughKeys'
-}
-
-import net.minecraftforge.gradle.delayed.*
-import net.minecraftforge.gradle.tasks.dev.ChangelogTask
-
-task createChangelog(type: ChangelogTask) {
-
-    if (("${System.getenv().JOB_NAME}" != null) && project.hasProperty("jenkins_server") && project.hasProperty("jenkins_password")) {
-        def jobName = "${System.getenv().JOB_NAME}"
-        def buildNumber = "${System.getenv().BUILD_NUMBER}"
-
-        setServerRoot(new DelayedString(project, project.jenkins_server))
-        setJobName(new DelayedString(project, jobName.toString()))
-        setAuthName(new DelayedString(project, project.jenkins_user))
-        setAuthPassword(new DelayedString(project, project.jenkins_password))
-        setTargetBuild({ buildNumber.toString() });
-        setOutput(new DelayedFile(project, 'build/libs/' + project.archivesBaseName + '-' + project.version + '-changelog.txt'));
-    }
-
-    onlyIf {
-        return (("${System.getenv().JOB_NAME}" != null) && project.hasProperty("jenkins_server") && project.hasProperty("jenkins_password"))
-    }
-}
-
-task javadocJar(type: Jar, dependsOn: 'javadoc') {
-    from javadoc.destinationDir
-    classifier = 'javadoc'
-}
-
 curse {
-    apiKey = System.getenv("Dmod_curse")
+    apiKey = project.dmodcurse
     projectId = "224614"
     // my project url is http://minecraft.curseforge.com/mc-mods/59652-seretroomsmod/
     changelog = "check out https://github.com/mod-warriors/NotEnoughKeys/commits/master"
@@ -85,35 +75,118 @@ curse {
     // allows you to add extra compatible MC versions. The one specified in the minecraft{} block is used by default.
     addGameVersion "1.7.10"
     // addGameversion "1.7.0", "1.7.4"
-
 }
+
+/**
+ * Generates a Bamboo XML changelog via the REST API.
+ */
+task("createChangelog").doLast {
+
+    def bambooURL = "http://69.25.207.26:8085/"
+
+    /**
+     * Create a new file
+     */
+    def file = new FileOutputStream("build/libs/changelog.xml")
+    def out = new BufferedOutputStream(file)
+
+    /**
+     * Grab the build first, parse the XML to find the changelog XML URL
+     */
+    def changesXML = new XmlSlurper().parse(bambooURL + "rest/api/latest/result/NEK-NEK/" + project.bambooBuildNumber + "?expand=changes.change.files")
+    def changes = changesXML.result.changes
+
+    /**
+     * Add the XML definition header in the front of the file and remove all other occurrences of the XML header
+     */
+    out << ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><change>")
+
+    println("createChangelog: Identified " + changes.size() + " changes to be written into the changelog.")
+
+
+    for (int i = 0; i < changes.size(); i++) {
+        /**
+         * Write each changelog XML into the URL
+         */
+        def changelogURL = bambooURL + "rest/api/latest/result/NEK-NEK/" + project.bambooBuildNumber + "?expand=changes.change.files" + changes[i].@id.text()
+        out << new URL(changelogURL).getText().replaceAll("<\\?xml version=\"1\\.0\" encoding=\"UTF-8\" standalone=\"yes\"\\?>", "")
+    }
+    println("Looking in " + changesXML + "found" + changes.size() )
+    
+    out << "</change>"
+
+    out.close()
+}
+
+task copyBuildXml(type: Copy) {
+    from 'build.properties'
+    into 'build/libs'
+}
+
 processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        include '**/*.lang'
-        include '**/*.info'
-        include '**/*.properties'
+	from(sourceSets.main.resources.srcDirs) {
+		include '**/*.lang'
+		include '**/*.info'
+		include '**/*.properties'
 
-        expand 'version': project.version, 'mcversion': project.minecraft.version
+		expand 'version': project.version, 'mcversion': config.version.minecraft
+		// replace version and MCVersion
+	}
+
+	// copy everything else, thats not text
+	from(sourceSets.main.resources.srcDirs) {
+		exclude '**/*.lang'
+		exclude '**/*.info'
+		exclude '**/*.properties'
+	}
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication)
+        {
+            artifact jar
+            artifact deobfJar
+            artifact javadocJar
+            artifactId 'NeK'
+
+            artifact("build/libs/build.properties") {
+                classifier "build"
+                extension "properties"
+            }
+        }
     }
 
-    from(sourceSets.main.resources.srcDirs) {
-        include '**/*.lang'
-        include '**/*.info'
-        include '**/*.properties'
-
-
+    repositories {
+        maven {
+            url "file:///var/www/html/maven"
+        }
     }
 }
 
-jar {
-    dependsOn javadocJar, createChangelog
+task javadocJar(type: Jar, dependsOn: 'javadoc') {
+   
+    from javadoc.destinationDir
+    if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "javadoc-dev" 
+    else classifier = "javadoc" 
+    destinationDir = file 'output'
+}
+
+jar { 
+    if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "dev"
+    
+    dependsOn copyBuildXml
+    destinationDir = file 'output'
     }
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
-    appendix = 'deobf'
+    if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "deobf-dev" 
+    else classifier = "deobf" 
+    destinationDir = file 'output'
 }
 
 artifacts {
     archives deobfJar
+    archives javadocJar
 }
