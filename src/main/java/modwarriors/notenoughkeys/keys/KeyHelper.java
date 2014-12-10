@@ -56,7 +56,8 @@ public class KeyHelper {
 	 */
 	public static void pullKeyBindings() {
 		for (KeyBinding keyBinding : Minecraft.getMinecraft().gameSettings.keyBindings) {
-			if (!KeyHelper.keybindings.containsKey(keyBinding.getKeyDescription())) {
+			if (keyBinding != null && !KeyHelper.keybindings
+					.containsKey(keyBinding.getKeyDescription())) {
 				KeyHelper.keybindings.put(keyBinding.getKeyDescription(), keyBinding);
 			}
 		}

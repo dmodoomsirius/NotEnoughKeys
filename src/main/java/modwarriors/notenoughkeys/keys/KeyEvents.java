@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import modwarriors.notenoughkeys.Helper;
+import modwarriors.notenoughkeys.NotEnoughKeys;
 import modwarriors.notenoughkeys.api.Api;
 import modwarriors.notenoughkeys.api.KeyBindingPressedEvent;
 import modwarriors.notenoughkeys.gui.GuiControlsOverride;
@@ -85,6 +86,13 @@ public class KeyEvents {
 					KeyBinding.class, keyBinding, isPressed, "pressed", "field_74513_e"
 			);
 		} catch (Exception e) {
+			NotEnoughKeys.logger
+					.error("A key with the description \'" + keyBinding.getKeyDescription()
+							+ "\' from category \'" + keyBinding.getKeyCategory()
+							+ "\' and keycode \'" + keyBinding.getKeyCode()
+							+ "\' could not be set from pressed state \'" + keyBinding
+							.getIsKeyPressed() + "\' to state \'" + isPressed
+							+ "\'. This is an eror. PLEASE report this to the issues stub on github.");
 			e.printStackTrace();
 		}
 	}
