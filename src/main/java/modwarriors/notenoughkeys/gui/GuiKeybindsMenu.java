@@ -49,8 +49,12 @@ public class GuiKeybindsMenu extends GuiScreen {
 
 	@Override
 	protected void actionPerformed(GuiButton par1GuiButton) {
-		super.actionPerformed(par1GuiButton);
-		switch (par1GuiButton.id) {
+        try {
+            super.actionPerformed(par1GuiButton);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        switch (par1GuiButton.id) {
 			case 1337:
 				Minecraft.getMinecraft().displayGuiScreen(
 						new GuiOptions(null, Minecraft.getMinecraft().gameSettings)
