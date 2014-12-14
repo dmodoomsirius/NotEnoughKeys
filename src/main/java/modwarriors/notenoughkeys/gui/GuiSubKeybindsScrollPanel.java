@@ -17,7 +17,7 @@ import org.lwjgl.opengl.GL11;
 /**
  * Original code from Minecraft Forge over at http://minecraftforge.net
  */
-public class GuiSubKeybindsScrollPanel extends GuiSlot {
+public abstract class GuiSubKeybindsScrollPanel extends GuiSlot {
 	protected static final ResourceLocation WIDGITS = new ResourceLocation(
 			"textures/gui/widgets.png");
 	private GuiSubKeybindsMenu controls;
@@ -79,7 +79,7 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 	}
 
 	@Override
-	protected void drawSlot(int index, int xPosition, int yPosition, int l, Tessellator tessellator,
+	protected void drawSlot(int index, int xPosition, int yPosition, int l,
 			int mouseX, int mouseY) {
 		if (keyBindings[index] == null)
 			return;
