@@ -39,7 +39,7 @@ public class GuiKeybindsScrollPanel extends GuiSlot {
 				selected = i;
 			String type = buttonNames[selected];
 			Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord
-					.createPositionedSoundRecord(new ResourceLocation("gui.button.press"), 1.0F));
+					.create(new ResourceLocation("gui.button.press"), 1.0F));
 			Minecraft.getMinecraft().displayGuiScreen(
 					new GuiSubKeybindsMenu(
 							controls, type,

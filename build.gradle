@@ -56,7 +56,8 @@ minecraft {
 }
 
 curse {
-    apiKey = project.dmodcurse
+    if (hasProperty("dmodcurse")) apiKey = project.dmodcurse
+    else apiKey = 0
     projectId = "224614"
     // my project url is http://minecraft.curseforge.com/mc-mods/59652-seretroomsmod/
     changelog = "check out https://github.com/mod-warriors/NotEnoughKeys/commits/master"
@@ -161,8 +162,6 @@ publishing {
 }
 
 task javadocJar(type: Jar, dependsOn: 'javadoc') {
-     
-   
     from javadoc.destinationDir
     //if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "javadoc-dev"
 }
@@ -171,7 +170,7 @@ jar {
     //if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "dev"
     
     dependsOn copyBuildXml, createChangelog    
-    }
+}
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output

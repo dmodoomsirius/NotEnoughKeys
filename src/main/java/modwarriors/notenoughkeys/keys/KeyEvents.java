@@ -52,7 +52,7 @@ public class KeyEvents {
 	private void refreshBindings() {
 		boolean isInternal, isKeyboard, isSpecial;
 		for (KeyBinding keyBinding : Minecraft.getMinecraft().gameSettings.keyBindings) {
-			isInternal = keyBinding.getIsKeyPressed();
+			isInternal = keyBinding.isPressed();
 			isKeyboard = Helper.isKeyPressed_KeyBoard(keyBinding);
 			if (!KeyHelper.alternates.containsKey(keyBinding.getKeyDescription())) {
 				if (isInternal != isKeyboard) {
@@ -91,7 +91,7 @@ public class KeyEvents {
 							+ "\' from category \'" + keyBinding.getKeyCategory()
 							+ "\' and keycode \'" + keyBinding.getKeyCode()
 							+ "\' could not be set from pressed state \'" + keyBinding
-							.getIsKeyPressed() + "\' to state \'" + isPressed
+							.isPressed() + "\' to state \'" + isPressed
 							+ "\'. This is an eror. PLEASE report this to the issues stub on github.");
 			e.printStackTrace();
 		}
