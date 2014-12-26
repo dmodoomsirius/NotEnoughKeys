@@ -169,7 +169,7 @@ task javadocJar(type: Jar, dependsOn: 'javadoc') {
 jar { 
     //if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "dev"
     
-    dependsOn copyBuildXml, createChangelog    
+    dependsOn copyBuildXml
 }
 
 task deobfJar(type: Jar) {
