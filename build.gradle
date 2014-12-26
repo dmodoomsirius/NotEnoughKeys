@@ -19,6 +19,14 @@ apply plugin: "curseforge"
 apply plugin: 'forge'
 apply plugin: 'maven-publish'
 
+task makePretty(type: Delete) {
+  delete 'output'
+}
+
+clean{
+   dependsOn makePretty
+}
+
 ext.buildProps = file "build.properties"
 
 //if (${System.getenv()bamboo.buildNumber}) != null) {
@@ -164,17 +172,19 @@ publishing {
 task javadocJar(type: Jar, dependsOn: 'javadoc') {
     from javadoc.destinationDir
     //if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "javadoc-dev"
+    destinationDir = file 'output'
 }
 
 jar { 
     //if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "dev"
-    
+    destinationDir = file 'output'
     dependsOn copyBuildXml
 }
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
-    //if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "deobf-dev"   
+    //if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "deobf-dev"  
+    destinationDir = file 'output'    
 }
 
 artifacts {
