@@ -6,6 +6,7 @@ notifications:
   template:
    - "%{build_number} (%{branch} - %{commit}: %{commit_message} : %{author}): %{message} (%{build_url})"
 install: true
+sudo: false
 script:
   - gradle build -PbambooshortPlanName=Nek -Pdmodcurse=61545
 jdk:
