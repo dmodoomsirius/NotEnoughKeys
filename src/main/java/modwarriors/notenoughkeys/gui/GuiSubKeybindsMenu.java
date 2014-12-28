@@ -1,13 +1,15 @@
 package modwarriors.notenoughkeys.gui;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import modwarriors.notenoughkeys.keys.KeyHelper;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
+
+import java.io.IOException;
 
 @SideOnly(Side.CLIENT)
 public class GuiSubKeybindsMenu extends GuiScreen {
@@ -87,8 +89,12 @@ public class GuiSubKeybindsMenu extends GuiScreen {
 	 */
 	protected void mouseClicked(int par1, int par2, int par3) {
 		KeyHelper.updateConflictCategory();
-		super.mouseClicked(par1, par2, par3);
-	}
+        try {
+            super.mouseClicked(par1, par2, par3);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 	/**
 	 * Fired when a key is typed. This is the equivalent of
@@ -97,8 +103,12 @@ public class GuiSubKeybindsMenu extends GuiScreen {
 	protected void keyTyped(char par1, int par2) {
 		KeyHelper.updateConflictCategory();
 		if (scrollPane.keyTyped(par1, par2)) {
-			super.keyTyped(par1, par2);
-		}
+            try {
+                super.keyTyped(par1, par2);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 	}
 
 	/**

@@ -1,10 +1,10 @@
 package modwarriors.notenoughkeys.keys;
 
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import modwarriors.notenoughkeys.Helper;
 import modwarriors.notenoughkeys.NotEnoughKeys;
 import modwarriors.notenoughkeys.api.Api;
@@ -52,7 +52,7 @@ public class KeyEvents {
 	private void refreshBindings() {
 		boolean isInternal, isKeyboard, isSpecial;
 		for (KeyBinding keyBinding : Minecraft.getMinecraft().gameSettings.keyBindings) {
-			isInternal = keyBinding.getIsKeyPressed();
+			isInternal = keyBinding.isPressed();
 			isKeyboard = Helper.isKeyPressed_KeyBoard(keyBinding);
 			if (!KeyHelper.alternates.containsKey(keyBinding.getKeyDescription())) {
 				if (isInternal != isKeyboard) {
@@ -91,7 +91,7 @@ public class KeyEvents {
 							+ "\' from category \'" + keyBinding.getKeyCategory()
 							+ "\' and keycode \'" + keyBinding.getKeyCode()
 							+ "\' could not be set from pressed state \'" + keyBinding
-							.getIsKeyPressed() + "\' to state \'" + isPressed
+							.isPressed() + "\' to state \'" + isPressed
 							+ "\'. This is an eror. PLEASE report this to the issues stub on github.");
 			e.printStackTrace();
 		}

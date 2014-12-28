@@ -7,3 +7,7 @@ ChickenBones, I stole your "Not Enough".
 
 A Simple Forge mod that splits up keybinds into sub menus for less headaches. 
 Also adds keybindings that use modifiers SHIFT, CTRL, & ALT. Vanilla Minecraft cannot use these. Mods can, if they implement the API
+
+JavaDoc: 
+============================
+http://ci.builtbroken.com/javadoc/NotEnoughKeys/javadoc/

@@ -39,7 +39,7 @@ public class GuiKeybindsScrollPanel extends GuiSlot {
 				selected = i;
 			String type = buttonNames[selected];
 			Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord
-					.createPositionedSoundRecord(new ResourceLocation("gui.button.press"), 1.0F));
+					.create(new ResourceLocation("gui.button.press"), 1.0F));
 			Minecraft.getMinecraft().displayGuiScreen(
 					new GuiSubKeybindsMenu(
 							controls, type,
@@ -61,14 +61,19 @@ public class GuiKeybindsScrollPanel extends GuiSlot {
 	protected void drawBackground() {
 	}
 
-	@Override
+    @Override
+    protected void drawSlot(int entryID, int p_180791_2_, int p_180791_3_, int p_180791_4_, int p_180791_5_, int p_180791_6_) {
+
+    }
+
+    @Override
 	public void drawScreen(int mX, int mY, float f) {
 		_mouseX = mX;
 		_mouseY = mY;
 		super.drawScreen(mX, mY, f);
 	}
 
-	@Override
+
 	protected void drawSlot(int index, int xPosition, int yPosition, int l, Tessellator tessellator,
 			int mouseX, int mouseY) {
 		String s = I18n.format(buttonNames[index]);

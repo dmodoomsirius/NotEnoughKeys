@@ -7,6 +7,7 @@ eclipse/
 .project
 .settings/
 .idea/
+idea
 *.iml
 *.ipr
 *.iws

@@ -79,7 +79,7 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 	}
 
 	@Override
-	protected void drawSlot(int index, int xPosition, int yPosition, int l, Tessellator tessellator,
+	protected void drawSlot(int index, int xPosition, int yPosition, int l,
 			int mouseX, int mouseY) {
 		if (keyBindings[index] == null)
 			return;
