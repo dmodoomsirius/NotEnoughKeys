@@ -81,7 +81,7 @@ curse {
 
 task copyBuildXml(type: Copy) {
     from 'build.properties'
-    into 'build/libs'
+    into 'output'
 }
 
 processResources {
