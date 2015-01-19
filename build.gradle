@@ -60,7 +60,7 @@ println "version = "+ version
 minecraft {
     version = "${config.version.minecraft}-${config.version.forge}"
     runDir = "run"
-    mappings = "snapshot_20141126"
+    mappings = "snapshot_20150112"
 }
 
 curse {
