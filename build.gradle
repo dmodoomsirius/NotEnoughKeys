@@ -51,6 +51,9 @@ if (project.hasProperty("bambooBuildNumber"))
 else
     version += "NIGHTLY"
     
+if (!project.hasProperty("bambooshortPlanName"))
+    ext.bambooshortPlanName = ""
+    
 if (project.getProperty("bambooshortPlanName") == "NEK-Dev")
     version += "dev"
 
@@ -63,7 +66,9 @@ minecraft {
 }
 
 curse {
-    apiKey = project.dmodcurse
+    if (project.hasProperty("dmodcurse")) {
+        apiKey = project.dmodcurse
+    }
     projectId = "224614"
     // my project url is http://minecraft.curseforge.com/mc-mods/59652-seretroomsmod/
     changelog = "check out https://github.com/mod-warriors/NotEnoughKeys/commits/master"

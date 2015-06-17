@@ -68,6 +68,8 @@ public class NotEnoughKeys {
 
 		NotEnoughKeys.loadConfig();
 		NotEnoughKeys.saveConfig();
+
+		KeyHelper.loadDefaultKeybindsFromFile();
 	}
 
 	private static void loadConfig() {

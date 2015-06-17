@@ -17,6 +17,10 @@ import java.util.*;
 
 public class KeyHelper {
 
+	public static final File configDir = new File(Minecraft.getMinecraft().mcDataDir, "config");
+	private static final Gson GSON = new Gson();
+	private static final JsonParser PARSER = new JsonParser();
+
 	// GENERICS
 
 	/**
@@ -62,6 +66,20 @@ public class KeyHelper {
 			}
 		}
 		KeyHelper.updateConflictCategory();
+	}
+
+	public static void loadDefaultKeybindsFromFile() {
+		if (new File(Minecraft.getMinecraft().mcDataDir, "options.txt").exists()) return;
+		File defaultKeysFile = new File(KeyHelper.configDir, "DefaultKeys.json");
+		if (defaultKeysFile.exists()) KeyHelper.importFile(defaultKeysFile);
+		try {
+			JsonObject jsonObject = KeyHelper.PARSER.parse(
+					new FileReader(defaultKeysFile)
+			).getAsJsonObject();
+			if (!jsonObject.has("forceLoad") || !jsonObject.get("forceLoad").getAsBoolean())
+				defaultKeysFile.renameTo(new File(KeyHelper.configDir, ".DefaultKeys.json"));
+		}
+		catch (Exception e) {}
 	}
 
 	// KEY TRACKING
@@ -151,12 +169,12 @@ public class KeyHelper {
 			}
 			jsonObject.add(keyBinding.getKeyDescription(), keyBindingObj);
 		}
-		return KeyHelper.toReadableString(new Gson().toJson(jsonObject));
+		return KeyHelper.toReadableString(KeyHelper.GSON.toJson(jsonObject));
 	}
 
 	public static void importFile(File file) {
 		try {
-			JsonObject jsonObject = (new JsonParser()).parse(
+			JsonObject jsonObject = KeyHelper.PARSER.parse(
 					new FileReader(file)
 			).getAsJsonObject();
 			KeyBinding key;
