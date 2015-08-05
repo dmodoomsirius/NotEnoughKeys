@@ -65,7 +65,9 @@ public class KeyEvents {
 				);
 				if (isInternal != isSpecial) {
 					this.setKeyPressed(keyBinding, isSpecial);
-
+				}
+				if (isSpecial)
+				{
 					if (Minecraft.getMinecraft().currentScreen == null) {
 						// Post the event!
 						MinecraftForge.EVENT_BUS.post(
