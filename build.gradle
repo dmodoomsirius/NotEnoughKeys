@@ -18,6 +18,7 @@ buildscript {
 apply plugin: "curseforge"
 apply plugin: 'forge'
 apply plugin: 'maven-publish'
+apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScripts/buildScripts/scripts/both/jars.gradle'
 
 task makePretty(type: Delete) {
   delete 'output'
@@ -60,7 +61,7 @@ println "version = "+ version
 minecraft {
     version = "${config.version.minecraft}-${config.version.forge}"
     runDir = "run"
-    mappings = "snapshot_20150112"
+    mappings = 'snapshot_20150819'
 }
 
 curse {
@@ -77,11 +78,6 @@ curse {
     // allows you to add extra compatible MC versions. The one specified in the minecraft{} block is used by default.
     addGameVersion "1.7.10"
     // addGameversion "1.7.0", "1.7.4"
-}
-
-task copyBuildXml(type: Copy) {
-    from 'build.properties'
-    into 'output'
 }
 
 processResources {
@@ -126,27 +122,4 @@ publishing {
             url "file:///var/www/html/maven"
         }
     }
-}
-
-task javadocJar(type: Jar, dependsOn: 'javadoc') {
-    from javadoc.destinationDir
-    //if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "javadoc-dev"
-    destinationDir = file 'output'
-}
-
-jar { 
-    //if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "dev"
-    destinationDir = file 'output'
-    dependsOn copyBuildXml
-}
-
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    //if (project.getProperty("bambooshortPlanName") == "NEK-Dev") classifier = "deobf-dev"  
-    destinationDir = file 'output'    
-}
-
-artifacts {
-    archives deobfJar
-    archives javadocJar
 }
