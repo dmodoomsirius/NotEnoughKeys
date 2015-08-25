@@ -57,7 +57,7 @@ public class KeyEvents {
 		for (KeyBinding keyBinding : Minecraft.getMinecraft().gameSettings.keyBindings) {
 			// todo the following check will probably need adjustment. This is just a theory.
 			// the goal of this is to prevent excessive looping and checking.
-			if (keyBinding.getKeyCode() != keycode)
+			if (keycode >= 0 && keyBinding.getKeyCode() != keycode)
 				continue;
 			// todo end block theory check
 
@@ -70,11 +70,8 @@ public class KeyEvents {
 			}
 			else {
 				isSpecial = Helper.isSpecialKeyBindingPressed(
-						keyBinding, KeyHelper.alternates.get(keyBinding.getKeyDescription())
-				);
-				if (isInternal != isSpecial) {
-					this.setKeyPressed(keyBinding, isSpecial);
-				}
+						keyBinding, KeyHelper.alternates.get(keyBinding.getKeyDescription()));
+				if (isInternal != isSpecial) this.setKeyPressed(keyBinding, isSpecial);
 				// note, removed the isSpecial check because we want to notify users that keys
 				// have been released as well as pressed
 				// if (isSpecial) {
