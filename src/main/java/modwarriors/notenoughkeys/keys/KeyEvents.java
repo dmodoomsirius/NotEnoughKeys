@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiControls;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.common.MinecraftForge;
 
 @SideOnly(Side.CLIENT)
@@ -41,17 +42,25 @@ public class KeyEvents {
 		}
 
 		// The following stuff is the handling of keybindings.
-		this.refreshBindings();
+		this.refreshBindings(-1);
 	}
 
 	@SubscribeEvent
-	public void onMouseEvent(InputEvent.MouseInputEvent event) {
-		this.refreshBindings();
+	public void onMouseButtonEvent(MouseEvent event) {
+		if (event.button >= 0)
+			// adds 100 because that's how you correct the mouse buttons overlapping key buttons
+			this.refreshBindings(event.button + 100);
 	}
 
-	private void refreshBindings() {
+	private void refreshBindings(int keycode) {
 		boolean isInternal, isKeyboard, isSpecial;
 		for (KeyBinding keyBinding : Minecraft.getMinecraft().gameSettings.keyBindings) {
+			// todo the following check will probably need adjustment. This is just a theory.
+			// the goal of this is to prevent excessive looping and checking.
+			if (keyBinding.getKeyCode() != keycode)
+				continue;
+			// todo end block theory check
+
 			isInternal = keyBinding.getIsKeyPressed();
 			isKeyboard = Helper.isKeyPressed_KeyBoard(keyBinding);
 			if (!KeyHelper.alternates.containsKey(keyBinding.getKeyDescription())) {
@@ -66,18 +75,19 @@ public class KeyEvents {
 				if (isInternal != isSpecial) {
 					this.setKeyPressed(keyBinding, isSpecial);
 				}
-				if (isSpecial)
-				{
-					if (Minecraft.getMinecraft().currentScreen == null) {
-						// Post the event!
-						MinecraftForge.EVENT_BUS.post(
-								new KeyBindingPressedEvent(
-										keyBinding,
-										KeyHelper.alternates.get(keyBinding.getKeyDescription())
-								)
-						);
-					}
+				// note, removed the isSpecial check because we want to notify users that keys
+				// have been released as well as pressed
+				// if (isSpecial) {
+				if (Minecraft.getMinecraft().currentScreen == null) {
+					// Post the event!
+					MinecraftForge.EVENT_BUS.post(
+							new KeyBindingPressedEvent(
+									keyBinding,
+									KeyHelper.alternates.get(keyBinding.getKeyDescription())
+							)
+					);
 				}
+				//}
 			}
 		}
 	}
