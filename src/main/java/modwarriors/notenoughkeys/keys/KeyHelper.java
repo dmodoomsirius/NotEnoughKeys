@@ -69,17 +69,24 @@ public class KeyHelper {
 	}
 
 	public static void loadDefaultKeybindsFromFile() {
-		if (new File(Minecraft.getMinecraft().mcDataDir, "options.txt").exists()) return;
 		File defaultKeysFile = new File(KeyHelper.configDir, "DefaultKeys.json");
-		if (defaultKeysFile.exists()) KeyHelper.importFile(defaultKeysFile);
+		if (!defaultKeysFile.exists()) return;
+		boolean forceLoadDefault = false;
 		try {
 			JsonObject jsonObject = KeyHelper.PARSER.parse(
 					new FileReader(defaultKeysFile)
 			).getAsJsonObject();
-			if (!jsonObject.has("forceLoad") || !jsonObject.get("forceLoad").getAsBoolean())
+			forceLoadDefault = jsonObject.has("forceLoad") &&
+					jsonObject.get("forceLoad").getAsBoolean();
+			if (!forceLoadDefault)
 				defaultKeysFile.renameTo(new File(KeyHelper.configDir, ".DefaultKeys.json"));
 		}
-		catch (Exception e) {}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (forceLoadDefault ||
+				!new File(Minecraft.getMinecraft().mcDataDir, "options.txt").exists())
+			KeyHelper.importFile(defaultKeysFile);
 	}
 
 	// KEY TRACKING
