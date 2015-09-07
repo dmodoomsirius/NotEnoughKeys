@@ -1,7 +1,7 @@
 [
 {
   "modid": "notenoughkeys",
-  "name": "NotEnoughKEys",
+  "name": "NotEnoughKeys",
   "description": "Upddated Version of Okushama's NotEnoughKeys. Sorts the Controls gui system and adds optional modifiers (SHIFT, CTRL, ALT) to keys.",
   "version": "${version}",
   "mcversion": "${mcversion}",
