@@ -129,7 +129,7 @@ public class KeyHelper {
 				Minecraft.getMinecraft().gameSettings.keyBindings);
 		ArrayList<String> allTheConflicts = new ArrayList<String>();
 
-		boolean[] bind1Alts = null, bind2Alts = null;
+		boolean[] bind1Alts, bind2Alts;
 		// todo find better way to sort than looping twice!
 		for (KeyBinding bind1 : allTheBinds) {
 			for (KeyBinding bind2 : allTheBinds) {

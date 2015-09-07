@@ -7,7 +7,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import modwarriors.notenoughkeys.Helper;
 import modwarriors.notenoughkeys.NotEnoughKeys;
-import modwarriors.notenoughkeys.api.Api;
 import modwarriors.notenoughkeys.api.KeyBindingPressedEvent;
 import modwarriors.notenoughkeys.gui.GuiControlsOverride;
 import modwarriors.notenoughkeys.gui.GuiKeybindsMenu;
@@ -37,11 +36,6 @@ public class KeyEvents {
 
 	@SubscribeEvent
 	public void onKeyEvent(InputEvent.KeyInputEvent event) {
-		if (!Api.isLoaded()) {
-			// do your stuff here, on normal basis. If mod IS loaded, use the KeyBindingPressedEvent (as shown below)
-		}
-
-		// The following stuff is the handling of keybindings.
 		this.refreshBindings(-1);
 	}
 
@@ -57,8 +51,7 @@ public class KeyEvents {
 		for (KeyBinding keyBinding : Minecraft.getMinecraft().gameSettings.keyBindings) {
 			// todo the following check will probably need adjustment. This is just a theory.
 			// the goal of this is to prevent excessive looping and checking.
-			if (keycode >= 0 && keyBinding.getKeyCode() != keycode)
-				continue;
+			if (keycode >= 0 && keyBinding.getKeyCode() != keycode) continue;
 			// todo end block theory check
 
 			isInternal = keyBinding.getIsKeyPressed();
@@ -99,6 +92,14 @@ public class KeyEvents {
 			ObfuscationReflectionHelper.setPrivateValue(
 					KeyBinding.class, keyBinding, isPressed, "pressed", "field_74513_e"
 			);
+			if (isPressed) {
+				int pressTime = ObfuscationReflectionHelper.getPrivateValue(
+						KeyBinding.class, keyBinding, "pressTime", "field_151474_i"
+				);
+				ObfuscationReflectionHelper.setPrivateValue(
+						KeyBinding.class, keyBinding, pressTime + 1, "pressTime", "field_151474_i"
+				);
+			}
 		} catch (Exception e) {
 			NotEnoughKeys.logger
 					.error("A key with the description \'" + keyBinding.getKeyDescription()
@@ -109,18 +110,6 @@ public class KeyEvents {
 							+ "\'. This is an eror. PLEASE report this to the issues stub on github.");
 			e.printStackTrace();
 		}
-	}
-
-	@SubscribeEvent
-	public void onKeyBindingPressed(KeyBindingPressedEvent event) {
-		/*
-		if (!event.keyBinding.getKeyDescription().equals("keyBinding.getKeyDescription()"))
-			return;
-
-		if (keyBinding.getIsKeyPressed()) {
-			// Do action
-		}
-		*/
 	}
 
 }
