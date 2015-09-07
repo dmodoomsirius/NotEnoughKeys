@@ -71,7 +71,11 @@ public class KeyEvents {
 			else {
 				isSpecial = Helper.isSpecialKeyBindingPressed(
 						keyBinding, KeyHelper.alternates.get(keyBinding.getKeyDescription()));
-				if (isInternal != isSpecial) this.setKeyPressed(keyBinding, isSpecial);
+				// in order to accomodate the ability to have a minecraft keybinding key
+				// also be used in another keybinding, we should allow for keybindings to be pressed
+				// but not send the key event unless the special keys are also pressed
+				//if (isInternal != isSpecial) this.setKeyPressed(keyBinding, isSpecial);
+
 				// note, removed the isSpecial check because we want to notify users that keys
 				// have been released as well as pressed
 				// if (isSpecial) {
@@ -80,7 +84,8 @@ public class KeyEvents {
 					MinecraftForge.EVENT_BUS.post(
 							new KeyBindingPressedEvent(
 									keyBinding,
-									KeyHelper.alternates.get(keyBinding.getKeyDescription())
+									KeyHelper.alternates.get(keyBinding.getKeyDescription()),
+									isSpecial
 							)
 					);
 				}
