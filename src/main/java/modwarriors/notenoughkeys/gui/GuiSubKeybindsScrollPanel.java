@@ -4,7 +4,6 @@ import modwarriors.notenoughkeys.Helper;
 import modwarriors.notenoughkeys.keys.KeyHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiSlot;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;

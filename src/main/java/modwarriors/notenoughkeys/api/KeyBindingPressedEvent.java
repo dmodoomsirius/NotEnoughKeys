@@ -1,17 +1,14 @@
 package modwarriors.notenoughkeys.api;
 
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraft.client.settings.KeyBinding;
 
 /**
  * Called when a keybinding is triggered with the passed with valid modifiers
  *
  * @author TheTemportalist
  */
-@SideOnly(Side.CLIENT)
 @Cancelable
 public class KeyBindingPressedEvent extends Event {
 

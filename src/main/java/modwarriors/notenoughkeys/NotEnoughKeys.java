@@ -1,17 +1,15 @@
 package modwarriors.notenoughkeys;
 
+import modwarriors.notenoughkeys.keys.KeyEvents;
+import modwarriors.notenoughkeys.keys.KeyHelper;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import modwarriors.notenoughkeys.keys.KeyEvents;
-import modwarriors.notenoughkeys.keys.KeyHelper;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
@@ -21,7 +19,7 @@ import java.io.File;
  *
  * @author TheTemportalist
  */
-@Mod(modid = NotEnoughKeys.modid, name = NotEnoughKeys.name, version = NotEnoughKeys.version)
+@Mod(modid = NotEnoughKeys.modid, name = NotEnoughKeys.name, version = NotEnoughKeys.version,clientSideOnly = true, acceptedMinecraftVersions = "1.8")
 public class NotEnoughKeys {
 
 	public static final String modid = "notenoughkeys", name = "Not Enough Keys", version = "@MOD_VERSION@";
@@ -31,7 +29,6 @@ public class NotEnoughKeys {
 	private static Configuration config;
 
 	@EventHandler
-	@SideOnly(Side.CLIENT)
 	public static void preInit(FMLPreInitializationEvent e) {
 		logger = e.getModLog();
 
@@ -52,13 +49,11 @@ public class NotEnoughKeys {
 	}
 
 	@EventHandler
-	@SideOnly(Side.CLIENT)
 	public static void init(FMLInitializationEvent e) {
 
 	}
 
 	@EventHandler
-	@SideOnly(Side.CLIENT)
 	public static void postInit(FMLPostInitializationEvent e) {
 		/*
 		for (ModContainer mod : Loader.instance().getActiveModList())

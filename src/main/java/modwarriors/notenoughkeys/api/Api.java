@@ -1,15 +1,12 @@
 package modwarriors.notenoughkeys.api;
 
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Center of the API. Main api methods can be found in this class.
  *
  * @author TheTemportalist
  */
-@SideOnly(Side.CLIENT)
 public class Api {
 
 	/**
