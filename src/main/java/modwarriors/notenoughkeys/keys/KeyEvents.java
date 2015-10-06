@@ -62,8 +62,7 @@ public class KeyEvents {
 				}
 			}
 			else {
-				isSpecial = Helper.isSpecialKeyBindingPressed(
-						keyBinding, KeyHelper.alternates.get(keyBinding.getKeyDescription()));
+				isSpecial = KeyHelper.isKeyBindingPressed(keyBinding);
 				// in order to accomodate the ability to have a minecraft keybinding key
 				// also be used in another keybinding, we should allow for keybindings to be pressed
 				// but not send the key event unless the special keys are also pressed

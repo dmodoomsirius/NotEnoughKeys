@@ -1,6 +1,7 @@
 package modwarriors.notenoughkeys.keys;
 
 import com.google.gson.*;
+import modwarriors.notenoughkeys.Helper;
 import modwarriors.notenoughkeys.NotEnoughKeys;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -38,6 +39,11 @@ public class KeyHelper {
 				sb.append(", ");
 		}
 		NotEnoughKeys.logger.info(modname + " has be registered with keys " + sb.toString());
+	}
+
+	public static boolean isKeyBindingPressed(KeyBinding binding) {
+		return Helper.isSpecialKeyBindingPressed(
+				binding, KeyHelper.alternates.get(binding.getKeyDescription()));
 	}
 
 	/**
