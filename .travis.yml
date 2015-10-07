@@ -1,5 +1,7 @@
-sudo: false
 language: java
+before_install:
+  - git submodule update --init --recursive
+  - chmod a+x gradlew
 cache:
   directories:
     - $HOME/.gradle
@@ -18,7 +20,7 @@ notifications:
    - "%{build_number} (%{branch} - %{commit}: %{commit_message} : %{author}): %{message} (%{build_url})"
 install: true
 script:
-  - gradle build -PbambooshortPlanName=Nek -Pdmodcurse=61545
+  - ./gradlew build -PbambooshortPlanName=Nek -Pdmodcurse=61545
 jdk:
   - oraclejdk8
   - oraclejdk7
