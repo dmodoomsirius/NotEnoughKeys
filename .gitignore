@@ -14,13 +14,10 @@ idea
 out/
 test/
 run/
-gradle
-gradlew
-gradlew.bat
+CompiledWith.txt
 
 # Ignore OS cache files & directories
 *.DS_Store
 _MACOSX
 Thumbs.db
-gradle.properties
 output/

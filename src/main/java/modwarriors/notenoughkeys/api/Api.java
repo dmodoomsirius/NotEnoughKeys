@@ -4,6 +4,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+
 /**
  * Center of the API. Main api methods can be found in this class.
  *
@@ -36,6 +37,23 @@ public class Api {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Returns whether the selected keybinding is pressed
+	 *
+	 * @param binding The keybinding
+	 * @return whether the keybinding is pressed with modifier keys
+	 */
+	public static boolean isKeyBindingPressed(KeyBinding binding) {
+		try {
+			return (Boolean)Class.forName("modwarriors.notenoughkeys.keys.KeyHelper").getMethod(
+					"isKeyBindingPressed", KeyBinding.class
+			).invoke(null, binding);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }

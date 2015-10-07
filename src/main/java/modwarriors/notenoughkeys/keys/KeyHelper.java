@@ -1,6 +1,7 @@
 package modwarriors.notenoughkeys.keys;
 
 import com.google.gson.*;
+import modwarriors.notenoughkeys.Helper;
 import modwarriors.notenoughkeys.NotEnoughKeys;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -16,6 +17,10 @@ import java.util.*;
  */
 
 public class KeyHelper {
+
+	public static final File configDir = new File(Minecraft.getMinecraft().mcDataDir, "config");
+	private static final Gson GSON = new Gson();
+	private static final JsonParser PARSER = new JsonParser();
 
 	// GENERICS
 
@@ -34,6 +39,11 @@ public class KeyHelper {
 				sb.append(", ");
 		}
 		NotEnoughKeys.logger.info(modname + " has be registered with keys " + sb.toString());
+	}
+
+	public static boolean isKeyBindingPressed(KeyBinding binding) {
+		return Helper.isSpecialKeyBindingPressed(
+				binding, KeyHelper.alternates.get(binding.getKeyDescription()));
 	}
 
 	/**
@@ -62,6 +72,27 @@ public class KeyHelper {
 			}
 		}
 		KeyHelper.updateConflictCategory();
+	}
+
+	public static void loadDefaultKeybindsFromFile() {
+		File defaultKeysFile = new File(KeyHelper.configDir, "DefaultKeys.json");
+		if (!defaultKeysFile.exists()) return;
+		boolean forceLoadDefault = false;
+		try {
+			JsonObject jsonObject = KeyHelper.PARSER.parse(
+					new FileReader(defaultKeysFile)
+			).getAsJsonObject();
+			forceLoadDefault = jsonObject.has("forceLoad") &&
+					jsonObject.get("forceLoad").getAsBoolean();
+			if (!forceLoadDefault)
+				defaultKeysFile.renameTo(new File(KeyHelper.configDir, ".DefaultKeys.json"));
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (forceLoadDefault ||
+				!new File(Minecraft.getMinecraft().mcDataDir, "options.txt").exists())
+			KeyHelper.importFile(defaultKeysFile);
 	}
 
 	// KEY TRACKING
@@ -104,7 +135,7 @@ public class KeyHelper {
 				Minecraft.getMinecraft().gameSettings.keyBindings);
 		ArrayList<String> allTheConflicts = new ArrayList<String>();
 
-		boolean[] bind1Alts = null, bind2Alts = null;
+		boolean[] bind1Alts, bind2Alts;
 		// todo find better way to sort than looping twice!
 		for (KeyBinding bind1 : allTheBinds) {
 			for (KeyBinding bind2 : allTheBinds) {
@@ -151,12 +182,12 @@ public class KeyHelper {
 			}
 			jsonObject.add(keyBinding.getKeyDescription(), keyBindingObj);
 		}
-		return KeyHelper.toReadableString(new Gson().toJson(jsonObject));
+		return KeyHelper.toReadableString(KeyHelper.GSON.toJson(jsonObject));
 	}
 
 	public static void importFile(File file) {
 		try {
-			JsonObject jsonObject = (new JsonParser()).parse(
+			JsonObject jsonObject = KeyHelper.PARSER.parse(
 					new FileReader(file)
 			).getAsJsonObject();
 			KeyBinding key;

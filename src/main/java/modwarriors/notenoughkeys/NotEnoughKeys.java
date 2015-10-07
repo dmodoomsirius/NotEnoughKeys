@@ -42,6 +42,8 @@ public class NotEnoughKeys {
 
 		NotEnoughKeys.configure(e.getModConfigurationDirectory());
 
+		//MinecraftKeyBinder.preInit();
+
 	}
 
 	private static void configure(File configDir) {
@@ -68,6 +70,8 @@ public class NotEnoughKeys {
 
 		NotEnoughKeys.loadConfig();
 		NotEnoughKeys.saveConfig();
+
+		KeyHelper.loadDefaultKeybindsFromFile();
 	}
 
 	private static void loadConfig() {

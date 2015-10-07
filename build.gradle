@@ -12,114 +12,49 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'org.ajoberstar:gradle-git:0.10.1'
     }
 }
 
-apply plugin: "curseforge"
+apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScripts/buildScripts/index.gradle'
 apply plugin: 'forge'
-apply plugin: 'maven-publish'
-apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScripts/buildScripts/scripts/both/jars.gradle'
+apply plugin: 'curseforge'
+apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'jacoco'
+apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScripts/buildScripts/scripts/forge/deps.gradle'
 
-task makePretty(type: Delete) {
-  delete 'output'
-}
+println "Current Minecraft version = " + minecraft.apiVersion
+println archivesBaseName
 
-clean{
-   dependsOn makePretty
-}
-
-ext.buildProps = file "build.properties"
-
-//if (${System.getenv()bamboo.buildNumber}) != null) {
-//   version = "${System.getenv()bamboo.buildNumber}}"
-//} else {
-//    version = "NIGHTLY"
-//}
-
-buildProps.withReader {
-    def prop = new Properties()
-    prop.load(it)
-    ext.config = new ConfigSlurper().parse prop
-}
-
-version = "${config.version.minecraft}-${config.version.mod.major}.${config.version.mod.minor}.${config.version.mod.revis}b"
-group = "notenoughkeys"
-archivesBaseName = "NotEnoughKeys"
-
-if (project.hasProperty("bambooBuildNumber"))
-    version += project.bambooBuildNumber
-else
-    version += "NIGHTLY"
-    
-//if (project.getProperty("bambooshortPlanName") == "NEK-Dev")
-//    version += "dev"
-    
-
-
-println "version = "+ version
+def currentJvm = org.gradle.internal.jvm.Jvm.current()
+println "Current Java version = " + currentJvm
 
 minecraft {
-    version = "${config.version.minecraft}-${config.version.forge}"
+    version = "1.7.10-10.13.3.1428-1.7.10"
     runDir = "run"
     mappings = 'snapshot_20150819'
 }
 
-curse {
-    if (hasProperty("dmodcurse")) apiKey = project.dmodcurse
-    else apiKey = 0
-    projectId = "224614"
-    // my project url is http://minecraft.curseforge.com/mc-mods/59652-seretroomsmod/
-    changelog = "check out https://github.com/mod-warriors/NotEnoughKeys/commits/master"
-    releaseType = "beta"
-
-    // the default obfuscated jar is uploaded by default
-    // artifact = project.file("some/jar/to/upload.jar")
-
-    // allows you to add extra compatible MC versions. The one specified in the minecraft{} block is used by default.
-    addGameVersion "1.7.10"
-    // addGameversion "1.7.0", "1.7.4"
-}
-
 processResources {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    // replace stuff in mcmod.info, nothing else
 	from(sourceSets.main.resources.srcDirs) {
-		include '**/*.lang'
+		//include '**/*.lang'
 		include '**/*.info'
 		include '**/*.properties'
 
-		expand 'version': project.version, 'mcversion': config.version.minecraft
+		expand 'version': project.version, 'mcversion': project.minecraft.version
 		// replace version and MCVersion
 	}
+    
 
 	// copy everything else, thats not text
 	from(sourceSets.main.resources.srcDirs) {
-		exclude '**/*.lang'
 		exclude '**/*.info'
 		exclude '**/*.properties'
 	}
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication)
-        {
-            artifact jar
-            artifact deobfJar
-            artifact javadocJar
-            artifactId 'NeK'
-            artifact("build/libs/changelog.xml") {
-                classifier "changelog"
-                extension "xml"
-            }
-            artifact("build/libs/build.properties") {
-                classifier "build"
-                extension "properties"
-            }
-        }
-    }
-
-    repositories {
-        maven {
-            url "file:///var/www/html/maven"
-        }
-    }
 }
