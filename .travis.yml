@@ -2,6 +2,11 @@ language: java
 before_install:
   - git submodule update --init --recursive
   - chmod a+x gradlew
+cache:
+  directories:
+    - $HOME/.gradle
+    - .gradle
+sudo: false
 notifications:
   irc:
     channels:
