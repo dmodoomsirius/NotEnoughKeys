@@ -24,15 +24,14 @@ plugins {
   id "com.github.johnrengelman.shadow" version "1.2.2"
 }
 
-
 apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScripts/buildScripts/index.gradle'
 apply plugin: 'forge'
 apply plugin: 'curseforge'
 apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'jacoco'
 apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScripts/buildScripts/scripts/forge/deps.gradle'
+apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScripts/dmodtest/scripts/both/jacocoTestReport.gradle'
 
-println "Current Minecraft version = " + minecraft.apiVersion
 println archivesBaseName
 
 def currentJvm = org.gradle.internal.jvm.Jvm.current()
@@ -42,44 +41,4 @@ minecraft {
     version = "1.7.10-10.13.3.1428-1.7.10"
     runDir = "run"
     mappings = "snapshot_20140925"
-}
-
-//curse {
-//    if (project.hasProperty("dmodcurse")) {
-//        apiKey = project.dmodcurse
-//    }
-//    projectId = "224614"
-//    // my project url is http://minecraft.curseforge.com/mc-mods/59652-seretroomsmod/
-//    changelog = "check out https://github.com/mod-warriors/NotEnoughKeys/commits/master"
-//    releaseType = "beta"
-//
-//    // the default obfuscated jar is uploaded by default
-//    // artifact = project.file("some/jar/to/upload.jar")
-//
-//    // allows you to add extra compatible MC versions. The one specified in the minecraft{} block is used by default.
-//    addGameVersion "1.7.10"
-//    // addGameversion "1.7.0", "1.7.4"
-//}
-
-processResources {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    // replace stuff in mcmod.info, nothing else
-	from(sourceSets.main.resources.srcDirs) {
-		//include '**/*.lang'
-		include '**/*.info'
-		include '**/*.properties'
-
-		expand 'version': project.version, 'mcversion': project.minecraft.version
-		// replace version and MCVersion
-	}
-    
-
-	// copy everything else, thats not text
-	from(sourceSets.main.resources.srcDirs) {
-		exclude '**/*.info'
-		exclude '**/*.properties'
-	}
 }
