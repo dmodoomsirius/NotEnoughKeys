@@ -15,6 +15,7 @@ out/
 test/
 run/
 CompiledWith.txt
+NotEnoughKeys.txt
 
 # Ignore OS cache files & directories
 *.DS_Store
