@@ -23,32 +23,3 @@ apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScr
 //apply plugin: 'curseforge'
 apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'jacoco'
-
-println "Current Minecraft version = " + minecraft.forgeVersion
-println archivesBaseName
-
-def currentJvm = org.gradle.internal.jvm.Jvm.current()
-println "Current Java version = " + currentJvm
-
-processResources {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    // replace stuff in mcmod.info, nothing else
-	from(sourceSets.main.resources.srcDirs) {
-		//include '**/*.lang'
-		include '**/*.info'
-		include '**/*.properties'
-
-		expand 'version': project.version, 'mcversion': project.minecraft.version
-		// replace version and MCVersion
-	}
-    
-
-	// copy everything else, thats not text
-	from(sourceSets.main.resources.srcDirs) {
-		exclude '**/*.info'
-		exclude '**/*.properties'
-	}
-}
