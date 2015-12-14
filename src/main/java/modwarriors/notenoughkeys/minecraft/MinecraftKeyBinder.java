@@ -72,7 +72,7 @@ public class MinecraftKeyBinder {
 					this.mc.thePlayer.inventory.currentItem = i;
 			if (event.keyBinding == this.gameSettings.keyBindInventory) {
 				if (this.mc.playerController.isRidingHorse())
-					this.mc.thePlayer.sendHorseInteraction();
+					this.mc.thePlayer.sendHorseInventory();
 				else {
 					this.mc.getNetHandler().addToSendQueue(
 							new C16PacketClientStatus(

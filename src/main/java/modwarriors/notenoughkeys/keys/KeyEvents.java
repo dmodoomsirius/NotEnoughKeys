@@ -54,7 +54,7 @@ public class KeyEvents {
 			if (keycode >= 0 && keyBinding.getKeyCode() != keycode) continue;
 			// todo end block theory check
 
-			isInternal = keyBinding.getIsKeyPressed();
+			isInternal = keyBinding.isPressed();
 
 			isKeyboard = Helper.isKeyPressed_KeyBoard(keyBinding);
 			if (!KeyHelper.alternates.containsKey(keyBinding.getKeyDescription())) {
