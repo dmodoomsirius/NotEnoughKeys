@@ -16,11 +16,11 @@ notifications:
       - "%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message} "
       - "Change view : %{compare_url}"
       - "Build details : %{build_url} : duration : %{duration}"
-  template:
-   - "%{build_number} (%{branch} - %{commit}: %{commit_message} : %{author}): %{message} (%{build_url})"
 install: true
 script:
-  - ./gradlew build -PbambooshortPlanName=Nek -Pdmodcurse=61545
+  ./gradlew build javadoc coveralls jacocoTestReport -PbambooshortPlanName=NEK -Pdmodcurse=61545 -S -i --refresh-dependencies
 jdk:
   - oraclejdk8
   - oraclejdk7
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

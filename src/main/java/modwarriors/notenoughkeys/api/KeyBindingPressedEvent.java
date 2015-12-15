@@ -38,7 +38,6 @@ public class KeyBindingPressedEvent extends Event {
 	 * @param modifiers  The modifiers (SHIFT, CTRL, ALT) that determine when a compatible key is pressed
 	 */
 	public KeyBindingPressedEvent(KeyBinding keyBinding, boolean[] modifiers, boolean isPressed) {
-		super();
 		this.keyBinding = keyBinding;
 		this.shiftRequired = modifiers[0];
 		this.ctrlRequired = modifiers[1];
