@@ -1,7 +1,5 @@
 package modwarriors.notenoughkeys.gui;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import modwarriors.notenoughkeys.keys.KeyHelper;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -11,7 +9,6 @@ import net.minecraft.client.settings.KeyBinding;
 
 import java.io.IOException;
 
-@SideOnly(Side.CLIENT)
 public class GuiSubKeybindsMenu extends GuiScreen {
 	/**
 	 * A reference to the screen object that created  Used for navigating

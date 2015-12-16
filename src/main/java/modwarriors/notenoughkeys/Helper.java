@@ -10,7 +10,6 @@ import org.lwjgl.input.Mouse;
 /**
  * @author TheTemportalist
  */
-@SideOnly(Side.CLIENT)
 public class Helper {
 
 	/*
