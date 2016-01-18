@@ -23,13 +23,12 @@ plugins {
   id "com.github.johnrengelman.shadow" version "1.2.2"
 }
 
-apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScripts/buildScripts/index.gradle'
+apply from: 'https://raw.githubusercontent.com/dsirius/Gradle-repo/master/index/index.gradle'
 //apply plugin: 'forge'
 apply plugin: 'curseforge'
 apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'jacoco'
 apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScripts/buildScripts/scripts/forge/deps.gradle'
-apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScripts/dmodtest/scripts/both/jacocoTestReport.gradle'
 
 println archivesBaseName
 
@@ -37,7 +36,13 @@ def currentJvm = org.gradle.internal.jvm.Jvm.current()
 println "Current Java version = " + currentJvm
 
 minecraft {
-    version = "1.7.10-10.13.3.1428-1.7.10"
     runDir = "run"
     mappings = "snapshot_20140925"
+}
+
+jar {
+
+    manifest.mainAttributes(
+    "ModSide": "CLIENT"
+    )
 }
