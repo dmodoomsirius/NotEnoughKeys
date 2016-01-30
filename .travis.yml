@@ -18,7 +18,7 @@ notifications:
       - "Build details : %{build_url} : duration : %{duration}"
 install: true
 script:
-  ./gradlew build javadoc coveralls jacocoTestReport -PbambooshortPlanName=NEK -Pdmodcurse=61545 -S -i --refresh-dependencies
+  ./gradlew build javadoc coveralls jacocoTestReport -PbambooshortPlanName=NEK -S -i --refresh-dependencies
 jdk:
   - oraclejdk8
   - oraclejdk7
