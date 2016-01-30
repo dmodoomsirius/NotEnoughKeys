@@ -1,7 +1,5 @@
 package modwarriors.notenoughkeys;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
@@ -10,7 +8,6 @@ import org.lwjgl.input.Mouse;
 /**
  * @author TheTemportalist
  */
-@SideOnly(Side.CLIENT)
 public class Helper {
 
 	/*

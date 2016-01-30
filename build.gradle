@@ -24,13 +24,6 @@ apply from: 'https://raw.githubusercontent.com/dsirius/Gradle-repo/1.8.9/index/i
 apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'jacoco'
 
-jar {
-
-    manifest.mainAttributes(
-    "ModSide": "CLIENT"
-    )
-}
-
 curseforge {
   if (project.hasProperty("bbmcurse")) {
         apiKey = project.bbmcurse
@@ -44,7 +37,7 @@ curseforge {
     //relations curseRelations
     changelog = ""
     releaseType = "release"
-    addGameVersion "1.7.10"
+    addGameVersion "1.8.9"
     mainArtifact(jar) {
       displayName = "NEK version: $project.version"
     }

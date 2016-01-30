@@ -1,8 +1,5 @@
 package modwarriors.notenoughkeys.minecraft;
 
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import modwarriors.notenoughkeys.Helper;
 import modwarriors.notenoughkeys.NotEnoughKeys;
 import modwarriors.notenoughkeys.api.Api;
@@ -15,6 +12,8 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.client.C16PacketClientStatus;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -36,7 +35,6 @@ public class MinecraftKeyBinder {
 	public KeyBinding testKey;
 
 	private void register() {
-		FMLCommonHandler.instance().bus().register(this);
 		MinecraftForge.EVENT_BUS.register(this);
 
 		testKey = new KeyBinding("test", Keyboard.KEY_Q, "gameplay");
