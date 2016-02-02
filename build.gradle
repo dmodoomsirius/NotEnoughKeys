@@ -28,17 +28,11 @@ apply from: 'https://raw.githubusercontent.com/dsirius/Gradle-repo/master/index/
 apply plugin: 'curseforge'
 apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'jacoco'
-apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScripts/buildScripts/scripts/forge/deps.gradle'
 
 println archivesBaseName
 
 def currentJvm = org.gradle.internal.jvm.Jvm.current()
 println "Current Java version = " + currentJvm
-
-minecraft {
-    runDir = "run"
-    mappings = "snapshot_20140925"
-}
 
 jar {
 
