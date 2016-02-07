@@ -129,6 +129,12 @@ public class GuiKeybindsMenu extends GuiScreen {
 	}
 
 	@Override
+	public void handleMouseInput() throws IOException {
+		super.handleMouseInput();
+		this.scroll.handleMouseInput();
+	}
+
+	@Override
 	public void onGuiClosed() {
 		super.onGuiClosed();
 	}

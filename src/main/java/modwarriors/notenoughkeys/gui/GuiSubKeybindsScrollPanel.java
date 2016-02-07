@@ -48,8 +48,10 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 				selected = i;
 			}
 			else {
-				KeyBinding glob = getGlobalKeybind(selected);
-				this.saveKeyBinding(glob, -100);
+				System.out.println(selected);
+				KeyBinding keyBinding = getGlobalKeybind(selected);
+				// TODO This function is run twice in the same tick, so this causes the Button1 to be assigned as soon as player clicks item
+				//this.saveKeyBinding(keyBinding, -100);
 			}
 		}
 	}

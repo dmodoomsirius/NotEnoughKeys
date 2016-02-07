@@ -71,6 +71,12 @@ public class GuiSubKeybindsMenu extends GuiScreen {
 		KeyHelper.updateConflictCategory();
 	}
 
+	@Override
+	public void handleMouseInput() throws IOException {
+		super.handleMouseInput();
+		this.scrollPane.handleMouseInput();
+	}
+
 	/**
 	 * Fired when a control is clicked. This is the equivalent of
 	 * ActionListener.actionPerformed(ActionEvent e).
