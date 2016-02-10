@@ -39,7 +39,6 @@ minecraft {
  }
 
 jar {
-
     manifest.mainAttributes(
     "ModSide": "CLIENT"
     )
