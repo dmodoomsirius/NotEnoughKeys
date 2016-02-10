@@ -34,6 +34,10 @@ println archivesBaseName
 def currentJvm = org.gradle.internal.jvm.Jvm.current()
 println "Current Java version = " + currentJvm
 
+minecraft {
+     mappings = "snapshot_20140925"
+ }
+
 jar {
 
     manifest.mainAttributes(
