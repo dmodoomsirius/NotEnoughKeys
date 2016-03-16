@@ -24,7 +24,7 @@ import java.io.File;
 @Mod(modid = NotEnoughKeys.modid, name = NotEnoughKeys.name, version = NotEnoughKeys.version)
 public class NotEnoughKeys {
 
-	public static final String modid = "notenoughkeys", name = "Not Enough Keys", version = "@MOD_VERSION@";
+	public static final String modid = "notenoughkeys", name = "Not Enough Keys", version = "@MAJOR@.@MINOR@.@REVIS@.@BUILD@";
 
 	public static Logger logger;
 
