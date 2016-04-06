@@ -7,7 +7,7 @@ import net.minecraft.client.gui.GuiSlot;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -116,11 +116,11 @@ public class GuiSubKeybindsScrollPanel extends GuiSlot {
 		}
 		*/
 
-		String str = (conflict ? EnumChatFormatting.RED : "") + GameSettings.getKeyDisplayString(
+		String str = (conflict ? TextFormatting.RED : "") + GameSettings.getKeyDisplayString(
 				keyBindings[index].getKeyCode());
 		str = (index == selected ?
-				EnumChatFormatting.WHITE + "> " + EnumChatFormatting.YELLOW + "??? "
-						+ EnumChatFormatting.WHITE + "<" :
+				TextFormatting.WHITE + "> " + TextFormatting.YELLOW + "??? "
+						+ TextFormatting.WHITE + "<" :
 				str);
 		controls.drawCenteredString(mc.fontRendererObj, str, xPosition + (width / 2),
 				yPosition + (height - 8) / 2, 0xFFFFFFFF);
