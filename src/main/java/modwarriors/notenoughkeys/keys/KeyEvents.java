@@ -25,9 +25,9 @@ public class KeyEvents {
 	 */
 	@SubscribeEvent
 	public void onGuiOpen(GuiOpenEvent event) {
-		if (event.gui != null && event.gui.getClass().equals(GuiControls.class)
-				&& !(event.gui instanceof GuiControlsOverride)) {
-			event.gui = new GuiKeybindsMenu();
+		if (event.getGui() != null && event.getGui().getClass().equals(GuiControls.class)
+				&& !(event.getGui() instanceof GuiControlsOverride)) {
+			event.setGui(new GuiKeybindsMenu());
 		}
 	}
 
@@ -38,9 +38,9 @@ public class KeyEvents {
 
 	@SubscribeEvent
 	public void onMouseButtonEvent(MouseEvent event) {
-		if (event.button >= 0)
+		if (event.getButton() >= 0)
 			// adds 100 because that's how you correct the mouse buttons overlapping key buttons
-			this.refreshBindings(event.button + 100);
+			this.refreshBindings(event.getButton() + 100);
 	}
 
 	private void refreshBindings(int keycode) {

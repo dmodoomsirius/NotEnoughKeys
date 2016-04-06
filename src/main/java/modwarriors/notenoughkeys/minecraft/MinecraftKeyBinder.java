@@ -10,7 +10,7 @@ import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.play.client.C16PacketClientStatus;
+import net.minecraft.network.play.client.CPacketClientStatus;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -74,8 +74,8 @@ public class MinecraftKeyBinder {
 					this.mc.thePlayer.sendHorseInventory();
 				else {
 					this.mc.getNetHandler().addToSendQueue(
-							new C16PacketClientStatus(
-									C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT));
+							new CPacketClientStatus(
+									CPacketClientStatus.State.OPEN_INVENTORY_ACHIEVEMENT));
 					this.mc.displayGuiScreen(new GuiInventory(this.mc.thePlayer));
 				}
 			}
