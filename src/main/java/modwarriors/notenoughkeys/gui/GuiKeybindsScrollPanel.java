@@ -6,6 +6,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiSlot;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -38,8 +39,7 @@ public class GuiKeybindsScrollPanel extends GuiSlot {
 			if (selected == -1)
 				selected = i;
 			String type = buttonNames[selected];
-			Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord
-					.create(new ResourceLocation("gui.button.press"), 1.0F));
+			Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ui_button_click, 1.0F));
 			Minecraft.getMinecraft().displayGuiScreen(
 					new GuiSubKeybindsMenu(
 							controls, type,
