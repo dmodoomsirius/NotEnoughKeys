@@ -35,10 +35,20 @@ public class GuiMenuNEK extends GuiScrollContainer<String> {
 	private void initSidebar() {
 		this.initSidebarActions();
 
+		int boxTop = 63;
+		int boxBottom = this.height - 32;
+		int labelHeight = 20;
+		int centerY = (boxTop + boxBottom) / 2;
+		int spread = 10;
+
 		String[] sidebarLabels = new String[] {"Conflicts", "Export", "Import"};
-		int yVar = this.height / 10;
+
+		int startY = centerY;
+		startY -= (labelHeight * sidebarLabels.length) / 2;
+		startY -= (spread * (sidebarLabels.length - 1)) / 2;
+
 		for (int i = 0; i < sidebarLabels.length; i++) {
-			this.buttonList.add(new GuiButton(i, 0, yVar * (i + 1), 75, 20, sidebarLabels[i]));
+			this.buttonList.add(new GuiButton(i, 0, startY + (labelHeight + spread) * i, 75, labelHeight, sidebarLabels[i]));
 		}
 
 	}

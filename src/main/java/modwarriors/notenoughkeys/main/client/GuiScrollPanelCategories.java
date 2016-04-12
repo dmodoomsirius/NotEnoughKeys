@@ -21,12 +21,18 @@ public class GuiScrollPanelCategories extends GuiScrollPanel<String> {
 
 	GuiScrollPanelCategories(GuiScreen parent, String[] categories,
 			HashMap<String, KeyBinding[]> keyBindingsByCategory) {
-		super(parent, categories, parent.width + 45, parent.height, 63, parent.height - 32, 20);
+		super(parent, categories, parent.width, parent.height, 63, parent.height - 32, 20);
 		this.keyBindingsByCategory = keyBindingsByCategory;
 	}
 
 	@Override
-	protected void onElementClicked(String entry, boolean isDoubleClick, int mouseX, int mouseY) {
+	public int getListWidth() {
+		return (int)(this.width * 0.6);
+	}
+
+	@Override
+	protected void onElementClicked(int index, String entry, boolean isDoubleClick, int mouseX,
+			int mouseY) {
 		this.mc.displayGuiScreen(new GuiMenuKeyBindings(
 				this.getParent(), entry, this.keyBindingsByCategory.get(entry)));
 	}
@@ -38,9 +44,10 @@ public class GuiScrollPanelCategories extends GuiScrollPanel<String> {
 		GlStateManager.color(1, 1, 1, 1);
 
 		slotHeight += 4;
-		int slotWidth = 170;
+		int slotWidth = listWidth;
 		int k = isSelected ? 2 : 1;
 		int halfWidth = slotWidth / 2;
+		x = this.width / 2 - listWidth / 2;
 		this.getParent().drawTexturedModalRect(
 				x, y, 0, 46 + k * 20, halfWidth, slotHeight
 		);

@@ -5,6 +5,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Created by TheTemportalist on 4/10/2016.
@@ -26,11 +27,18 @@ public class NotEnoughKeys {
 	@SidedProxy(clientSide = NotEnoughKeys.proxyClient, serverSide = NotEnoughKeys.proxyServer)
 	private static ProxyCommon proxy;
 
+	private static Logger logger;
+
+	public static void log(String format, String... args) {
+		NotEnoughKeys.logger.info(format, args);
+	}
+
 	//@Mod.Instance(value = NotEnoughKeys.MOD_ID)
 	//NotEnoughKeys instance;
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
+		NotEnoughKeys.logger = event.getModLog();
 		NotEnoughKeys.proxy.preInit();
 	}
 

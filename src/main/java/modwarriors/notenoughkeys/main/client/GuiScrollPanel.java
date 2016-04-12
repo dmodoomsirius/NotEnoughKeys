@@ -3,6 +3,8 @@ package modwarriors.notenoughkeys.main.client;
 import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.gui.GuiScreen;
 
+import java.io.IOException;
+
 /**
  * Created by TheTemportalist on 4/11/2016.
  *
@@ -34,6 +36,16 @@ public abstract class GuiScrollPanel<T> extends GuiListExtended {
 	}
 
 	@Override
+	public int getListWidth() {
+		return (int)(this.getParent().width * 0.9);
+	}
+
+	@Override
+	protected int getScrollBarX() {
+		return this.width / 2 + this.getListWidth() / 2;
+	}
+
+	@Override
 	public IGuiListEntry getListEntry(int index) {
 		return this.listEntries[index];
 	}
@@ -43,12 +55,17 @@ public abstract class GuiScrollPanel<T> extends GuiListExtended {
 		return this.entries.length;
 	}
 
-	@Override
-	protected void elementClicked(int slotIndex, boolean isDoubleClick, int mouseX, int mouseY) {
-		this.onElementClicked(this.entries[slotIndex], isDoubleClick, mouseX, mouseY);
+	protected T getElement(int index) {
+		return this.entries[index];
 	}
 
-	protected abstract void onElementClicked(T entry, boolean isDoubleClick, int mouseX, int mouseY);
+	@Override
+	protected void elementClicked(int slotIndex, boolean isDoubleClick, int mouseX, int mouseY) {
+		this.onElementClicked(slotIndex, this.entries[slotIndex], isDoubleClick, mouseX, mouseY);
+	}
+
+	protected abstract void onElementClicked(int index, T entry, boolean isDoubleClick,
+			int mouseX, int mouseY);
 
 	protected abstract void drawEntry(int index, T entry, int x, int y, int listWidth, int slotHeight,
 			int mouseX, int mouseY, boolean isSelected);
@@ -60,6 +77,10 @@ public abstract class GuiScrollPanel<T> extends GuiListExtended {
 
 	protected void mouseReleased(int index, T entry, int x, int y, int mouseEvent, int relativeX,
 			int relativeY) {}
+
+	protected boolean keyTyped(char typedChar, int keyCode) throws IOException {
+		return false;
+	}
 
 	public class ListEntry<T> implements IGuiListEntry {
 

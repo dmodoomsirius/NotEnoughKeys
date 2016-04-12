@@ -41,6 +41,12 @@ public abstract class GuiScrollContainer<T> extends GuiScreen {
 	}
 
 	@Override
+	protected void keyTyped(char typedChar, int keyCode) throws IOException {
+		if (!this.scroll.keyTyped(typedChar, keyCode))
+			super.keyTyped(typedChar, keyCode);
+	}
+
+	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		super.drawBackground(0);
 		this.scroll.drawScreen(mouseX, mouseY, partialTicks);
