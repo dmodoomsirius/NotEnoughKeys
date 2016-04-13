@@ -1,5 +1,6 @@
 package modwarriors.notenoughkeys.main.client;
 
+import javafx.util.Pair;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
@@ -9,7 +10,6 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.settings.KeyModifier;
 import org.lwjgl.input.Keyboard;
-import scala.Tuple2;
 
 import java.io.IOException;
 
@@ -135,16 +135,16 @@ class GuiScrollPanelKeyBindings extends GuiScrollPanel<KeyBinding> {
 		/** End **/
 
 		/** Modifiers **/
-		Tuple2<String, Boolean>[] modifiers = new Tuple2[]{
-				new Tuple2<String, Boolean>("Ctrl", BindingHelper.hasModifierCtrl(entry)),
-				new Tuple2<String, Boolean>("Alt", BindingHelper.hasModifierAlt(entry)),
-				new Tuple2<String, Boolean>("Shift", BindingHelper.hasModifierShift(entry))
+		Pair<String, Boolean>[] modifiers = new Pair[]{
+				new Pair<String, Boolean>("Ctrl", BindingHelper.hasModifierCtrl(entry)),
+				new Pair<String, Boolean>("Alt", BindingHelper.hasModifierAlt(entry)),
+				new Pair<String, Boolean>("Shift", BindingHelper.hasModifierShift(entry))
 		};
 
 		for (int i = 0; i < modifiers.length; i++) {
-			if (modifiers[i]._2)
+			if (modifiers[i].getValue())
 				this.getParent().drawCenteredString(this.mc.fontRendererObj,
-						modifiers[i]._1,
+						modifiers[i].getKey(),
 						this.keyButtons[index].xPosition - keyWidth + 10 + (30 * i),
 						textHeight, 0xffffff);
 		}
