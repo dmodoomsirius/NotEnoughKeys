@@ -14,20 +14,21 @@ import java.util.HashMap;
 public class BindingHelper {
 
 	public static boolean hasModifierCtrl(KeyBinding keyBinding) {
-		return BindingHelper.modifiers.containsKey(keyBinding.getKeyDescription()) &&
-				BindingHelper.modifiers.get(keyBinding.getKeyDescription())[0];
+		return keyBinding.getKeyModifierSet().contains(KeyModifier.CONTROL);
 		//return keyBinding.getKeyModifier() == KeyModifier.CONTROL;
 	}
 
 	public static boolean hasModifierAlt(KeyBinding keyBinding) {
-		return BindingHelper.modifiers.containsKey(keyBinding.getKeyDescription()) &&
-				BindingHelper.modifiers.get(keyBinding.getKeyDescription())[1];
+		return keyBinding.getKeyModifierSet().contains(KeyModifier.ALT);
+		//return BindingHelper.modifiers.containsKey(keyBinding.getKeyDescription()) &&
+		//		BindingHelper.modifiers.get(keyBinding.getKeyDescription())[1];
 		//return keyBinding.getKeyModifier() == KeyModifier.ALT;
 	}
 
 	public static boolean hasModifierShift(KeyBinding keyBinding) {
-		return BindingHelper.modifiers.containsKey(keyBinding.getKeyDescription()) &&
-				BindingHelper.modifiers.get(keyBinding.getKeyDescription())[2];
+		return keyBinding.getKeyModifierSet().contains(KeyModifier.SHIFT);
+		//return BindingHelper.modifiers.containsKey(keyBinding.getKeyDescription()) &&
+		//		BindingHelper.modifiers.get(keyBinding.getKeyDescription())[2];
 		//return keyBinding.getKeyModifier() == KeyModifier.SHIFT;
 	}
 

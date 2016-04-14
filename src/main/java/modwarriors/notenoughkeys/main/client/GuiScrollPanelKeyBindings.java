@@ -9,9 +9,12 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.settings.KeyModifier;
+import net.minecraftforge.client.settings.KeyModifierSet;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by TheTemportalist on 4/10/2016.
@@ -77,13 +80,19 @@ class GuiScrollPanelKeyBindings extends GuiScrollPanel<KeyBinding> {
 				keyCode = typedChar + 256;
 			}
 
-			keyBinding.setKeyModifierAndCode(KeyModifier.NONE, keyCode);
+			//keyBinding.setKeyModifierAndCode(KeyModifier.NONE, keyCode);
+			if (keyCode == 0)
+				//BindingHelper.setModifiers(keyBinding);
+				keyBinding.setKeyModifierAndCode(keyCode);
+			else{
+				//BindingHelper.setModifiers(keyBinding, false, false, false);
+				List<KeyModifier> modifiers = new ArrayList<KeyModifier>();
+				for (KeyModifier modifier : KeyModifier.MODIFIER_VALUES)
+					if (modifier.isActive()) modifiers.add(modifier);
+				keyBinding.setKeyModifierAndCode(keyCode, new KeyModifierSet(modifiers));
+			}
 			this.mc.gameSettings.setOptionKeyBinding(keyBinding, keyCode);
 			KeyBinding.resetKeyBindingArrayAndHash();
-			if (keyCode != 0)
-				BindingHelper.setModifiers(keyBinding);
-			else
-				BindingHelper.setModifiers(keyBinding, false, false, false);
 
 			this.selectedIndex = -1;
 			return true;

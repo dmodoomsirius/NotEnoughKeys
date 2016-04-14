@@ -45,10 +45,10 @@ public class KeyBinding implements Comparable<KeyBinding>
 		{
 			for (KeyBinding keybinding : hash.lookupAll(keyCode))
 
-				if (keybinding != null)
-				{
-					keybinding.pressed = pressed;
-				}
+			if (keybinding != null)
+			{
+				keybinding.pressed = pressed;
+			}
 		}
 	}
 
@@ -214,7 +214,17 @@ public class KeyBinding implements Comparable<KeyBinding>
 		return keyConflictContext;
 	}
 
-	public modwarriors.notenoughkeys.main.forge.KeyModifierSet getKeyModifierDefault()
+	public net.minecraftforge.client.settings.KeyModifier getKeyModifierDefault()
+	{
+		return net.minecraftforge.client.settings.KeyModifier.NONE;
+	}
+
+	public net.minecraftforge.client.settings.KeyModifier getKeyModifier()
+	{
+		return net.minecraftforge.client.settings.KeyModifier.NONE;
+	}
+
+	public modwarriors.notenoughkeys.main.forge.KeyModifierSet getKeyModifierSetDefault()
 	{
 		return keyModifierSetDefault;
 	}
@@ -224,12 +234,12 @@ public class KeyBinding implements Comparable<KeyBinding>
 		return keyModifierSet;
 	}
 
-	public void setKeyModifierAndCode(int keyCode, KeyModifier... modifiers)
+	public void setKeyModifierAndCode(int keyCode, modwarriors.notenoughkeys.main.forge.KeyModifier... modifiers)
 	{
 		this.setKeyModifierAndCode(keyCode, new KeyModifierSet(modifiers));
 	}
 
-	public void setKeyModifierAndCode(int keyCode, KeyModifierSet modifiers)
+	public void setKeyModifierAndCode(int keyCode, modwarriors.notenoughkeys.main.forge.KeyModifierSet modifiers)
 	{
 		this.keyCode = keyCode;
 		this.keyModifierSet = modifiers;
@@ -239,12 +249,12 @@ public class KeyBinding implements Comparable<KeyBinding>
 
 	public void setToDefault()
 	{
-		setKeyModifierAndCode(getKeyCodeDefault(), getKeyModifierDefault());
+		setKeyModifierAndCode(getKeyCodeDefault(), getKeyModifierSetDefault());
 	}
 
 	public boolean isSetToDefaultValue()
 	{
-		return getKeyCode() == getKeyCodeDefault() && getKeyModifierSet() == getKeyModifierDefault();
+		return getKeyCode() == getKeyCodeDefault() && getKeyModifierSet() == getKeyModifierSetDefault();
 	}
 
 	/**
